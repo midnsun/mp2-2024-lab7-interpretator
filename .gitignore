@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+/sln/Interpretator/.vs
+sln/Interpretator/Interpretator.vcxproj
+sln/Interpretator/Interpretator.vcxproj.filters
+sln/Interpretator/Interpretator.vcxproj.user
+sln/Interpretator/x64/Debug/Interpretator.exe.recipe
+/sln/Interpretator/x64
