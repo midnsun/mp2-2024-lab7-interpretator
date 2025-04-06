@@ -1,1 +1,1 @@
-# mp2-2024-lab5-interpretator
+# mp2-2024-lab7-interpretator
