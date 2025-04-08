@@ -37,8 +37,8 @@ public:
 		// 2. C syntax
 		//
 		// New key words: 
-		// JIF (expr) line - jump if expression is true
-		// JMP line - jump always
+		// JIF (expr) cmd - jump if expression is true
+		// JMP cmd - jump always
 		//
 	}
 	static bool isKeyWord(std::string& s) {
@@ -93,8 +93,8 @@ class operators : public keyWords {
 };
 
 class interpretator {
-	std::vector < std::vector <commonLexem*> > program;
-	std::set< variable > variables;
+	std::vector < std::vector < commonLexem* > > program;
+	std::set< variable* > variables;
 	std::set< std::string > functions;
 	// Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// Пример:
@@ -105,10 +105,34 @@ class interpretator {
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
 	void process(std::vector<std::string>& source) { // предобработка кода для исполнения
 		// Разделение только на ключевые слова и прочик лексемы!! Дальше прочие лексемы обрабатываются как в коде лабы постфикс
-
+		// разделяются int, double, void, if, else, while, return. scan, print - обычные операторы
+		// команда завершается или символом { или символом ;. Другого не дано
+		std::string sourceCode = "";
+		for (string& str : source) {
+			sourceCode += str;
+			sourceCode += " ";
+		} // строчка всего кода целиком
+		std::string command = "";
+		std::vector <commonLexem* > lexComand;
+		for (size_t i = 0; i < sourceCode.length(); ++i) {
+			if (sourceCode[i] == '{' || sourceCode[i] == ';') {
+				lexComand.clear();
+				// command processing - разделение команды на составляющие лексемы
+				command = "";
+			}
+			else 
+				command += sourceCode[i];
+		}
 	}
 	interpretator(std::vector<std::string>& source) {
 		process(source); // предобработка кода для исполнения
+	}
+	~interpretator() {
+		for (size_t i = 0; i < program.size(); ++i) {
+			for (size_t j = 0; j < program[i].size(); ++j) {
+				delete program[i][j];
+			}
+		}
 	}
 };
 
