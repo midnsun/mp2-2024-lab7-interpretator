@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <set>
 
 using namespace std;
 
@@ -40,6 +41,9 @@ public:
 		// JMP line - jump always
 		//
 	}
+	static bool isKeyWord(std::string& s) {
+
+	}
 	std::string getName() const noexcept {
 		return lex;
 	}
@@ -70,10 +74,13 @@ class constant : public operand {
 class variable : public operand { 
 	// по факту дл€ каждой функции и глобальной области будет сво€ таблица переменных из-за области видимости.
 	// »наче можно создать отдельную переменную принадлежности переменной функции, затем пробегатьс€ по таблице и удал€ть после return
+	// ¬ таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
 	char type; // int, double, etc...
+	char field; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+	// ¬ стеке вызовов хранитс€ только точка возврата, по команде возврата удал€ютс€ все переменные с filed = номеру функции
 };
 
-class keyWords : public commonLexem { // for me
+class keyWords : public commonLexem { // template for me
 
 };
 
@@ -87,6 +94,8 @@ class operators : public keyWords {
 
 class interpretator {
 	std::vector < std::vector <commonLexem*> > program;
+	std::set< variable > variables;
+	std::set< std::string > functions;
 	// »де€ создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// ѕример:
 	// int a = 1;
@@ -94,6 +103,13 @@ class interpretator {
 	// b = a / b;
 	// [ ["int", "a", "=", "1"], ["int", "b", "=", "2"], ["b", "=", "a", "/", "b"] ] - 
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
+	void process(std::vector<std::string>& source) { // предобработка кода дл€ исполнени€
+		// –азделение только на ключевые слова и прочик лексемы!! ƒальше прочие лексемы обрабатываютс€ как в коде лабы постфикс
+
+	}
+	interpretator(std::vector<std::string>& source) {
+		process(source); // предобработка кода дл€ исполнени€
+	}
 };
 
 
