@@ -84,8 +84,8 @@ public:
 class operand : public lexem {
 public:
 	static bool isValidCharForOperand(char c) {
-		if (c > 'z' && c < 'A' && c > '9' && c < '0' && c != '.') return false;
-		return true;
+		if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
+		return false;
 	}
 	operand(const std::string str, size_t ind, size_t pos) : lexem(str, ind, pos) {
 
@@ -117,8 +117,8 @@ public:
 
 	}
 	static bool isValidCharForVariable(char c) {
-		if (c > 'z' && c < 'A' && c > '9' && c < '0') return false;
-		return true;
+		if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
+		return false;
 	}
 	static bool isValidVariable(const std::string& str) {
 		if (str.length() == 0) return false;
@@ -248,12 +248,12 @@ public:
 				tmpwordPos = wordPos;
 				for (pos = 0; pos < word.length(); ++pos) {
 					if (specialLexem::isSpecialLexem(word[pos])) {
-						strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos), wordPos));
-						strCommand.push_back(make_pair(word.substr(pos, 1), wordPos + pos));
+						if (pos - wordPos + tmpwordPos > 0) strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos - wordPos + tmpwordPos), wordPos));
+						strCommand.push_back(make_pair(word.substr(pos, 1), tmpwordPos + pos));
 						wordPos = tmpwordPos + pos + 1;
 					}
 				}
-				strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, word.length()), wordPos));
+				if (pos - wordPos + tmpwordPos > 0) strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos - wordPos + tmpwordPos), wordPos));
 			}
 			strProgram[lineInd] = strCommand;
 		}
@@ -267,29 +267,17 @@ public:
 				tmpwordPos = wordPos;
 				for (pos = 0; pos < word.length(); ++pos) {
 					if (!operand::isValidCharForOperand(word[pos])) {
-						strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos), wordPos));
+						if (pos - wordPos + tmpwordPos > 0) strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos - wordPos + tmpwordPos), wordPos));
 						for (wordLen = 1; pos + wordLen < word.length(); ++wordLen) if (operand::isValidCharForOperand(word[pos + wordLen])) break;
-						strCommand.push_back(make_pair(word.substr(pos, wordLen), wordPos + pos));
+						strCommand.push_back(make_pair(word.substr(pos, wordLen), tmpwordPos + pos));
 						wordPos = tmpwordPos + pos + wordLen;
 						pos += wordLen - 1;
 					}
 				}
-				strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, word.length()), wordPos));
+				if (pos - wordPos + tmpwordPos > 0) strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos - wordPos + tmpwordPos), wordPos));
 			}
 			strProgram[lineInd] = strCommand;
 		}
-
-		//
-		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
-			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
-//				std::cout << strProgram[lineInd][wordInd].first << ', ' << strProgram[lineInd][wordInd].second << "    ";
-				std::cout << strProgram[lineInd][wordInd].first << "    ";
-			}
-
-
-			std::cout << std::endl;
-		}
-		//
 
 		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
 		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
