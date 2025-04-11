@@ -93,9 +93,10 @@ class variable : public operand {
 	// В таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
 	char type; // int, double, etc... 0 - int, 1 - double
 	char context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+	int arr;
 	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
 public:
-	variable(std::string str, size_t ind, size_t pos, char _type, char _context) : operand{ str, ind, pos }, type(_type), context(_context) {
+	variable(std::string str, size_t ind, size_t pos, char _type, char _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
 
 	}
 	static bool isValidCharForVariable(char c) {
@@ -165,8 +166,8 @@ public:
 
 class interpretator {
 	std::vector < std::vector < commonLexem* > > program;
-	std::set< variable* > variables;
-	std::set< function* > functions;
+	std::set< variable > variables;
+	std::set< function > functions;
 	// Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// Пример:
 	// int a = 1;
