@@ -8,10 +8,11 @@
 
 using namespace std;
 
-static std::set<std::string> keyWordOperators;
-static std::set<std::string> operations;
-static std::set<std::string> dataTypes{"int", "double", "void"};
-static std::set<char> specialLexems;
+std::set<std::string> keyWordOperators{"if", "else", "while", "return"};
+std::set<std::string> operations{"=", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "&&", "||", "==", "<=", "<", ">=", ">", "!="};
+std::set<std::string> dataTypes{"int", "double", "void"};
+std::set<char> specialLexems{'(', ')', '{', '}', '[', ']', ',', ';'};
+std::set<string> standartFuinction{"sin", "cos", "print", "scan"};
 
 // ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
 // 1. СОЗДАТЬ ТАБЛИЦУ ДЛЯ ПОДДЕРЖИВАЕМЫХ ОПЕРАТОРОВ, СПЕЦИАЛЬНЫХ СИМВОЛОВ И КЛЮЧЕВЫХ СЛОВ В ГЛОБАЛЬНОМ ПОЛЕ ЧТОБЫ КАЖДЫЙ РАЗ НЕ ПЕРЕДЕЛЫВАТЬ КЛАССЫ
@@ -74,8 +75,7 @@ public:
 class operation : public lexem {
 public:
 	static bool isOperation(const std::string& str) {
-		if (str == "=" || str == "+" || str == "-" || str == "*" || str == "/" || str == "+=" || str == "-=" || str == "*=" || str == "/=" || str == "=" ||
-			str == "&&" || str == "||" || str == "==" || str == "<=" || str == "<" || str == ">=" || str == ">" || str == "!=")
+		if (operations.find(str) != operations.end())
 			return true;
 		return false;
 	}
@@ -162,7 +162,7 @@ struct functionCMP {
 class specialLexem : public commonLexem {
 public:
 	static bool isSpecialLexem(char c) {
-		if (c == '(' || c == ')' || c == ',' || c == '{' || c == '}' || c == '[' || c == ']' || c == ';') return true;
+		if (specialLexems.find(c) != specialLexems.end()) return true;
 		return false;
 	}
 	specialLexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
@@ -180,7 +180,7 @@ public:
 class dataType : public keyWords {
 public:
 	static bool isDataType(const std::string& str) {
-		if (str == "double" || str == "int" || str == "void") return true;
+		if (dataTypes.find(str) != dataTypes.end()) return true;
 		return false;
 	}
 	dataType(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) {
@@ -196,7 +196,7 @@ public:
 class operators : public keyWords {
 public:
 	static bool isKeyWordOperator(const std::string& str) {
-		if (str == "if" || str == "else" || str == "while" || str == "return") return true;
+		if (keyWordOperators.find(str) != keyWordOperators.end()) return true;
 		return false;
 	}
 	operators(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) {
@@ -220,7 +220,7 @@ class interpretator {
 		// 1.1 Разбиение по словам между пробелов
 		// 
 		std::string word;
-		int wordPos;
+		int wordPos, wordLen;
 		std::vector <std::vector <std::pair <std::string, int> > > strProgram;
 		size_t lineInd, pos, wordInd;
 		for (lineInd = 0; lineInd < source.size(); ++lineInd) {
@@ -256,7 +256,27 @@ class interpretator {
 		}
 
 		// 1.3 Разбиение операторами +, - etc..
+		std::vector< std::pair<std::string, int> > strCommand;
+		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
+			strCommand.clear();
+			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+				word = strProgram[lineInd][wordInd].first;
+				wordPos = strProgram[lineInd][wordInd].second;
+				for (pos = 0; pos < word.length(); ++pos) {
+					if (!operand::isValidCharForOperand(word[pos])) {
+						strCommand.push_back(make_pair(word.substr(wordPos, pos), wordPos));
+						for (wordLen = 1; pos + wordLen < word.length(); ++wordLen) if (operand::isValidCharForOperand(word[pos + wordLen])) break;
+						strCommand.push_back(make_pair(word.substr(wordPos + pos, wordLen), wordPos + pos));
+						wordPos = pos + wordLen;
+						pos += wordLen - 1;
+					}
+				}
+			}
+			strProgram[lineInd] = strCommand;
+		}
 
+		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
+		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 	}
 	void processOld(std::vector<std::string>& source) { // предобработка кода для исполнения
 		// Разделение только на ключевые слова и прочие лексемы!! Дальше прочие лексемы обрабатываются как в коде лабы постфикс
