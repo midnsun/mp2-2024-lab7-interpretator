@@ -109,11 +109,11 @@ class variable : public operand {
 	// Иначе можно создать отдельную переменную принадлежности переменной функции, затем пробегаться по таблице и удалять после return
 	// В таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
 	char type; // int, double, etc... 0 - int, 1 - double
-	char context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+	size_t context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
 	int arr;
 	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
 public:
-	variable(std::string str, size_t ind, size_t pos, char _type, char _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
+	variable(std::string str, size_t ind, size_t pos, char _type, size_t _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
 
 	}
 	static bool isValidCharForVariable(char c) {
@@ -208,6 +208,7 @@ class interpretator {
 	std::vector < std::vector < commonLexem* > > program;
 	std::set< variable, variableCMP > variables;
 	std::set< function, functionCMP > functions;
+public:
 	// Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// Пример:
 	// int a = 1;
@@ -220,8 +221,9 @@ class interpretator {
 		// 1.1 Разбиение по словам между пробелов
 		// 
 		std::string word;
-		int wordPos, wordLen;
+		int wordPos, wordLen, tmpwordPos;
 		std::vector <std::vector <std::pair <std::string, int> > > strProgram;
+		std::vector< std::pair<std::string, int> > strCommand;
 		size_t lineInd, pos, wordInd;
 		for (lineInd = 0; lineInd < source.size(); ++lineInd) {
 			strProgram.push_back(std::vector<std::pair <std::string, int>>());
@@ -238,42 +240,56 @@ class interpretator {
 		}
 
 		// 1.2 Разбиение спец. символами
-		std::vector< std::pair<std::string, int> > strCommand;
-		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
+		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
 			strCommand.clear();
-			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
 				word = strProgram[lineInd][wordInd].first;
 				wordPos = strProgram[lineInd][wordInd].second;
+				tmpwordPos = wordPos;
 				for (pos = 0; pos < word.length(); ++pos) {
 					if (specialLexem::isSpecialLexem(word[pos])) {
-						strCommand.push_back(make_pair(word.substr(wordPos, pos), wordPos));
-						strCommand.push_back(make_pair(word.substr(wordPos + pos, 1), wordPos + pos));
-						wordPos = pos + 1;
+						strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos), wordPos));
+						strCommand.push_back(make_pair(word.substr(pos, 1), wordPos + pos));
+						wordPos = tmpwordPos + pos + 1;
 					}
 				}
+				strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, word.length()), wordPos));
 			}
 			strProgram[lineInd] = strCommand;
 		}
 
 		// 1.3 Разбиение операторами +, - etc..
-		std::vector< std::pair<std::string, int> > strCommand;
-		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
+		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
 			strCommand.clear();
-			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
 				word = strProgram[lineInd][wordInd].first;
 				wordPos = strProgram[lineInd][wordInd].second;
+				tmpwordPos = wordPos;
 				for (pos = 0; pos < word.length(); ++pos) {
 					if (!operand::isValidCharForOperand(word[pos])) {
-						strCommand.push_back(make_pair(word.substr(wordPos, pos), wordPos));
+						strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, pos), wordPos));
 						for (wordLen = 1; pos + wordLen < word.length(); ++wordLen) if (operand::isValidCharForOperand(word[pos + wordLen])) break;
-						strCommand.push_back(make_pair(word.substr(wordPos + pos, wordLen), wordPos + pos));
-						wordPos = pos + wordLen;
+						strCommand.push_back(make_pair(word.substr(pos, wordLen), wordPos + pos));
+						wordPos = tmpwordPos + pos + wordLen;
 						pos += wordLen - 1;
 					}
 				}
+				strCommand.push_back(make_pair(word.substr(wordPos - tmpwordPos, word.length()), wordPos));
 			}
 			strProgram[lineInd] = strCommand;
 		}
+
+		//
+		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
+			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
+//				std::cout << strProgram[lineInd][wordInd].first << ', ' << strProgram[lineInd][wordInd].second << "    ";
+				std::cout << strProgram[lineInd][wordInd].first << "    ";
+			}
+
+
+			std::cout << std::endl;
+		}
+		//
 
 		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
 		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
@@ -405,13 +421,14 @@ void checkFileContent(std::vector<std::string>& v) { //
 }
 
 int main() {
-	std::fstream file("D:/Users/maksi/Desktop/dz_38/UNN/mp2-2024-lab5-interpretator/code/code.cpp");
+	std::fstream file("D:/Users/maksi/Desktop/dz_38/UNN/mp2-2024-lab7-interpretator/code/code.cpp");
 	std::string str;
 	std::vector<std::string> file_content;
 	while (std::getline(file, str)) {
 		file_content.push_back(str);
 	}
-	printFileContent(file_content);
+//	printFileContent(file_content);
+	interpretator program(file_content);
 
 	return 0;
 }
