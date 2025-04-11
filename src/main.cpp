@@ -8,6 +8,15 @@
 
 using namespace std;
 
+static std::set<std::string> keyWordOperators;
+static std::set<std::string> operations;
+static std::set<std::string> dataTypes{"int", "double", "void"};
+static std::set<char> specialLexems;
+
+// ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
+// 1. СОЗДАТЬ ТАБЛИЦУ ДЛЯ ПОДДЕРЖИВАЕМЫХ ОПЕРАТОРОВ, СПЕЦИАЛЬНЫХ СИМВОЛОВ И КЛЮЧЕВЫХ СЛОВ В ГЛОБАЛЬНОМ ПОЛЕ ЧТОБЫ КАЖДЫЙ РАЗ НЕ ПЕРЕДЕЛЫВАТЬ КЛАССЫ
+// 2. ЗАМЕНИТЬ ФУНКЦИИ isSomething()
+
 class commonLexem {
 private:
 	std::string lex;
@@ -31,7 +40,7 @@ public:
 		// 2.2 logic: &&, ||, ==, !=, <, <=, >, >=
 		// 2.3 special: =
 		// 3. numbers: without . or e - integer, with . or e - real
-		// 4. special symbols: (, ), ;, {, }, , , (functions only), " (for print())
+		// 4. special symbols: (, ), ;, {, }, [, ], ,, (functions only), " (for print())
 		//
 		// Rules for program:
 		// 1. A new line after each ; or {
@@ -64,7 +73,7 @@ public:
 
 class operation : public lexem {
 public:
-	static bool isOperation(std::string& str) {
+	static bool isOperation(const std::string& str) {
 		if (str == "=" || str == "+" || str == "-" || str == "*" || str == "/" || str == "+=" || str == "-=" || str == "*=" || str == "/=" || str == "=" ||
 			str == "&&" || str == "||" || str == "==" || str == "<=" || str == "<" || str == ">=" || str == ">" || str == "!=")
 			return true;
@@ -74,6 +83,10 @@ public:
 
 class operand : public lexem {
 public:
+	static bool isValidCharForOperand(char c) {
+		if (c > 'z' && c < 'A' && c > '9' && c < '0' && c != '.') return false;
+		return true;
+	}
 	operand(const std::string str, size_t ind, size_t pos) : lexem(str, ind, pos) {
 
 	}
@@ -82,8 +95,12 @@ public:
 class constant : public operand {
 public:
 
-	static bool isConstant(std::string& str) { // проверить, это число или нет
+	static bool isConstant(const std::string& str) { // проверить, это число или нет
 
+	}
+	static bool isInteger(const std::string& str) {
+		for (char c : str) if (!isdigit(c)) return false;
+		return true;
 	}
 };
 
@@ -103,12 +120,23 @@ public:
 		if (c > 'z' && c < 'A' && c > '9' && c < '0') return false;
 		return true;
 	}
-	static bool isValidVariable(std::string& str) {
+	static bool isValidVariable(const std::string& str) {
 		if (str.length() == 0) return false;
 		if (std::isdigit(str[0])) return false;
 		for (auto c : str) 
 			if (!isValidCharForVariable(c)) return false;
 		return true;
+	}
+};
+struct variableCMP {
+	bool operator ()(const variable& v1, const variable& v2) const {
+		std::string name1 = v1.getName();
+		std::string name2 = v2.getName();
+		for (size_t i = 0; i < std::min(name1.size(), name2.size()); ++i) {
+			if (name1[i] < name2[i]) return true;
+			if (name1[i] > name2[i]) return false;
+		}
+		return name1.size() < name2.size();
 	}
 };
 
@@ -119,10 +147,22 @@ public:
 	}
 };
 
+struct functionCMP {
+	bool operator()(const function& f1, const function& f2) const {
+		std::string name1 = f1.getName();
+		std::string name2 = f2.getName();
+		for (size_t i = 0; i < std::min(name1.size(), name2.size()); ++i) {
+			if (name1[i] < name2[i]) return true;
+			if (name1[i] > name2[i]) return false;
+		}
+		return name1.size() < name2.size();
+	}
+};
+
 class specialLexem : public commonLexem {
 public:
-	static bool isSpecialLexem(const std::string& str) {
-		if (str == "(" || str == ")" || str == "," || str == "{" || str == "}") return true;
+	static bool isSpecialLexem(char c) {
+		if (c == '(' || c == ')' || c == ',' || c == '{' || c == '}' || c == '[' || c == ']' || c == ';') return true;
 		return false;
 	}
 	specialLexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
@@ -166,8 +206,8 @@ public:
 
 class interpretator {
 	std::vector < std::vector < commonLexem* > > program;
-	std::set< variable > variables;
-	std::set< function > functions;
+	std::set< variable, variableCMP > variables;
+	std::set< function, functionCMP > functions;
 	// Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// Пример:
 	// int a = 1;
@@ -175,7 +215,50 @@ class interpretator {
 	// b = a / b;
 	// [ ["int", "a", "=", "1"], ["int", "b", "=", "2"], ["b", "=", "a", "/", "b"] ] - 
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
-	void process(std::vector<std::string>& source) { // предобработка кода для исполнения
+	void process(const std::vector<std::string>& source) {
+		// 1. Разбиение на слова - строки лексемы
+		// 1.1 Разбиение по словам между пробелов
+		// 
+		std::string word;
+		int wordPos;
+		std::vector <std::vector <std::pair <std::string, int> > > strProgram;
+		size_t lineInd, pos, wordInd;
+		for (lineInd = 0; lineInd < source.size(); ++lineInd) {
+			strProgram.push_back(std::vector<std::pair <std::string, int>>());
+			pos = 0;
+			while (pos < source[lineInd].length()) {
+				word = "";
+				for (; pos < source[lineInd].length(); ++pos) if (source[lineInd][pos] != ' ') break; // no spaces
+				for (; pos < source[lineInd].length(); ++pos) { // words
+					if (source[lineInd][pos] == ' ') break;
+					word += source[lineInd][pos];
+				}
+				strProgram[lineInd].push_back(make_pair(word, pos - word.length()));
+			}
+		}
+
+		// 1.2 Разбиение спец. символами
+		std::vector< std::pair<std::string, int> > strCommand;
+		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
+			strCommand.clear();
+			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+				word = strProgram[lineInd][wordInd].first;
+				wordPos = strProgram[lineInd][wordInd].second;
+				for (pos = 0; pos < word.length(); ++pos) {
+					if (specialLexem::isSpecialLexem(word[pos])) {
+						strCommand.push_back(make_pair(word.substr(wordPos, pos), wordPos));
+						strCommand.push_back(make_pair(word.substr(wordPos + pos, 1), wordPos + pos));
+						wordPos = pos + 1;
+					}
+				}
+			}
+			strProgram[lineInd] = strCommand;
+		}
+
+		// 1.3 Разбиение операторами +, - etc..
+
+	}
+	void processOld(std::vector<std::string>& source) { // предобработка кода для исполнения
 		// Разделение только на ключевые слова и прочие лексемы!! Дальше прочие лексемы обрабатываются как в коде лабы постфикс
 		// разделяются int, double, void, if, else, while, return. scan, print - обычные операторы
 		// команда завершается или символом { или символом ; или концом строки. Другого не дано
@@ -183,7 +266,9 @@ class interpretator {
 		std::string command;
 		std::string variableName;
 		bool success;
-		size_t context = 0; // function we are inside of
+		bool isFunction;
+		char arrDim;
+		size_t context = 0; // function or condition block we are inside of
 		for (size_t lineInd = 0; lineInd < source.size(); ++lineInd) {
 			lexCommand.clear();
 			// цикл внутри строки на командные слова
@@ -191,16 +276,22 @@ class interpretator {
 				// command processing - разделение команды на составляющие лексемы. Если пробел или ( - это новая лексема. 
 				// обработка конца команды
 				if (source[lineInd][i] == ';' || source[lineInd][i] == '{') {
+					if (source[lineInd][i] == '{') 
+						lexCommand.push_back(new specialLexem{ std::string(1, source[lineInd][i]), lineInd, i });
 					for (; i < source[lineInd].length(); ++i)
 						if (source[lineInd][i] != ' ')
 							throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - bad line ending");
 				}
 				// обработка конца слова
-				if (source[lineInd][i] == ' ' && command != "") {
+				if ((source[lineInd][i] == ' ' || specialLexem::isSpecialLexem(source[lineInd][i])) && command != "") {
+					// спец символ
+					if (specialLexem::isSpecialLexem(source[lineInd][i])) 
+						lexCommand.push_back(new specialLexem{ std::string(1, source[lineInd][i]), lineInd, i });
 					// условный оператор
 					if (operators::isKeyWordOperator(command)) {
 						lexCommand.push_back( new operators{ command, lineInd, i - command.length() });
 						if (command == "return") context = 0;
+						else context = lineInd;
 					}
 					// тип данных
 					if (dataType::isDataType(command)) {
@@ -209,6 +300,8 @@ class interpretator {
 						for (; i < source[lineInd].length(); ++i) if (source[lineInd][i] != ' ') break; // no spaces
 						variableName = "";
 						success = false;
+						isFunction = false;
+						arrDim = 0;
 						// пытаемся получить имя 
 						for (; i < source[lineInd].length(); ++i) {
 							if (source[lineInd][i] == ';' && variableName.length() > 0) {
@@ -223,9 +316,15 @@ class interpretator {
 							else if (source[lineInd][i] == '(') {
 								if (context != 0) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - nested functions declarations are not allowed");
 								lexCommand.push_back(new function{ variableName, lineInd, i - variableName.length()});
-								lexCommand.push_back(new specialLexem{"(", lineInd, i});
+								functions.insert(*dynamic_cast<function*>(lexCommand[lexCommand.size() - 1]));
 								success = true;
+								isFunction = true;
+								context = lineInd;
 								break;
+							}
+							// это n-мерный массив
+							else if (source[lineInd][i] == '[') {
+								arrDim = 1;
 							}
 							else if (variable::isValidCharForVariable(source[lineInd][i])) {
 								if (variableName.size() == 0 && std::isdigit(source[lineInd][i]))
@@ -239,9 +338,11 @@ class interpretator {
 						}
 						// в случае успеха добавляем в переменные
 						if (!success) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - no valid variable or function name");
-						variable* tmpVarPtr = new variable{ variableName, lineInd, i - variableName.length(), type, context };
-						variables.insert(tmpVarPtr);
-						lexCommand.push_back(tmpVarPtr);
+						if (!isFunction) {
+							lexCommand.push_back(new variable{ variableName, lineInd, i - variableName.length(), type, context, arrDim });
+							variables.insert(*dynamic_cast<variable*>(lexCommand[lexCommand.size() - 1]));
+						}
+						--i;
 					}
 
 					command = "";
