@@ -50,6 +50,7 @@ public:
 		// 1. A new line after each ; or {
 		// 2. If, While, Else blocks must be signed with {}
 		// 3. C syntax
+		// 4. Function with name GLOBAL is prohibited
 		//
 		// New key words: 
 		// JIF (expr) cmd - jump if expression is true
@@ -66,6 +67,7 @@ public:
 		return linePos;
 	}
 	virtual ~commonLexem() {}
+	virtual void showInfo() = 0;
 };
 
 class operation : public commonLexem {
@@ -342,10 +344,19 @@ public:
 				else if (operators::isKeyWordOperator(word)) {
 					int bracketCounter = 0;
 					// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
-					lineBegin = -1;
-					lineEnd = -1;
-					wordBegin = -1;
-					wordEnd = -1;
+					if (word != "return") {
+						lineBegin = -1;
+						lineEnd = -1;
+						wordBegin = -1;
+						wordEnd = -1;
+					}
+					else {
+						lineBegin = 0;
+						lineEnd = 0;
+						wordBegin = 0;
+						wordEnd = 0;
+						context = "GLOBAL";
+					}
 
 					program[lineInd].push_back(new operators{ word, lineInd, wordPos, lineBegin, lineEnd, wordBegin, wordEnd });
 				}
