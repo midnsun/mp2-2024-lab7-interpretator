@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <set>
 #include <stack>
+#include <sstream>
 
 using namespace std;
 
@@ -15,8 +16,10 @@ std::set<char> specialLexems{'(', ')', '{', '}', '[', ']', ',', ';'};
 std::set<string> standartFuinction{"sin", "cos", "print", "scan"};
 
 // ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
-// 1. СОЗДАТЬ ТАБЛИЦУ ДЛЯ ПОДДЕРЖИВАЕМЫХ ОПЕРАТОРОВ, СПЕЦИАЛЬНЫХ СИМВОЛОВ И КЛЮЧЕВЫХ СЛОВ В ГЛОБАЛЬНОМ ПОЛЕ ЧТОБЫ КАЖДЫЙ РАЗ НЕ ПЕРЕДЕЛЫВАТЬ КЛАССЫ
-// 2. ЗАМЕНИТЬ ФУНКЦИИ isSomething()
+// 1. СОЗДАТЬ ВИРТУАЛЬНЫЕ ФУНКЦИИ whatTypeOfLexem() КОТОРЫЕ БУДУТ ВОЗВРАЩАТЬ ПЕРЕМЕННАЯ ЭТО, ИЛИ КЛЮЧЕВОЕ СЛОВО, ИЛИ КОНСТАНТА И Т.Д. ДЛЯ УДОБСТВА
+// 2. ПУСТЬ ЭТА ФУНКЦИЯ ВОЗВРАЩАЕТ stting НАЗВАНИЕ СВОЕГО КЛАССА
+// 3. В ПРОЦЕССИНГЕ - ОТКРЫЫВАЮЩИЕ ЗАКРЫВАЮЩИЕ СКОБКИ
+// 4. В ПРОЦЕССИНГЕ - РАЗМЕРНОСТЬ МАССИВА
 
 class commonLexem {
 private:
@@ -65,42 +68,43 @@ public:
 	virtual ~commonLexem() {}
 };
 
-class lexem : public commonLexem { // template for Stas's class of numeric operators, constants and variables
-public:
-	lexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
-
-	}
-};
-
-class operation : public lexem {
+class operation : public commonLexem {
 public:
 	static bool isOperation(const std::string& str) {
 		if (operations.find(str) != operations.end())
 			return true;
 		return false;
 	}
+	operation(const string& str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
+
+	}
 };
 
-class operand : public lexem {
+class operand : public commonLexem {
 public:
 	static bool isValidCharForOperand(char c) {
 		if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
 		return false;
 	}
-	operand(const std::string str, size_t ind, size_t pos) : lexem(str, ind, pos) {
+	operand(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
 };
 
 class constant : public operand {
 public:
-
-	static bool isConstant(const std::string& str) { // проверить, это число или нет
-
+	static bool isValidConstant(const std::string& str) { // проверить, это число или нет
+		char junk;
+		double d;
+		stringstream ss(str);
+		return (ss >> d && !(ss >> junk));
 	}
 	static bool isInteger(const std::string& str) {
 		for (char c : str) if (!isdigit(c)) return false;
 		return true;
+	}
+	constant(const string& str, size_t ind, size_t pos) : operand(str, ind, pos) {
+
 	}
 };
 
@@ -109,11 +113,11 @@ class variable : public operand {
 	// Иначе можно создать отдельную переменную принадлежности переменной функции, затем пробегаться по таблице и удалять после return
 	// В таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
 	char type; // int, double, etc... 0 - int, 1 - double
-	size_t context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+	string context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
 	int arr;
 	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
 public:
-	variable(std::string str, size_t ind, size_t pos, char _type, size_t _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
+	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
 
 	}
 	static bool isValidCharForVariable(char c) {
@@ -126,6 +130,12 @@ public:
 		for (auto c : str) 
 			if (!isValidCharForVariable(c)) return false;
 		return true;
+	}
+	void newType(char _newtype) {
+		type = _newtype;
+	}
+	char getTypeId() const {
+		return type;
 	}
 };
 struct variableCMP {
@@ -141,9 +151,18 @@ struct variableCMP {
 };
 
 class function : public commonLexem {
+	char type;
+	size_t lineBegin, lineEnd, wordBegin, wordEnd;
 public:
-	function(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
+	function(const std::string str, size_t ind, size_t pos, char _type, size_t _linebegin, size_t _lineend, size_t _wordbegin, size_t _wordend) : 
+		commonLexem(str, ind, pos), type(_type), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
 
+	}
+	void newType(char _newtype) {
+		type = _newtype;
+	}
+	char getTypeId() const {
+		return type;
 	}
 };
 
@@ -187,20 +206,34 @@ public:
 
 	}
 	char getTypeId() {
-		if (this->getName() == "int") return 0;
-		else if (this->getName() == "double") return 1;
+		if (this->getName() == "void") return 0;
+		else if (this->getName() == "int") return 1;
+		else if (this->getName() == "double") return 2;
 		else return -1;
 	}
 };
 
 class operators : public keyWords {
+	size_t lineBegin, lineEnd, wordBegin, wordEnd;
 public:
 	static bool isKeyWordOperator(const std::string& str) {
 		if (keyWordOperators.find(str) != keyWordOperators.end()) return true;
 		return false;
 	}
-	operators(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) {
+	operators(const std::string str, size_t ind, size_t pos, size_t _linebegin, size_t _lineend, size_t _wordbegin, size_t _wordend) :
+		keyWords(str, ind, pos), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
 
+	}
+};
+
+class calculator {
+	std::vector<commonLexem*> data;
+public:
+	calculator(const vector<commonLexem*>& _data) : data(_data) {
+
+	}
+	~calculator() {
+		// NO COMMONLEXEM* DELETING!!!!!!!
 	}
 };
 
@@ -279,9 +312,89 @@ public:
 			strProgram[lineInd] = strCommand;
 		}
 
+		// variable : type, context, arr; functions: type, begin, end; datatype; operators: begin, end
+		// special lexem, constant, operation
 		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
+		size_t lineBegin, lineEnd, wordBegin, wordEnd, arrCounter;
+		char dataTypeAppeared = -1;
+		string context;
+		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
+			program.push_back(vector<commonLexem*>());
+			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
+				word = strProgram[lineInd][wordInd].first;
+				wordPos = strProgram[lineInd][wordInd].second;
+
+				// SPECIAL LEXEM
+				if (word.length() == 0 && specialLexem::isSpecialLexem(word[0])) program[lineInd].push_back(new specialLexem{ word, lineInd, wordPos });
+
+				// OPERATIONS (+, -, ...)
+				else if (operation::isOperation(word)) program[lineInd].push_back(new operation{ word, lineInd, wordPos });
+
+				// DATA TYPES
+				else if (dataType::isDataType(word)) {
+					// remember its appearance
+					dataType* tmpptr = new dataType{ word, lineInd, wordPos };
+					program[lineInd].push_back(tmpptr);
+					dataTypeAppeared = tmpptr->getTypeId();
+				}
+
+				// KEY WORD OPERATORS (if, else ...)
+				else if (operators::isKeyWordOperator(word)) {
+					int bracketCounter = 0;
+					// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
+					lineBegin = -1;
+					lineEnd = -1;
+					wordBegin = -1;
+					wordEnd = -1;
+
+					program[lineInd].push_back(new operators{ word, lineInd, wordPos, lineBegin, lineEnd, wordBegin, wordEnd });
+				}
+
+				// CONSTANT
+				else if (constant::isValidConstant(word)) {
+					program[lineInd].push_back(new constant{ word, lineInd, wordPos });
+				}
+
+				// VARIABLE OR FUNCTION
+				else if (variable::isValidVariable(word)) {
+					if (wordInd < strProgram[lineInd].size() - 1 && strProgram[lineInd][wordInd].first == "(") {
+						// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
+						lineBegin = -1;
+						lineEnd = -1;
+						wordBegin = -1;
+						wordEnd = -1;
+
+						function* tmpptr = new function{ word, lineInd, wordPos, dataTypeAppeared, lineBegin, lineEnd, wordBegin, wordEnd };
+						program[lineInd].push_back(tmpptr);
+						if (dataTypeAppeared != -1) {
+							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
+							dataTypeAppeared = -1;
+							context = word;
+						}
+						else {
+							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
+							tmpptr->newType((*functions.find(*tmpptr)).getTypeId());
+						}
+					}
+					else {
+						// посчитать размерность массива
+						arrCounter = -1;
+						program[lineInd].push_back(new variable{ word, lineInd, wordPos, dataTypeAppeared, context, arrCounter });
+						dataTypeAppeared = -1;
+					}
+				}
+				else {
+					throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - Unknown word");
+				}
+			}
+		}
+		// получим ситуацию, что новосозданные переменные будут иметь не -1 тип данных, а иначе будут иметь -1. Вот и отличие!
+
+
 		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 	}
+
+	/*
 	void processOld(std::vector<std::string>& source) { // предобработка кода для исполнения
 		// Разделение только на ключевые слова и прочие лексемы!! Дальше прочие лексемы обрабатываются как в коде лабы постфикс
 		// разделяются int, double, void, if, else, while, return. scan, print - обычные операторы
@@ -374,7 +487,9 @@ public:
 				program.push_back(lexCommand);
 			}
 		}
-	} // при получении вектора lexem* затем можно сделать так при уточнении конкретной лексемы:
+	} 
+	*/
+	// при получении вектора lexem* затем можно сделать так при уточнении конкретной лексемы:
 	// lexem* lex = vec[i];
 	// vec[i] = new operand {lex->name, lex->pos, lex->ind};
 	// delete[] lex;
