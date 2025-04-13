@@ -13,7 +13,7 @@ std::set<std::string> keyWordOperators{"if", "else", "while", "return"};
 std::set<std::string> operations{"=", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "&&", "||", "==", "<=", "<", ">=", ">", "!="};
 std::set<std::string> dataTypes{"int", "double", "void"};
 std::set<char> specialLexems{'(', ')', '{', '}', '[', ']', ',', ';'};
-std::set<string> standartFuinction{"sin", "cos", "print", "scan"};
+std::set<string> standartFuinction{"sin", "cos", "abs", "sqrt", "print", "scan"};
 
 // ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
 // 1. СОЗДАТЬ ВИРТУАЛЬНЫЕ ФУНКЦИИ whatTypeOfLexem() КОТОРЫЕ БУДУТ ВОЗВРАЩАТЬ ПЕРЕМЕННАЯ ЭТО, ИЛИ КЛЮЧЕВОЕ СЛОВО, ИЛИ КОНСТАНТА И Т.Д. ДЛЯ УДОБСТВА
@@ -50,6 +50,7 @@ public:
 		// 1. A new line after each ; or {
 		// 2. If, While, Else blocks must be signed with {}
 		// 3. C syntax
+		// 4. Function with name GLOBAL is prohibited
 		//
 		// New key words: 
 		// JIF (expr) cmd - jump if expression is true
@@ -66,6 +67,7 @@ public:
 		return linePos;
 	}
 	virtual ~commonLexem() {}
+	virtual void showInfo() = 0;
 };
 
 class operation : public commonLexem {
@@ -78,6 +80,9 @@ public:
 	operation(const string& str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
+	virtual void showInfo() {
+		cout << "operation: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	}
 };
 
 class operand : public commonLexem {
@@ -89,6 +94,7 @@ public:
 	operand(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
+	virtual void showInfo() = 0;
 };
 
 class constant : public operand {
@@ -106,6 +112,9 @@ public:
 	constant(const string& str, size_t ind, size_t pos) : operand(str, ind, pos) {
 
 	}
+	virtual void showInfo() {
+		cout << "constant: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	}
 };
 
 class variable : public operand {
@@ -113,13 +122,12 @@ class variable : public operand {
 	// Иначе можно создать отдельную переменную принадлежности переменной функции, затем пробегаться по таблице и удалять после return
 	// В таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
 	char type; // int, double, etc... 0 - int, 1 - double
-	string context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+//	string context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
 	int arr;
 	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
 public:
-	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {
-
-	}
+//	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {}
+	variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand{ str, ind, pos }, type(_type), arr(_arr) {}
 	static bool isValidCharForVariable(char c) {
 		if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
 		return false;
@@ -137,6 +145,10 @@ public:
 	char getTypeId() const {
 		return type;
 	}
+	virtual void showInfo() {
+//		cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << context << " " << arr << " ";
+		cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << arr << " ";
+	}
 };
 struct variableCMP {
 	bool operator ()(const variable& v1, const variable& v2) const {
@@ -151,6 +163,7 @@ struct variableCMP {
 };
 
 class function : public commonLexem {
+public:
 	char type;
 	size_t lineBegin, lineEnd, wordBegin, wordEnd;
 public:
@@ -158,11 +171,8 @@ public:
 		commonLexem(str, ind, pos), type(_type), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
 
 	}
-	void newType(char _newtype) {
-		type = _newtype;
-	}
-	char getTypeId() const {
-		return type;
+	virtual void showInfo() {
+		cout << "function: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << lineBegin << " " << lineEnd << " " << wordBegin << " " << wordEnd << " ";
 	}
 };
 
@@ -187,6 +197,9 @@ public:
 	specialLexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
+	virtual void showInfo() {
+		cout << "special lexem: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	}
 };
 
 class keyWords : public commonLexem { // template for me
@@ -194,6 +207,7 @@ public:
 	keyWords(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
+	virtual void showInfo() = 0;
 };
 
 class dataType : public keyWords {
@@ -211,6 +225,9 @@ public:
 		else if (this->getName() == "double") return 2;
 		else return -1;
 	}
+	virtual void showInfo() {
+		cout << "dataType: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	}
 };
 
 class operators : public keyWords {
@@ -223,6 +240,9 @@ public:
 	operators(const std::string str, size_t ind, size_t pos, size_t _linebegin, size_t _lineend, size_t _wordbegin, size_t _wordend) :
 		keyWords(str, ind, pos), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
 
+	}
+	virtual void showInfo() {
+		cout << "keyWordOperator: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << lineBegin << " " << lineEnd << " " << wordBegin << " " << wordEnd << " ";
 	}
 };
 
@@ -315,9 +335,16 @@ public:
 		// variable : type, context, arr; functions: type, begin, end; datatype; operators: begin, end
 		// special lexem, constant, operation
 		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
-		size_t lineBegin, lineEnd, wordBegin, wordEnd, arrCounter;
+
+		for (auto& s : standartFuinction) {
+//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
+			functions.insert(*(new function{ s, 0, 0, -1, 0, 0, 0, 0 }));
+		}
+
+		size_t lineBegin = -1, lineEnd = -1, wordBegin = -1, wordEnd = -1;
+		int arrCounter = -1;
 		char dataTypeAppeared = -1;
-		string context;
+//		string context = "GLOBAL";
 		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
 			program.push_back(vector<commonLexem*>());
 			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
@@ -325,61 +352,132 @@ public:
 				wordPos = strProgram[lineInd][wordInd].second;
 
 				// SPECIAL LEXEM
-				if (word.length() == 0 && specialLexem::isSpecialLexem(word[0])) program[lineInd].push_back(new specialLexem{ word, lineInd, wordPos });
+				if (word.length() == 1 && specialLexem::isSpecialLexem(word[0])) program[lineInd].push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
 
 				// OPERATIONS (+, -, ...)
-				else if (operation::isOperation(word)) program[lineInd].push_back(new operation{ word, lineInd, wordPos });
+				else if (operation::isOperation(word)) program[lineInd].push_back(new operation{ word, lineInd, size_t(wordPos) });
 
 				// DATA TYPES
 				else if (dataType::isDataType(word)) {
 					// remember its appearance
-					dataType* tmpptr = new dataType{ word, lineInd, wordPos };
+					dataType* tmpptr = new dataType{ word, lineInd, size_t(wordPos) };
 					program[lineInd].push_back(tmpptr);
 					dataTypeAppeared = tmpptr->getTypeId();
 				}
 
 				// KEY WORD OPERATORS (if, else ...)
 				else if (operators::isKeyWordOperator(word)) {
-					int bracketCounter = 0;
 					// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
-					lineBegin = -1;
-					lineEnd = -1;
-					wordBegin = -1;
-					wordEnd = -1;
+					if (word != "return") {
+						int bracketCounter = 0;
+						bool exitFlag = false;
+						for (size_t i = lineInd; i < strProgram.size(); ++i) {
+							size_t j;
+							if (i == lineInd) j = wordInd;
+							else j = 0;
+							for (; j < strProgram[i].size(); ++j) {
+								if (strProgram[i][j].first == "{") {
+									if (bracketCounter == 0) {
+										lineBegin = i;
+										wordBegin = j;
+									}
+									++bracketCounter;
+								}
+								if (strProgram[i][j].first == "}") {
+									--bracketCounter;
+									if (bracketCounter == 0) {
+										lineEnd = i;
+										wordEnd = j;
+										exitFlag = true;
+										break;
+									}
+								}
+								if (bracketCounter < 0)  throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+							}
+							if (exitFlag) break;
+						}
+					}
+					else {
+						lineBegin = 0;
+						lineEnd = 0;
+						wordBegin = 0;
+						wordEnd = 0;
+//						context = "GLOBAL";
+					}
 
-					program[lineInd].push_back(new operators{ word, lineInd, wordPos, lineBegin, lineEnd, wordBegin, wordEnd });
+					program[lineInd].push_back(new operators{ word, lineInd, size_t(wordPos), lineBegin, lineEnd, wordBegin, wordEnd });
 				}
 
 				// CONSTANT
 				else if (constant::isValidConstant(word)) {
-					program[lineInd].push_back(new constant{ word, lineInd, wordPos });
+					program[lineInd].push_back(new constant{ word, lineInd, size_t(wordPos) });
 				}
 
 				// VARIABLE OR FUNCTION
 				else if (variable::isValidVariable(word)) {
-					if (wordInd < strProgram[lineInd].size() - 1 && strProgram[lineInd][wordInd].first == "(") {
+					// function
+					if (wordInd < strProgram[lineInd].size() - 1 && strProgram[lineInd][wordInd + 1].first == "(") {
 						// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
-						lineBegin = -1;
-						lineEnd = -1;
-						wordBegin = -1;
-						wordEnd = -1;
 
-						function* tmpptr = new function{ word, lineInd, wordPos, dataTypeAppeared, lineBegin, lineEnd, wordBegin, wordEnd };
+						function* tmpptr = new function{ word, lineInd, size_t(wordPos), dataTypeAppeared, lineBegin, lineEnd, wordBegin, wordEnd };
 						program[lineInd].push_back(tmpptr);
+						
+						// creating function
 						if (dataTypeAppeared != -1) {
 							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
+
+							int bracketCounter = 0;
+							bool exitFlag = false;
+							for (size_t i = lineInd; i < strProgram.size(); ++i) {
+								size_t j;
+								if (i == lineInd) j = wordInd;
+								else j = 0;
+								for (; j < strProgram[i].size(); ++j) {
+									if (strProgram[i][j].first == "{") {
+										if (bracketCounter == 0) {
+											lineBegin = i;
+											wordBegin = j;
+										}
+										++bracketCounter;
+									}
+									if (strProgram[i][j].first == "}") {
+										--bracketCounter;
+										if (bracketCounter == 0) {
+											lineEnd = i;
+											wordEnd = j;
+											exitFlag = true;
+											break;
+										}
+									}
+									if (bracketCounter < 0)  throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+								}
+								if (exitFlag) break;
+							}
+							tmpptr->lineBegin = lineBegin;
+							tmpptr->lineEnd = lineEnd;
+							tmpptr->wordBegin = wordBegin;
+							tmpptr->wordEnd = wordEnd;
+
+							functions.insert(*tmpptr);
 							dataTypeAppeared = -1;
-							context = word;
+//							context = word;
 						}
+						// function is just being called
 						else {
-							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
-							tmpptr->newType((*functions.find(*tmpptr)).getTypeId());
+							if (functions.find(*tmpptr) == functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
+							tmpptr->type = (*functions.find(*tmpptr)).type;
+							tmpptr->lineBegin = (*functions.find(*tmpptr)).lineBegin;
+							tmpptr->lineEnd = (*functions.find(*tmpptr)).lineEnd;
+							tmpptr->wordBegin = (*functions.find(*tmpptr)).wordBegin;
+							tmpptr->wordEnd = (*functions.find(*tmpptr)).wordEnd;
 						}
 					}
+					// variable
 					else {
+						arrCounter = 0;
 						// посчитать размерность массива
-						arrCounter = -1;
-						program[lineInd].push_back(new variable{ word, lineInd, wordPos, dataTypeAppeared, context, arrCounter });
+//						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, context, arrCounter });
+						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
 						dataTypeAppeared = -1;
 					}
 				}
@@ -389,6 +487,17 @@ public:
 			}
 		}
 		// получим ситуацию, что новосозданные переменные будут иметь не -1 тип данных, а иначе будут иметь -1. Вот и отличие!
+
+		// Кстати, после заполнения таблица functions больше не нужна, т.к. все позиции перехода записаны в программу. Нужны только стандартные функции.
+		// Позиции перехода пишутся в индексах таблицы программы
+		// Непонятно, как работать с массивами
+
+		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
+			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+				program[lineInd][wordInd]->showInfo();
+			}
+			cout << endl;
+		}
 
 
 		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
@@ -531,7 +640,12 @@ int main() {
 		file_content.push_back(str);
 	}
 //	printFileContent(file_content);
-	interpretator program(file_content);
+	try {
+		interpretator program(file_content);
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << endl;
+	}
 
 	return 0;
 }
