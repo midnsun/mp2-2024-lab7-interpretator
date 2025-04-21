@@ -18,7 +18,7 @@ std::set<string> standartFuinction{"sin", "cos", "abs", "sqrt", "print", "scan"}
 // ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
 // 1. СОЗДАТЬ ВИРТУАЛЬНЫЕ ФУНКЦИИ whatTypeOfLexem() КОТОРЫЕ БУДУТ ВОЗВРАЩАТЬ ПЕРЕМЕННАЯ ЭТО, ИЛИ КЛЮЧЕВОЕ СЛОВО, ИЛИ КОНСТАНТА И Т.Д. ДЛЯ УДОБСТВА
 // 2. ПУСТЬ ЭТА ФУНКЦИЯ ВОЗВРАЩАЕТ stting НАЗВАНИЕ СВОЕГО КЛАССА
-// 3. В ПРОЦЕССИНГЕ - ОТКРЫЫВАЮЩИЕ ЗАКРЫВАЮЩИЕ СКОБКИ
+// 3. В ПРОЦЕССИНГЕ - ОТКРЫВАЮЩИЕ ЗАКРЫВАЮЩИЕ СКОБКИ (DONE)
 // 4. В ПРОЦЕССИНГЕ - РАЗМЕРНОСТЬ МАССИВА
 
 class commonLexem {
@@ -165,14 +165,14 @@ struct variableCMP {
 class function : public commonLexem {
 public:
 	char type;
-	size_t lineBegin, lineEnd, wordBegin, wordEnd;
+	size_t begin, end;
 public:
-	function(const std::string str, size_t ind, size_t pos, char _type, size_t _linebegin, size_t _lineend, size_t _wordbegin, size_t _wordend) : 
-		commonLexem(str, ind, pos), type(_type), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
+	function(const std::string str, size_t ind, size_t pos, char _type, size_t _begin, size_t _end) : 
+		commonLexem(str, ind, pos), type(_type), begin(_begin), end(_end) {
 
 	}
 	virtual void showInfo() {
-		cout << "function: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << lineBegin << " " << lineEnd << " " << wordBegin << " " << wordEnd << " ";
+		cout << "function: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << begin << " " << end << " ";
 	}
 };
 
@@ -231,18 +231,18 @@ public:
 };
 
 class operators : public keyWords {
-	size_t lineBegin, lineEnd, wordBegin, wordEnd;
+	size_t begin, end;
 public:
 	static bool isKeyWordOperator(const std::string& str) {
 		if (keyWordOperators.find(str) != keyWordOperators.end()) return true;
 		return false;
 	}
-	operators(const std::string str, size_t ind, size_t pos, size_t _linebegin, size_t _lineend, size_t _wordbegin, size_t _wordend) :
-		keyWords(str, ind, pos), lineBegin(_linebegin), lineEnd(_lineend), wordBegin(_wordbegin), wordEnd(_wordend) {
+	operators(const std::string str, size_t ind, size_t pos, size_t _begin, size_t _end) :
+		keyWords(str, ind, pos), begin(_begin), end(_end) {
 
 	}
 	virtual void showInfo() {
-		cout << "keyWordOperator: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << lineBegin << " " << lineEnd << " " << wordBegin << " " << wordEnd << " ";
+		cout << "keyWordOperator: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << begin << " " << end << " ";
 	}
 };
 
@@ -252,13 +252,18 @@ public:
 	calculator(const vector<commonLexem*>& _data) : data(_data) {
 
 	}
+	// возвращает n байт памяти в виде константы, одно из полей	константы должно объяснить, как интерпретировать результат
+	// в идеале, constant.getValue() должен сразу возвращать то значение, которое там получилось (double, int ...)
+	constant calculate() {
+
+	}
 	~calculator() {
 		// NO COMMONLEXEM* DELETING!!!!!!!
 	}
 };
 
 class interpretator {
-	std::vector < std::vector < commonLexem* > > program;
+	std::vector <  commonLexem* > program;
 	std::set< variable, variableCMP > variables;
 	std::set< function, functionCMP > functions;
 public:
@@ -338,30 +343,31 @@ public:
 
 		for (auto& s : standartFuinction) {
 //			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
-			functions.insert(*(new function{ s, 0, 0, -1, 0, 0, 0, 0 }));
+			functions.insert(*(new function{ s, 0, 0, -1, 0, 0 }));
 		}
 
-		size_t lineBegin = -1, lineEnd = -1, wordBegin = -1, wordEnd = -1;
+		size_t begin = 0, end = 0;
+		size_t counter = 0;
 		int arrCounter = -1;
 		char dataTypeAppeared = -1;
 //		string context = "GLOBAL";
 		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
-			program.push_back(vector<commonLexem*>());
+//			program.push_back(vector<commonLexem*>());
 			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
 				word = strProgram[lineInd][wordInd].first;
 				wordPos = strProgram[lineInd][wordInd].second;
 
 				// SPECIAL LEXEM
-				if (word.length() == 1 && specialLexem::isSpecialLexem(word[0])) program[lineInd].push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
+				if (word.length() == 1 && specialLexem::isSpecialLexem(word[0])) program.push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
 
 				// OPERATIONS (+, -, ...)
-				else if (operation::isOperation(word)) program[lineInd].push_back(new operation{ word, lineInd, size_t(wordPos) });
+				else if (operation::isOperation(word)) program.push_back(new operation{ word, lineInd, size_t(wordPos) });
 
 				// DATA TYPES
 				else if (dataType::isDataType(word)) {
 					// remember its appearance
 					dataType* tmpptr = new dataType{ word, lineInd, size_t(wordPos) };
-					program[lineInd].push_back(tmpptr);
+					program.push_back(tmpptr);
 					dataTypeAppeared = tmpptr->getTypeId();
 				}
 
@@ -371,23 +377,24 @@ public:
 					if (word != "return") {
 						int bracketCounter = 0;
 						bool exitFlag = false;
+						begin = program.size();
+						counter = 0;
 						for (size_t i = lineInd; i < strProgram.size(); ++i) {
 							size_t j;
 							if (i == lineInd) j = wordInd;
 							else j = 0;
-							for (; j < strProgram[i].size(); ++j) {
+							for (; j < strProgram[i].size(); ++j, ++counter) {
 								if (strProgram[i][j].first == "{") {
 									if (bracketCounter == 0) {
-										lineBegin = i;
-										wordBegin = j;
+//										lineBegin = i;
+//										wordBegin = j;
 									}
 									++bracketCounter;
 								}
 								if (strProgram[i][j].first == "}") {
 									--bracketCounter;
 									if (bracketCounter == 0) {
-										lineEnd = i;
-										wordEnd = j;
+										end = counter + begin;
 										exitFlag = true;
 										break;
 									}
@@ -398,19 +405,17 @@ public:
 						}
 					}
 					else {
-						lineBegin = 0;
-						lineEnd = 0;
-						wordBegin = 0;
-						wordEnd = 0;
+						begin = 0;
+						end = 0;
 //						context = "GLOBAL";
 					}
 
-					program[lineInd].push_back(new operators{ word, lineInd, size_t(wordPos), lineBegin, lineEnd, wordBegin, wordEnd });
+					program.push_back(new operators{ word, lineInd, size_t(wordPos), begin, end });
 				}
 
 				// CONSTANT
 				else if (constant::isValidConstant(word)) {
-					program[lineInd].push_back(new constant{ word, lineInd, size_t(wordPos) });
+					program.push_back(new constant{ word, lineInd, size_t(wordPos) });
 				}
 
 				// VARIABLE OR FUNCTION
@@ -419,32 +424,33 @@ public:
 					if (wordInd < strProgram[lineInd].size() - 1 && strProgram[lineInd][wordInd + 1].first == "(") {
 						// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
 
-						function* tmpptr = new function{ word, lineInd, size_t(wordPos), dataTypeAppeared, lineBegin, lineEnd, wordBegin, wordEnd };
-						program[lineInd].push_back(tmpptr);
+						function* tmpptr = new function{ word, lineInd, size_t(wordPos), dataTypeAppeared, begin, end };
+						program.push_back(tmpptr);
 						
 						// creating function
 						if (dataTypeAppeared != -1) {
 							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
 
 							int bracketCounter = 0;
+							counter = 0;
 							bool exitFlag = false;
+							begin = program.size() - 1;
 							for (size_t i = lineInd; i < strProgram.size(); ++i) {
 								size_t j;
 								if (i == lineInd) j = wordInd;
 								else j = 0;
-								for (; j < strProgram[i].size(); ++j) {
+								for (; j < strProgram[i].size(); ++j, ++counter) {
 									if (strProgram[i][j].first == "{") {
 										if (bracketCounter == 0) {
-											lineBegin = i;
-											wordBegin = j;
+//											lineBegin = i;
+//											wordBegin = j;
 										}
 										++bracketCounter;
 									}
 									if (strProgram[i][j].first == "}") {
 										--bracketCounter;
 										if (bracketCounter == 0) {
-											lineEnd = i;
-											wordEnd = j;
+											end = counter + begin;
 											exitFlag = true;
 											break;
 										}
@@ -453,10 +459,8 @@ public:
 								}
 								if (exitFlag) break;
 							}
-							tmpptr->lineBegin = lineBegin;
-							tmpptr->lineEnd = lineEnd;
-							tmpptr->wordBegin = wordBegin;
-							tmpptr->wordEnd = wordEnd;
+							tmpptr->begin = begin;
+							tmpptr->end = end;
 
 							functions.insert(*tmpptr);
 							dataTypeAppeared = -1;
@@ -466,10 +470,8 @@ public:
 						else {
 							if (functions.find(*tmpptr) == functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
 							tmpptr->type = (*functions.find(*tmpptr)).type;
-							tmpptr->lineBegin = (*functions.find(*tmpptr)).lineBegin;
-							tmpptr->lineEnd = (*functions.find(*tmpptr)).lineEnd;
-							tmpptr->wordBegin = (*functions.find(*tmpptr)).wordBegin;
-							tmpptr->wordEnd = (*functions.find(*tmpptr)).wordEnd;
+							tmpptr->begin = (*functions.find(*tmpptr)).begin;
+							tmpptr->end = (*functions.find(*tmpptr)).end;
 						}
 					}
 					// variable
@@ -477,7 +479,7 @@ public:
 						arrCounter = 0;
 						// посчитать размерность массива
 //						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, context, arrCounter });
-						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
+						program.push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
 						dataTypeAppeared = -1;
 					}
 				}
@@ -492,16 +494,69 @@ public:
 		// Позиции перехода пишутся в индексах таблицы программы
 		// Непонятно, как работать с массивами
 
-		for (lineInd = 0; lineInd < program.size(); ++lineInd) {
-			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
-				program[lineInd][wordInd]->showInfo();
-			}
+		
+		for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+			cout << wordInd << ":	";
+			program[wordInd]->showInfo();
 			cout << endl;
 		}
+		
 
 
 		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 	}
+
+
+	// ВЫПОЛНЕНИЕ НАЧИНАЕТСЯ С ФУНКЦИИ main, завершается return.
+	// В общем случае, начинается с прозвольной функции
+	/*
+	void execute(function* func, std::vector<constant> arguments) {
+
+		// действия требуются только при ключевых словах, т.е:
+		// int, double...
+		// while, if, else
+
+
+		size_t lineInd, pos, wordInd;
+		bool returnFlag = false;
+		bool flag = false;
+		std::vector<variable*> vars;
+
+		lineInd = func->lineBegin;
+		wordInd = func->wordBegin;
+		++wordInd;
+
+		while (lineInd < program.size()) {
+			if (program[lineInd][wordInd]->getName() == ")") {
+				flag = true;
+				break;
+			}
+
+
+			++lineInd;
+		}
+
+		if (!flag) throw std::runtime_error("Line " + std::to_string(func->lineBegin) + ", symbol " + std::to_string(func->wordEnd) + ": " + func->getName() + " - Invalid agruments processing");
+
+		flag = false;
+		returnFlag = false;
+
+		for (; lineInd <= func->lineEnd; ++lineInd) {
+			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
+				if (lineInd == func->lineEnd && wordInd > func->wordEnd) {
+					throw std::runtime_error("Line " + std::to_string(func->lineBegin) + ", symbol " + std::to_string(func->wordEnd) + ": " + func->getName() + " - No return in this function");
+				}
+				if (!flag) {
+					flag = true;
+					wordInd = pos;
+				}
+
+				// executing
+
+			}
+			if (returnFlag) break;
+		}
+	}*/
 
 	/*
 	void processOld(std::vector<std::string>& source) { // предобработка кода для исполнения
@@ -605,11 +660,10 @@ public:
 	interpretator(std::vector<std::string>& source) {
 		process(source); // предобработка кода для исполнения
 	}
+
 	~interpretator() {
 		for (size_t i = 0; i < program.size(); ++i) {
-			for (size_t j = 0; j < program[i].size(); ++j) {
-				delete program[i][j];
-			}
+				delete program[i];
 		}
 	}
 };
