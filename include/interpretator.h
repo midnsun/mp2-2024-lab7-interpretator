@@ -8,7 +8,7 @@
 #include "function.h"
 #include "specialLexem.h"
 #include "dataType.h"
-#include "operators.h"
+#include "myoperators.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -104,8 +104,8 @@ public:
 					if (specialLexem::isSpecialLexem(source[lineInd][i]))
 						lexCommand.push_back(new specialLexem{ std::string(1, source[lineInd][i]), lineInd, i });
 					// условный оператор
-					if (operators::isKeyWordOperator(command)) {
-						lexCommand.push_back( new operators{ command, lineInd, i - command.length() });
+					if (myoperators::isKeyWordOperator(command)) {
+						lexCommand.push_back( new myoperators{ command, lineInd, i - command.length() });
 						if (command == "return") context = 0;
 						else context = lineInd;
 					}

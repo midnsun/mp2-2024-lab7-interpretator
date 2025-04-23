@@ -17,9 +17,9 @@ public:
 		// Allowed Lexem: 
 		// 1. key word:
 		// 1.1 data types: int, double, void (functions only), var[size]
-		// 1.2 operators: if(){}, else{}, while(){}, print(), scan()
+		// 1.2 myoperators: if(){}, else{}, while(){}, print(), scan()
 		// 1.3 return
-		// 2. operators:
+		// 2. myoperators:
 		// 2.1 numeric: +, -, *, /, +=, -=, *=, /=
 		// 2.2 logic: &&, ||, ==, !=, <, <=, >, >=
 		// 2.3 special: =

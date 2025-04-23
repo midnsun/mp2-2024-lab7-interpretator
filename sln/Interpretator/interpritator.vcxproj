@@ -108,8 +108,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\src\lexems;..\..\src;..\..\include;..\..\include\lexems</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>../../include/lexems;../../include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,8 +124,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\src\lexems;..\..\src;..\..\include;..\..\include\lexems</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>../../include/lexems;../../include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,15 +135,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\lexems\operators.h" />
     <ClCompile Include="..\..\src\interpretator.cpp" />
     <ClCompile Include="..\..\src\lexems\commonLexem.cpp" />
     <ClCompile Include="..\..\src\lexems\constant.cpp" />
     <ClCompile Include="..\..\src\lexems\dataType.cpp" />
     <ClCompile Include="..\..\src\lexems\function.cpp" />
+    <ClCompile Include="..\..\src\lexems\myoperators.cpp" />
     <ClCompile Include="..\..\src\lexems\operand.cpp" />
     <ClCompile Include="..\..\src\lexems\operation.cpp" />
-    <ClCompile Include="..\..\src\lexems\operators.cpp" />
     <ClCompile Include="..\..\src\lexems\specialLexem.cpp" />
     <ClCompile Include="..\..\src\lexems\variable.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -156,6 +155,7 @@
     <ClInclude Include="..\..\include\lexems\dataType.h" />
     <ClInclude Include="..\..\include\lexems\function.h" />
     <ClInclude Include="..\..\include\lexems\keyWords.h" />
+    <ClInclude Include="..\..\include\lexems\myoperators.h" />
     <ClInclude Include="..\..\include\lexems\operand.h" />
     <ClInclude Include="..\..\include\lexems\operation.h" />
     <ClInclude Include="..\..\include\lexems\specialLexem.h" />

@@ -71,7 +71,7 @@ void interpretator::process(const std::vector<std::string>& source)
 		strProgram[lineInd] = strCommand;
 	}
 
-	// variable : type, context, arr; functions: type, begin, end; datatype; operators: begin, end
+	// variable : type, context, arr; functions: type, begin, end; datatype; myoperators: begin, end
 	// special lexem, constant, operation
 	// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
 
@@ -106,7 +106,7 @@ void interpretator::process(const std::vector<std::string>& source)
 			}
 
 			// KEY WORD OPERATORS (if, else ...)
-			else if (operators::isKeyWordOperator(word)) {
+			else if (myoperators::isKeyWordOperator(word)) {
 				// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
 				if (word != "return") {
 					int bracketCounter = 0;
@@ -144,7 +144,7 @@ void interpretator::process(const std::vector<std::string>& source)
 					//						context = "GLOBAL";
 				}
 
-				program.push_back(new operators{ word, lineInd, size_t(wordPos), begin, end });
+				program.push_back(new myoperators{ word, lineInd, size_t(wordPos), begin, end });
 			}
 
 			// CONSTANT
