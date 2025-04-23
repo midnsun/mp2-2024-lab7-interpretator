@@ -16,8 +16,10 @@ char dataType::getTypeId()
 	else return -1;
 }
 
-void dataType::showInfo()
+void dataType::showInfo() const
 {
 	std::cout << "dataType: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
 	return;
 }
+
+std::string dataType::getClass() const { return "dataType"; }

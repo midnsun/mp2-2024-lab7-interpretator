@@ -4,8 +4,16 @@
 
 
 class operand : public commonLexem {
+private:
+	char type; // 1 - int, 2 - double
+	void* value;
 public:
 	static bool isValidCharForOperand(char c);
-	operand(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) { }
-	virtual void showInfo() = 0;
+	operand(const std::string str, size_t ind, size_t pos, char _type) : commonLexem(str, ind, pos), type(_type), value(nullptr) { }
+	virtual void showInfo() const = 0;
+	virtual std::string getClass() const = 0;
+	char getTypeId() const;
+	void* getValue() const;
+	void setValue(void* v);
+	virtual ~operand();
 };

@@ -9,8 +9,10 @@ bool operation::isOperation(const std::string& str)
 	return false;
 }
 
-void operation::showInfo()
+void operation::showInfo() const
 {
 	std::cout << "operation: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
 	return;
 }
+
+std::string operation::getClass() const { return "operation"; }

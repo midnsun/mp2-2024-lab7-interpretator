@@ -10,5 +10,6 @@ public:
 	static bool isDataType(const std::string& str);
 	dataType(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) { }
 	char getTypeId();
-	virtual void showInfo();
+	virtual void showInfo() const;
+	virtual std::string getClass() const;
 };

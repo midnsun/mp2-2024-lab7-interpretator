@@ -1,4 +1,5 @@
 #include "interpretator.h"
+#include <stack>
 
 // »де€ создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// ѕример:
@@ -77,7 +78,7 @@ void interpretator::process(const std::vector<std::string>& source)
 
 	for (auto& s : standartFuinction) {
 		//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
-		functions.insert(*(new function{ s, 0, 0, -1, 0, 0 }));
+		functions.insert(new function{ s, 0, 0, -1, 0, 0 });
 	}
 
 	size_t begin = 0, end = 0;
@@ -149,7 +150,7 @@ void interpretator::process(const std::vector<std::string>& source)
 
 			// CONSTANT
 			else if (constant::isValidConstant(word)) {
-				program.push_back(new constant{ word, lineInd, size_t(wordPos) });
+				program.push_back(new constant{ word, lineInd, size_t(wordPos), -1 });
 			}
 
 			// VARIABLE OR FUNCTION
@@ -163,7 +164,7 @@ void interpretator::process(const std::vector<std::string>& source)
 
 					// creating function
 					if (dataTypeAppeared != -1) {
-						if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
+						if (functions.find(tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
 
 						int bracketCounter = 0;
 						counter = 0;
@@ -196,16 +197,16 @@ void interpretator::process(const std::vector<std::string>& source)
 						tmpptr->begin = begin;
 						tmpptr->end = end;
 
-						functions.insert(*tmpptr);
+						functions.insert(tmpptr);
 						dataTypeAppeared = -1;
 						//							context = word;
 					}
 					// function is just being called
 					else {
-						if (functions.find(*tmpptr) == functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
-						tmpptr->type = (*functions.find(*tmpptr)).type;
-						tmpptr->begin = (*functions.find(*tmpptr)).begin;
-						tmpptr->end = (*functions.find(*tmpptr)).end;
+						if (functions.find(tmpptr) == functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - There is no function with this name");
+						tmpptr->type = (*functions.find(tmpptr))->type;
+						tmpptr->begin = (*functions.find(tmpptr))->begin;
+						tmpptr->end = (*functions.find(tmpptr))->end;
 					}
 				}
 				// variable
@@ -228,15 +229,72 @@ void interpretator::process(const std::vector<std::string>& source)
 	// ѕозиции перехода пишутс€ в индексах таблицы программы
 	// Ќепон€тно, как работать с массивами
 
-
+	// PRINTING
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 		std::cout << wordInd << ":	";
 		program[wordInd]->showInfo();
 		std::cout << std::endl;
 	}
 
-
-
 	// 3. «аписать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 }
 
+
+void interpretator::execute(function* func, std::vector<constant> arguments) {
+
+	// действи€ требуютс€ только при ключевых словах, т.е:
+	// int, double...
+	// while, if, else
+
+	size_t pos;
+	bool flag = false;
+	std::vector<variable*> argvars; // SET!!!!!!
+//	std::set<variable*, variableCMP> vars;
+
+	pos = func->begin;
+	++pos;
+	if (pos >= program.size() || program[pos]->getName() != "(") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - No opening bracket");
+	++pos;
+	if (pos >= program.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+	if (program[pos]->getName() == ")") {
+		flag = true;
+	}
+
+	while (pos < program.size() && !flag) {
+		// data type
+		if (program[pos]->getClass() != "dataType") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Data type is missing");
+		++pos;
+		// variable
+		if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
+		argvars.push_back(dynamic_cast<variable*>(program[pos]));
+		++pos;
+		// ) or ,
+		if (pos >= program.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+		else if (program[pos]->getName() == ")") {
+			flag = true;
+			break;
+		}
+		else if (program[pos]->getClass() != "specialSymbol" || program[pos]->getName() != ",")  throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Comma or closing bracket is missing");
+		++pos;
+	}
+	if (!flag) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+	++pos;
+	if (pos >= program.size() || program[pos]->getName() != "{") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no opening figure bracket found");
+	++pos;
+	// setting variables as given arguments
+	if (argvars.size() != arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
+	for (size_t i = 0; i < arguments.size(); ++i) {
+		if (argvars[i]->getTypeId() != arguments[i].getTypeId()) throw std::runtime_error("Line " + std::to_string(argvars[i]->getInd()) + ", symbol " + std::to_string(argvars[i]->getPos()) + ": " + argvars[i]->getName() + " - Incompatible types of arguments");
+		argvars[i]->setValue(arguments[i].getValue());
+	}
+
+	flag = false;
+	std::stack<size_t> cycles;
+	std::set<variable*, variableCMP> vars; // SET!!!!
+
+	for (; pos <= func->end; ++pos) {
+		// executing
+		// находим слово, обозначающее dataType - добавл€ем в переменные, провер€€, есть ли там така€ же. ≈сли есть - ошибка. 
+		// находим слово, обозначающее keyWord - выполн€ем. Jump как обычно выполн€ем (по стеку). ¬се просто
+	}
+}

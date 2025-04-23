@@ -13,5 +13,6 @@ public:
 		keyWords(str, ind, pos), begin(_begin), end(_end) {
 
 	}
-	virtual void showInfo();
+	virtual void showInfo() const;
+	virtual std::string getClass() const;
 };

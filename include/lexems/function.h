@@ -15,9 +15,10 @@ public:
 		commonLexem(str, ind, pos), type(_type), begin(_begin), end(_end) {
 
 	}
-	virtual void showInfo();
+	virtual void showInfo() const;
+	virtual std::string getClass() const;
 };
 
 struct functionCMP {
-	bool operator()(const function& f1, const function& f2) const;
+	bool operator()(const function* f1, const function* f2) const;
 };

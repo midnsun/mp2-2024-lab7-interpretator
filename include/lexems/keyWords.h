@@ -7,6 +7,7 @@ public:
 	keyWords(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) {
 
 	}
-	virtual void showInfo() = 0;
+	virtual void showInfo() const = 0;
+	virtual std::string getClass() const = 0;
 };
 

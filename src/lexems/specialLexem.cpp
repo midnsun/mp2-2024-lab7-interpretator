@@ -8,8 +8,10 @@ bool specialLexem::isSpecialLexem(char c)
 	return false;
 }
 
-void specialLexem::showInfo()
+void specialLexem::showInfo() const
 {
 	std::cout << "special lexem: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
 	return;
 }
+
+std::string specialLexem::getClass() const { return "specialLexem"; }

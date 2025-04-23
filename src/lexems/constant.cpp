@@ -14,8 +14,10 @@ bool constant::isInteger(const std::string& str)
 	return true;
 }
 
-void constant::showInfo()
+void constant::showInfo() const
 {
-	std::cout << "constant: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	std::cout << "constant: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << this->getTypeId();
 	return;
 }
+
+std::string constant::getClass() const { return "constant"; }
