@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -15,11 +15,11 @@ std::set<std::string> dataTypes{"int", "double", "void"};
 std::set<char> specialLexems{'(', ')', '{', '}', '[', ']', ',', ';'};
 std::set<string> standartFuinction{"sin", "cos", "abs", "sqrt", "print", "scan"};
 
-// ЧТО ТРЕБУЕТСЯ СДЕЛАТЬ:
-// 1. СОЗДАТЬ ВИРТУАЛЬНЫЕ ФУНКЦИИ whatTypeOfLexem() КОТОРЫЕ БУДУТ ВОЗВРАЩАТЬ ПЕРЕМЕННАЯ ЭТО, ИЛИ КЛЮЧЕВОЕ СЛОВО, ИЛИ КОНСТАНТА И Т.Д. ДЛЯ УДОБСТВА
-// 2. ПУСТЬ ЭТА ФУНКЦИЯ ВОЗВРАЩАЕТ stting НАЗВАНИЕ СВОЕГО КЛАССА
-// 3. В ПРОЦЕССИНГЕ - ОТКРЫВАЮЩИЕ ЗАКРЫВАЮЩИЕ СКОБКИ (DONE)
-// 4. В ПРОЦЕССИНГЕ - РАЗМЕРНОСТЬ МАССИВА
+// Р§РўРћ РўР Р•Р‘РЈР•РўРЎРЇ РЎР”Р•Р›РђРўР¬:
+// 1. РЎРћР—Р”РђРўР¬ Р’РР РўРЈРђР›Р¬РќР«Р• Р¤РЈРќРљР¦РР whatTypeOfLexem() РљРћРўРћР Р«Р• Р‘РЈР”РЈРў Р’РћР—Р’Р РђР©РђРўР¬ РџР•Р Р•РњР•РќРќРђРЇ Р­РўРћ, РР›Р РљР›Р®Р§Р•Р’РћР• РЎР›РћР’Рћ, РР›Р РљРћРќРЎРўРђРќРўРђ Р Рў.Р”. Р”Р›РЇ РЈР”РћР‘РЎРўР’Рђ
+// 2. РџРЈРЎРўР¬ Р­РўРђ Р¤РЈРќРљР¦РРЇ Р’РћР—Р’Р РђР©РђР•Рў stting РќРђР—Р’РђРќРР• РЎР’РћР•Р“Рћ РљР›РђРЎРЎРђ
+// 3. Р’ РџР РћР¦Р•РЎРЎРРќР“Р• - РћРўРљР Р«Р’РђР®Р©РР• Р—РђРљР Р«Р’РђР®Р©РР• РЎРљРћР‘РљР (DONE)
+// 4. Р’ РџР РћР¦Р•РЎРЎРРќР“Р• - Р РђР—РњР•Р РќРћРЎРўР¬ РњРђРЎРЎРР’Рђ
 
 class commonLexem {
 private:
@@ -99,7 +99,7 @@ public:
 
 class constant : public operand {
 public:
-	static bool isValidConstant(const std::string& str) { // проверить, это число или нет
+	static bool isValidConstant(const std::string& str) { // РїСЂРѕРІРµСЂРёС‚СЊ, СЌС‚Рѕ С‡РёСЃР»Рѕ РёР»Рё РЅРµС‚
 		char junk;
 		double d;
 		stringstream ss(str);
@@ -118,15 +118,15 @@ public:
 };
 
 class variable : public operand {
-	// по факту для каждой функции и глобальной области будет своя таблица переменных из-за области видимости.
-	// Иначе можно создать отдельную переменную принадлежности переменной функции, затем пробегаться по таблице и удалять после return
-	// В таком случае внутри функции доступны только переменные, созданные внутри нее, и глобальные переменные
+	// РїРѕ С„Р°РєС‚Сѓ РґР»СЏ РєР°Р¶РґРѕР№ С„СѓРЅРєС†РёРё Рё РіР»РѕР±Р°Р»СЊРЅРѕР№ РѕР±Р»Р°СЃС‚Рё Р±СѓРґРµС‚ СЃРІРѕСЏ С‚Р°Р±Р»РёС†Р° РїРµСЂРµРјРµРЅРЅС‹С… РёР·-Р·Р° РѕР±Р»Р°СЃС‚Рё РІРёРґРёРјРѕСЃС‚Рё.
+	// РРЅР°С‡Рµ РјРѕР¶РЅРѕ СЃРѕР·РґР°С‚СЊ РѕС‚РґРµР»СЊРЅСѓСЋ РїРµСЂРµРјРµРЅРЅСѓСЋ РїСЂРёРЅР°РґР»РµР¶РЅРѕСЃС‚Рё РїРµСЂРµРјРµРЅРЅРѕР№ С„СѓРЅРєС†РёРё, Р·Р°С‚РµРј РїСЂРѕР±РµРіР°С‚СЊСЃСЏ РїРѕ С‚Р°Р±Р»РёС†Рµ Рё СѓРґР°Р»СЏС‚СЊ РїРѕСЃР»Рµ return
+	// Р’ С‚Р°РєРѕРј СЃР»СѓС‡Р°Рµ РІРЅСѓС‚СЂРё С„СѓРЅРєС†РёРё РґРѕСЃС‚СѓРїРЅС‹ С‚РѕР»СЊРєРѕ РїРµСЂРµРјРµРЅРЅС‹Рµ, СЃРѕР·РґР°РЅРЅС‹Рµ РІРЅСѓС‚СЂРё РЅРµРµ, Рё РіР»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ
 	char type; // int, double, etc... 0 - int, 1 - double
-//	string context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
+	//	string context; // what function it belongs. Functions are marked as 0 (as global), 1, 2, 3...
 	int arr;
-	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
+	// Р’ СЃС‚РµРєРµ РІС‹Р·РѕРІРѕРІ С…СЂР°РЅРёС‚СЃСЏ С‚РѕР»СЊРєРѕ С‚РѕС‡РєР° РІРѕР·РІСЂР°С‚Р°, РїРѕ РєРѕРјР°РЅРґРµ РІРѕР·РІСЂР°С‚Р° СѓРґР°Р»СЏСЋС‚СЃСЏ РІСЃРµ РїРµСЂРµРјРµРЅРЅС‹Рµ СЃ filed = РЅРѕРјРµСЂСѓ С„СѓРЅРєС†РёРё
 public:
-//	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {}
+	//	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {}
 	variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand{ str, ind, pos }, type(_type), arr(_arr) {}
 	static bool isValidCharForVariable(char c) {
 		if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
@@ -135,7 +135,7 @@ public:
 	static bool isValidVariable(const std::string& str) {
 		if (str.length() == 0) return false;
 		if (std::isdigit(str[0])) return false;
-		for (auto c : str) 
+		for (auto c : str)
 			if (!isValidCharForVariable(c)) return false;
 		return true;
 	}
@@ -146,7 +146,7 @@ public:
 		return type;
 	}
 	virtual void showInfo() {
-//		cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << context << " " << arr << " ";
+		//		cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << context << " " << arr << " ";
 		cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << arr << " ";
 	}
 };
@@ -167,7 +167,7 @@ public:
 	char type;
 	size_t begin, end;
 public:
-	function(const std::string str, size_t ind, size_t pos, char _type, size_t _begin, size_t _end) : 
+	function(const std::string str, size_t ind, size_t pos, char _type, size_t _begin, size_t _end) :
 		commonLexem(str, ind, pos), type(_type), begin(_begin), end(_end) {
 
 	}
@@ -252,8 +252,8 @@ public:
 	calculator(const vector<commonLexem*>& _data) : data(_data) {
 
 	}
-	// возвращает n байт памяти в виде константы, одно из полей	константы должно объяснить, как интерпретировать результат
-	// в идеале, constant.getValue() должен сразу возвращать то значение, которое там получилось (double, int ...)
+	// РІРѕР·РІСЂР°С‰Р°РµС‚ n Р±Р°Р№С‚ РїР°РјСЏС‚Рё РІ РІРёРґРµ РєРѕРЅСЃС‚Р°РЅС‚С‹, РѕРґРЅРѕ РёР· РїРѕР»РµР№	РєРѕРЅСЃС‚Р°РЅС‚С‹ РґРѕР»Р¶РЅРѕ РѕР±СЉСЏСЃРЅРёС‚СЊ, РєР°Рє РёРЅС‚РµСЂРїСЂРµС‚РёСЂРѕРІР°С‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚
+	// РІ РёРґРµР°Р»Рµ, constant.getValue() РґРѕР»Р¶РµРЅ СЃСЂР°Р·Сѓ РІРѕР·РІСЂР°С‰Р°С‚СЊ С‚Рѕ Р·РЅР°С‡РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ С‚Р°Рј РїРѕР»СѓС‡РёР»РѕСЃСЊ (double, int ...)
 	constant calculate() {
 
 	}
@@ -267,16 +267,16 @@ class interpretator {
 	std::set< variable, variableCMP > variables;
 	std::set< function, functionCMP > functions;
 public:
-	// Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
-	// Пример:
+	// РРґРµСЏ СЃРѕР·РґР°С‚СЊ РІРµРєС‚РѕСЂ РІРµРєС‚РѕСЂРѕРІ Р»РµРєСЃРµРј, СЂР°Р·Р±РёРµРЅРёРµ РїРµСЂРІРѕРіРѕ РІРµРєС‚РѕСЂР° РёРґРµС‚ РїРѕ РєРѕРјР°РЅРґР°Рј, РІС‚РѕСЂРѕРіРѕ РїРѕ РєР»СЋС‡РµРІС‹Рј СЃР»РѕРІР°Рј, С‚.Рµ. РїРѕ Р»РµРєСЃРµРјР°Рј
+	// РџСЂРёРјРµСЂ:
 	// int a = 1;
 	// int b = 2;
 	// b = a / b;
 	// [ ["int", "a", "=", "1"], ["int", "b", "=", "2"], ["b", "=", "a", "/", "b"] ] - 
-	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
+	// Р»РµРєСЃРµРјС‹ РІРЅСѓС‚СЂРё РІРµРєС‚РѕСЂРѕРІ Р»РµРєСЃРµРј (РєРѕРјР°РЅРґС‹) РІРЅСѓС‚СЂРё РїСЂРѕРіСЂР°РјРјС‹ (РІРµРєС‚РѕСЂР° РєРѕРјР°РЅРґ)
 	void process(const std::vector<std::string>& source) {
-		// 1. Разбиение на слова - строки лексемы
-		// 1.1 Разбиение по словам между пробелов
+		// 1. Р Р°Р·Р±РёРµРЅРёРµ РЅР° СЃР»РѕРІР° - СЃС‚СЂРѕРєРё Р»РµРєСЃРµРјС‹
+		// 1.1 Р Р°Р·Р±РёРµРЅРёРµ РїРѕ СЃР»РѕРІР°Рј РјРµР¶РґСѓ РїСЂРѕР±РµР»РѕРІ
 		// 
 		std::string word;
 		int wordPos, wordLen, tmpwordPos;
@@ -297,7 +297,7 @@ public:
 			}
 		}
 
-		// 1.2 Разбиение спец. символами
+		// 1.2 Р Р°Р·Р±РёРµРЅРёРµ СЃРїРµС†. СЃРёРјРІРѕР»Р°РјРё
 		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
 			strCommand.clear();
 			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
@@ -316,7 +316,7 @@ public:
 			strProgram[lineInd] = strCommand;
 		}
 
-		// 1.3 Разбиение операторами +, - etc..
+		// 1.3 Р Р°Р·Р±РёРµРЅРёРµ РѕРїРµСЂР°С‚РѕСЂР°РјРё +, - etc..
 		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
 			strCommand.clear();
 			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
@@ -339,10 +339,10 @@ public:
 
 		// variable : type, context, arr; functions: type, begin, end; datatype; operators: begin, end
 		// special lexem, constant, operation
-		// 2. Распределить лексемы по соответствующим классам. Это не оператор, тогда начало с цифры - число, начало с буквы - переменная (функция)
+		// 2. Р Р°СЃРїСЂРµРґРµР»РёС‚СЊ Р»РµРєСЃРµРјС‹ РїРѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёРј РєР»Р°СЃСЃР°Рј. Р­С‚Рѕ РЅРµ РѕРїРµСЂР°С‚РѕСЂ, С‚РѕРіРґР° РЅР°С‡Р°Р»Рѕ СЃ С†РёС„СЂС‹ - С‡РёСЃР»Рѕ, РЅР°С‡Р°Р»Рѕ СЃ Р±СѓРєРІС‹ - РїРµСЂРµРјРµРЅРЅР°СЏ (С„СѓРЅРєС†РёСЏ)
 
 		for (auto& s : standartFuinction) {
-//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
+			//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
 			functions.insert(*(new function{ s, 0, 0, -1, 0, 0 }));
 		}
 
@@ -350,9 +350,9 @@ public:
 		size_t counter = 0;
 		int arrCounter = -1;
 		char dataTypeAppeared = -1;
-//		string context = "GLOBAL";
+		//		string context = "GLOBAL";
 		for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
-//			program.push_back(vector<commonLexem*>());
+			//			program.push_back(vector<commonLexem*>());
 			for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
 				word = strProgram[lineInd][wordInd].first;
 				wordPos = strProgram[lineInd][wordInd].second;
@@ -373,7 +373,7 @@ public:
 
 				// KEY WORD OPERATORS (if, else ...)
 				else if (operators::isKeyWordOperator(word)) {
-					// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
+					// РёС‰РµРј РѕС‚РєСЂС‹РІР°СЋС‰СѓСЋ figure СЃРєРѕР±РєСѓ, Р·Р°РїРёСЃС‹РІР°РµРј РІ begin, РїСЂРёР±Р°РІР»СЏРµРј СЃС‡РµС‚С‡РёРє. РљРѕРіРґР° РЅР°С€Р»Рё Р·Р°РєСЂС‹РІР°СЋС‰СѓСЋ Рё СЃС‡РµС‚С‡РёРє СЃС‚Р°Р» РЅСѓР»РµРј - СЌС‚Рѕ end
 					if (word != "return") {
 						int bracketCounter = 0;
 						bool exitFlag = false;
@@ -386,8 +386,8 @@ public:
 							for (; j < strProgram[i].size(); ++j, ++counter) {
 								if (strProgram[i][j].first == "{") {
 									if (bracketCounter == 0) {
-//										lineBegin = i;
-//										wordBegin = j;
+										//										lineBegin = i;
+										//										wordBegin = j;
 									}
 									++bracketCounter;
 								}
@@ -407,7 +407,7 @@ public:
 					else {
 						begin = 0;
 						end = 0;
-//						context = "GLOBAL";
+						//						context = "GLOBAL";
 					}
 
 					program.push_back(new operators{ word, lineInd, size_t(wordPos), begin, end });
@@ -422,11 +422,11 @@ public:
 				else if (variable::isValidVariable(word)) {
 					// function
 					if (wordInd < strProgram[lineInd].size() - 1 && strProgram[lineInd][wordInd + 1].first == "(") {
-						// ищем открывающую figure скобку, записываем в begin, прибавляем счетчик. Когда нашли закрывающую и счетчик стал нулем - это end
+						// РёС‰РµРј РѕС‚РєСЂС‹РІР°СЋС‰СѓСЋ figure СЃРєРѕР±РєСѓ, Р·Р°РїРёСЃС‹РІР°РµРј РІ begin, РїСЂРёР±Р°РІР»СЏРµРј СЃС‡РµС‚С‡РёРє. РљРѕРіРґР° РЅР°С€Р»Рё Р·Р°РєСЂС‹РІР°СЋС‰СѓСЋ Рё СЃС‡РµС‚С‡РёРє СЃС‚Р°Р» РЅСѓР»РµРј - СЌС‚Рѕ end
 
 						function* tmpptr = new function{ word, lineInd, size_t(wordPos), dataTypeAppeared, begin, end };
 						program.push_back(tmpptr);
-						
+
 						// creating function
 						if (dataTypeAppeared != -1) {
 							if (functions.find(*tmpptr) != functions.end()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - This function has already exists");
@@ -442,8 +442,8 @@ public:
 								for (; j < strProgram[i].size(); ++j, ++counter) {
 									if (strProgram[i][j].first == "{") {
 										if (bracketCounter == 0) {
-//											lineBegin = i;
-//											wordBegin = j;
+											//											lineBegin = i;
+											//											wordBegin = j;
 										}
 										++bracketCounter;
 									}
@@ -464,7 +464,7 @@ public:
 
 							functions.insert(*tmpptr);
 							dataTypeAppeared = -1;
-//							context = word;
+							//							context = word;
 						}
 						// function is just being called
 						else {
@@ -477,7 +477,7 @@ public:
 					// variable
 					else {
 						arrCounter = 0;
-						// посчитать размерность массива
+						// РїРѕСЃС‡РёС‚Р°С‚СЊ СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ РјР°СЃСЃРёРІР°
 //						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, context, arrCounter });
 						program.push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
 						dataTypeAppeared = -1;
@@ -488,81 +488,90 @@ public:
 				}
 			}
 		}
-		// получим ситуацию, что новосозданные переменные будут иметь не -1 тип данных, а иначе будут иметь -1. Вот и отличие!
+		// РїРѕР»СѓС‡РёРј СЃРёС‚СѓР°С†РёСЋ, С‡С‚Рѕ РЅРѕРІРѕСЃРѕР·РґР°РЅРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ Р±СѓРґСѓС‚ РёРјРµС‚СЊ РЅРµ -1 С‚РёРї РґР°РЅРЅС‹С…, Р° РёРЅР°С‡Рµ Р±СѓРґСѓС‚ РёРјРµС‚СЊ -1. Р’РѕС‚ Рё РѕС‚Р»РёС‡РёРµ!
 
-		// Кстати, после заполнения таблица functions больше не нужна, т.к. все позиции перехода записаны в программу. Нужны только стандартные функции.
-		// Позиции перехода пишутся в индексах таблицы программы
-		// Непонятно, как работать с массивами
+		// РљСЃС‚Р°С‚Рё, РїРѕСЃР»Рµ Р·Р°РїРѕР»РЅРµРЅРёСЏ С‚Р°Р±Р»РёС†Р° functions Р±РѕР»СЊС€Рµ РЅРµ РЅСѓР¶РЅР°, С‚.Рє. РІСЃРµ РїРѕР·РёС†РёРё РїРµСЂРµС…РѕРґР° Р·Р°РїРёСЃР°РЅС‹ РІ РїСЂРѕРіСЂР°РјРјСѓ. РќСѓР¶РЅС‹ С‚РѕР»СЊРєРѕ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ С„СѓРЅРєС†РёРё.
+		// РџРѕР·РёС†РёРё РїРµСЂРµС…РѕРґР° РїРёС€СѓС‚СЃСЏ РІ РёРЅРґРµРєСЃР°С… С‚Р°Р±Р»РёС†С‹ РїСЂРѕРіСЂР°РјРјС‹
+		// РќРµРїРѕРЅСЏС‚РЅРѕ, РєР°Рє СЂР°Р±РѕС‚Р°С‚СЊ СЃ РјР°СЃСЃРёРІР°РјРё
 
-		
+
 		for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 			cout << wordInd << ":	";
 			program[wordInd]->showInfo();
 			cout << endl;
 		}
-		
 
 
-		// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
+
+		// 3. Р—Р°РїРёСЃР°С‚СЊ С„СѓРЅРєС†РёРё Рё РїРµСЂРµРјРµРЅРЅС‹Рµ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёРµ С‚Р°Р±Р»РёС†С‹, СЂР°СЃСЃРјРѕС‚СЂРµС‚СЊ СЃР»СѓС‡Р°Рё РјР°СЃСЃРёРІРѕРІ
 	}
 
 
-	// ВЫПОЛНЕНИЕ НАЧИНАЕТСЯ С ФУНКЦИИ main, завершается return.
-	// В общем случае, начинается с прозвольной функции
-	/*
+	// Р’Р«РџРћР›РќР•РќРР• РќРђР§РРќРђР•РўРЎРЇ РЎ Р¤РЈРќРљР¦РР main, Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ return.
+	// Р’ РѕР±С‰РµРј СЃР»СѓС‡Р°Рµ, РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ РїСЂРѕР·РІРѕР»СЊРЅРѕР№ С„СѓРЅРєС†РёРё
+
 	void execute(function* func, std::vector<constant> arguments) {
 
-		// действия требуются только при ключевых словах, т.е:
+		// РґРµР№СЃС‚РІРёСЏ С‚СЂРµР±СѓСЋС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё РєР»СЋС‡РµРІС‹С… СЃР»РѕРІР°С…, С‚.Рµ:
 		// int, double...
 		// while, if, else
 
-
-		size_t lineInd, pos, wordInd;
-		bool returnFlag = false;
+		size_t pos;
 		bool flag = false;
-		std::vector<variable*> vars;
+		std::vector<variable*> vars; // SET!!!!!!
 
-		lineInd = func->lineBegin;
-		wordInd = func->wordBegin;
-		++wordInd;
+		pos = func->begin;
+		++pos;
+		if (pos >= program.size() || program[pos]->getName() != "(") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - No opening bracket");
+		++pos;
+		if (pos >= program.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+		if (program[pos]->getName() == ")") {
+			flag = true;
+		}
 
-		while (lineInd < program.size()) {
-			if (program[lineInd][wordInd]->getName() == ")") {
+		while (pos < program.size() && !flag) {
+			// data type
+			if (program[pos]->getClass() != "dataType") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Data type is missing");
+			++pos;
+			// variable
+			if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
+			vars.push_back(dynamic_cast<variable*>(program[pos]));
+			++pos;
+			// ) or ,
+			if (pos >= program.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+			else if (program[pos]->getName() == ")") {
 				flag = true;
 				break;
 			}
-
-
-			++lineInd;
+			else if (program[pos]->getClass() != "specialSymbol" || program[pos]->getName() != ",")  throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Comma or closing bracket is missing");
+			++pos;
 		}
-
-		if (!flag) throw std::runtime_error("Line " + std::to_string(func->lineBegin) + ", symbol " + std::to_string(func->wordEnd) + ": " + func->getName() + " - Invalid agruments processing");
+		if (!flag) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+		++pos;
+		if (pos >= program.size() || program[pos]->getName() != "{") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no opening figure bracket found");
+		++pos;
+		// setting variables as given arguments
+		if (vars.size() != arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
+		for (size_t i = 0; i < arguments.size(); ++i) {
+			if (vars[i]->getTypeId() != arguments[i].getTypeId()) throw std::runtime_error("Line " + std::to_string(vars[i]->getInd()) + ", symbol " + std::to_string(vars[i]->getPos()) + ": " + vars[i]->getName() + " - Incompatible types of arguments");
+			vars[i]->setValue(arguments[i].getValue());
+		}
 
 		flag = false;
-		returnFlag = false;
+		std::stack<size_t> cycles;
 
-		for (; lineInd <= func->lineEnd; ++lineInd) {
-			for (wordInd = 0; wordInd < program[lineInd].size(); ++wordInd) {
-				if (lineInd == func->lineEnd && wordInd > func->wordEnd) {
-					throw std::runtime_error("Line " + std::to_string(func->lineBegin) + ", symbol " + std::to_string(func->wordEnd) + ": " + func->getName() + " - No return in this function");
-				}
-				if (!flag) {
-					flag = true;
-					wordInd = pos;
-				}
-
-				// executing
-
-			}
-			if (returnFlag) break;
+		for (; pos <= func->end; ++pos) {
+			// executing
+			// РЅР°С…РѕРґРёРј СЃР»РѕРІРѕ, РѕР±РѕР·РЅР°С‡Р°СЋС‰РµРµ dataType - РґРѕР±Р°РІР»СЏРµРј РІ РїРµСЂРµРјРµРЅРЅС‹Рµ, РїСЂРѕРІРµСЂСЏСЏ, РµСЃС‚СЊ Р»Рё С‚Р°Рј С‚Р°РєР°СЏ Р¶Рµ. Р•СЃР»Рё РµСЃС‚СЊ - РѕС€РёР±РєР°. 
+			// РЅР°С…РѕРґРёРј СЃР»РѕРІРѕ, РѕР±РѕР·РЅР°С‡Р°СЋС‰РµРµ keyWord - РІС‹РїРѕР»РЅСЏРµРј. Jump РєР°Рє РѕР±С‹С‡РЅРѕ РІС‹РїРѕР»РЅСЏРµРј (РїРѕ СЃС‚РµРєСѓ). Р’СЃРµ РїСЂРѕСЃС‚Рѕ
 		}
-	}*/
+	}
 
 	/*
-	void processOld(std::vector<std::string>& source) { // предобработка кода для исполнения
-		// Разделение только на ключевые слова и прочие лексемы!! Дальше прочие лексемы обрабатываются как в коде лабы постфикс
-		// разделяются int, double, void, if, else, while, return. scan, print - обычные операторы
-		// команда завершается или символом { или символом ; или концом строки. Другого не дано
+	void processOld(std::vector<std::string>& source) { // РїСЂРµРґРѕР±СЂР°Р±РѕС‚РєР° РєРѕРґР° РґР»СЏ РёСЃРїРѕР»РЅРµРЅРёСЏ
+		// Р Р°Р·РґРµР»РµРЅРёРµ С‚РѕР»СЊРєРѕ РЅР° РєР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° Рё РїСЂРѕС‡РёРµ Р»РµРєСЃРµРјС‹!! Р”Р°Р»СЊС€Рµ РїСЂРѕС‡РёРµ Р»РµРєСЃРµРјС‹ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ РєР°Рє РІ РєРѕРґРµ Р»Р°Р±С‹ РїРѕСЃС‚С„РёРєСЃ
+		// СЂР°Р·РґРµР»СЏСЋС‚СЃСЏ int, double, void, if, else, while, return. scan, print - РѕР±С‹С‡РЅС‹Рµ РѕРїРµСЂР°С‚РѕСЂС‹
+		// РєРѕРјР°РЅРґР° Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ РёР»Рё СЃРёРјРІРѕР»РѕРј { РёР»Рё СЃРёРјРІРѕР»РѕРј ; РёР»Рё РєРѕРЅС†РѕРј СЃС‚СЂРѕРєРё. Р”СЂСѓРіРѕРіРѕ РЅРµ РґР°РЅРѕ
 		std::vector <commonLexem* > lexCommand;
 		std::string command;
 		std::string variableName;
@@ -572,29 +581,29 @@ public:
 		size_t context = 0; // function or condition block we are inside of
 		for (size_t lineInd = 0; lineInd < source.size(); ++lineInd) {
 			lexCommand.clear();
-			// цикл внутри строки на командные слова
+			// С†РёРєР» РІРЅСѓС‚СЂРё СЃС‚СЂРѕРєРё РЅР° РєРѕРјР°РЅРґРЅС‹Рµ СЃР»РѕРІР°
 			for (size_t i = 0; i < source[lineInd].length(); ++i) {
-				// command processing - разделение команды на составляющие лексемы. Если пробел или ( - это новая лексема. 
-				// обработка конца команды
+				// command processing - СЂР°Р·РґРµР»РµРЅРёРµ РєРѕРјР°РЅРґС‹ РЅР° СЃРѕСЃС‚Р°РІР»СЏСЋС‰РёРµ Р»РµРєСЃРµРјС‹. Р•СЃР»Рё РїСЂРѕР±РµР» РёР»Рё ( - СЌС‚Рѕ РЅРѕРІР°СЏ Р»РµРєСЃРµРјР°.
+				// РѕР±СЂР°Р±РѕС‚РєР° РєРѕРЅС†Р° РєРѕРјР°РЅРґС‹
 				if (source[lineInd][i] == ';' || source[lineInd][i] == '{') {
-					if (source[lineInd][i] == '{') 
+					if (source[lineInd][i] == '{')
 						lexCommand.push_back(new specialLexem{ std::string(1, source[lineInd][i]), lineInd, i });
 					for (; i < source[lineInd].length(); ++i)
 						if (source[lineInd][i] != ' ')
 							throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - bad line ending");
 				}
-				// обработка конца слова
+				// РѕР±СЂР°Р±РѕС‚РєР° РєРѕРЅС†Р° СЃР»РѕРІР°
 				if ((source[lineInd][i] == ' ' || specialLexem::isSpecialLexem(source[lineInd][i])) && command != "") {
-					// спец символ
-					if (specialLexem::isSpecialLexem(source[lineInd][i])) 
+					// СЃРїРµС† СЃРёРјРІРѕР»
+					if (specialLexem::isSpecialLexem(source[lineInd][i]))
 						lexCommand.push_back(new specialLexem{ std::string(1, source[lineInd][i]), lineInd, i });
-					// условный оператор
+					// СѓСЃР»РѕРІРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ
 					if (operators::isKeyWordOperator(command)) {
 						lexCommand.push_back( new operators{ command, lineInd, i - command.length() });
 						if (command == "return") context = 0;
 						else context = lineInd;
 					}
-					// тип данных
+					// С‚РёРї РґР°РЅРЅС‹С…
 					if (dataType::isDataType(command)) {
 						lexCommand.push_back(new dataType{ command, lineInd, i - command.length() });
 						char type = dynamic_cast<dataType*>(lexCommand[lexCommand.size() - 1])->getTypeId();
@@ -603,7 +612,7 @@ public:
 						success = false;
 						isFunction = false;
 						arrDim = 0;
-						// пытаемся получить имя 
+						// РїС‹С‚Р°РµРјСЃСЏ РїРѕР»СѓС‡РёС‚СЊ РёРјСЏ
 						for (; i < source[lineInd].length(); ++i) {
 							if (source[lineInd][i] == ';' && variableName.length() > 0) {
 								success = true;
@@ -613,7 +622,7 @@ public:
 								success = false;
 								break;
 							}
-							// это не переменная а функция!
+							// СЌС‚Рѕ РЅРµ РїРµСЂРµРјРµРЅРЅР°СЏ Р° С„СѓРЅРєС†РёСЏ!
 							else if (source[lineInd][i] == '(') {
 								if (context != 0) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - nested functions declarations are not allowed");
 								lexCommand.push_back(new function{ variableName, lineInd, i - variableName.length()});
@@ -623,7 +632,7 @@ public:
 								context = lineInd;
 								break;
 							}
-							// это n-мерный массив
+							// СЌС‚Рѕ n-РјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ
 							else if (source[lineInd][i] == '[') {
 								arrDim = 1;
 							}
@@ -637,7 +646,7 @@ public:
 								break;
 							}
 						}
-						// в случае успеха добавляем в переменные
+						// РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС…Р° РґРѕР±Р°РІР»СЏРµРј РІ РїРµСЂРµРјРµРЅРЅС‹Рµ
 						if (!success) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(i) + ": " + source[lineInd][i] + " - no valid variable or function name");
 						if (!isFunction) {
 							lexCommand.push_back(new variable{ variableName, lineInd, i - variableName.length(), type, context, arrDim });
@@ -651,19 +660,19 @@ public:
 				program.push_back(lexCommand);
 			}
 		}
-	} 
+	}
 	*/
-	// при получении вектора lexem* затем можно сделать так при уточнении конкретной лексемы:
+	// РїСЂРё РїРѕР»СѓС‡РµРЅРёРё РІРµРєС‚РѕСЂР° lexem* Р·Р°С‚РµРј РјРѕР¶РЅРѕ СЃРґРµР»Р°С‚СЊ С‚Р°Рє РїСЂРё СѓС‚РѕС‡РЅРµРЅРёРё РєРѕРЅРєСЂРµС‚РЅРѕР№ Р»РµРєСЃРµРјС‹:
 	// lexem* lex = vec[i];
 	// vec[i] = new operand {lex->name, lex->pos, lex->ind};
 	// delete[] lex;
 	interpretator(std::vector<std::string>& source) {
-		process(source); // предобработка кода для исполнения
+		process(source); // РїСЂРµРґРѕР±СЂР°Р±РѕС‚РєР° РєРѕРґР° РґР»СЏ РёСЃРїРѕР»РЅРµРЅРёСЏ
 	}
 
 	~interpretator() {
 		for (size_t i = 0; i < program.size(); ++i) {
-				delete program[i];
+			delete program[i];
 		}
 	}
 };
@@ -693,7 +702,7 @@ int main() {
 	while (std::getline(file, str)) {
 		file_content.push_back(str);
 	}
-//	printFileContent(file_content);
+	//	printFileContent(file_content);
 	try {
 		interpretator program(file_content);
 	}
