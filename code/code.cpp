@@ -5,6 +5,9 @@ double norm1() {
         res+=abs(pMem[i]);
         i+=1;
     }
+    if (res > 0) {
+        i = 0;
+    }
     return res;
 }
 

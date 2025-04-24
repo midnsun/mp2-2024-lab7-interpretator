@@ -113,7 +113,7 @@ void interpretator::process(const std::vector<std::string>& source)
 				if (word != "return") {
 					int bracketCounter = 0;
 					bool exitFlag = false;
-					begin = program.size();
+//					begin = program.size();
 					counter = 0;
 					for (size_t i = lineInd; i < strProgram.size(); ++i) {
 						size_t j;
@@ -122,15 +122,14 @@ void interpretator::process(const std::vector<std::string>& source)
 						for (; j < strProgram[i].size(); ++j, ++counter) {
 							if (strProgram[i][j].first == "{") {
 								if (bracketCounter == 0) {
-									//										lineBegin = i;
-									//										wordBegin = j;
+									begin = counter + program.size();
 								}
 								++bracketCounter;
 							}
 							if (strProgram[i][j].first == "}") {
 								--bracketCounter;
 								if (bracketCounter == 0) {
-									end = counter + begin;
+									end = counter + program.size();
 									exitFlag = true;
 									break;
 								}
@@ -231,14 +230,43 @@ void interpretator::process(const std::vector<std::string>& source)
 	// Непонятно, как работать с массивами
 
 	// Реализуем систему JMP:
+	myoperators* tmpKeyWordOperator;
+	size_t tmpKeyWordOperatorPos;
+	bool elseFlag = false;
 
 	for (pos = 0; pos < program.size(); ++pos) {
 		if (program[pos]->getClass() == "myoperators") {
 			if (program[pos]->getName() == "while") {
-				
+				tmpKeyWordOperatorPos = pos;
+				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+				// Прыжок если не выполнилось условие
+				pos = tmpKeyWordOperator->getBegin();
+				delete program[pos];
+				program[pos] = new myoperators{"JMP", tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1 };
+				// Прыжок в начало цикла
+				pos = tmpKeyWordOperator->getEnd();
+				delete program[pos];
+				program[pos] = new myoperators{ "JMP", tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos };
+				pos = tmpKeyWordOperatorPos;
 			}
 			if (program[pos]->getName() == "if") {
-				continue;
+				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
+
+				tmpKeyWordOperatorPos = pos;
+				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+				// Прыжок если не выполнилось условие (на следующий else, но после этого слова)
+				pos = tmpKeyWordOperator->getBegin();
+				if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "else") elseFlag = true;
+				delete program[pos];
+				program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag };
+				// Прыжок на конец блока else if если else есть. В случае else if можно просто поставить while и искать последний блок, запомнить конец последнего блока и всегда ставить прыжок туда
+				pos = tmpKeyWordOperator->getEnd();
+				if (elseFlag) {
+					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos + 1]);
+					delete program[pos];
+					program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1 };
+				}
+				pos = tmpKeyWordOperatorPos;
 			}
 		}
 	}

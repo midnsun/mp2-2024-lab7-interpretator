@@ -33,7 +33,7 @@ public:
 		// 4. Function with name GLOBAL is prohibited
 		//
 		// New key words: 
-		// JIF (expr) cmd - jump if expression is true
+		// JMPIF (expr) cmd - jump if expression is true
 		// JMP cmd - jump always
 		//
 	}

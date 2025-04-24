@@ -15,3 +15,10 @@ void myoperators::showInfo() const
 }
 
 std::string myoperators::getClass() const { return "myoperators"; }
+
+size_t myoperators::getBegin() const noexcept {
+	return begin;
+}
+size_t myoperators::getEnd() const noexcept {
+	return end;
+}

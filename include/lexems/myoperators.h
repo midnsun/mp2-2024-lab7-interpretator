@@ -15,4 +15,6 @@ public:
 	}
 	virtual void showInfo() const;
 	virtual std::string getClass() const;
+	size_t getBegin() const noexcept;
+	size_t getEnd() const noexcept;
 };
