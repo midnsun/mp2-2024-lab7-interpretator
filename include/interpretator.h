@@ -20,7 +20,8 @@ class interpretator {
 public:
 	
 	void process(const std::vector<std::string>& source);
-	void execute(function* func, std::vector<constant> agruments);
+	constant execute(function* func, std::vector<constant> agruments);
+	constant executeWithoutErrorsHandling(function* func, std::vector<constant> agruments);
 
 	// ВЫПОЛНЕНИЕ НАЧИНАЕТСЯ С ФУНКЦИИ main, завершается return.
 	// В общем случае, начинается с прозвольной функции

@@ -13,4 +13,5 @@ public:
 	constant(const std::string& str, size_t ind, size_t pos, char type) : operand(str, ind, pos, type) { }
 	virtual void showInfo() const;
 	virtual std::string getClass() const;
+	constant& operator=(const constant& c);
 };

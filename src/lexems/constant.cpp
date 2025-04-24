@@ -21,3 +21,7 @@ void constant::showInfo() const
 }
 
 std::string constant::getClass() const { return "constant"; }
+
+constant& constant::operator=(const constant& c) {
+
+}

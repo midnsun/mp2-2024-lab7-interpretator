@@ -1,4 +1,5 @@
 #include "interpretator.h"
+#include "calculator.h"
 #include <stack>
 
 // »де€ создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
@@ -239,19 +240,66 @@ void interpretator::process(const std::vector<std::string>& source)
 	// 3. «аписать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 }
 
+constant interpretator::executeWithoutErrorsHandling(function* func, std::vector<constant> arguments) {
+	constant result("##UNNAMED##", -1, -1, func->type);
+	size_t pos, argsCounter;
+	bool flag = false;
+	std::set<variable*, variableCMP> vars;
+	variable* var;
 
-void interpretator::execute(function* func, std::vector<constant> arguments) {
+	pos = func->begin;
+	argsCounter = 0;
+	++pos;
+	++pos;
+	if (program[pos]->getName() == ")") {
+		flag = true;
+	}
+
+	while (pos < program.size() && !flag) {
+		// data type
+		++pos;
+		// variable
+		var = dynamic_cast<variable*>(program[pos]);
+		var->setValue(arguments[argsCounter].getValue());
+		vars.insert(var);
+		++argsCounter;
+		++pos;
+		// ) or ,
+		if (program[pos]->getName() == ")") {
+			flag = true;
+			break;
+		}
+		++pos;
+	}
+	++pos;
+	++pos;
+
+	flag = false;
+	std::stack<size_t> cycles;
+
+	for (; pos <= func->end; ++pos) {
+		// executing
+		// находим слово, обозначающее dataType - добавл€ем в переменные, провер€€, есть ли там така€ же. ≈сли есть - ошибка. 
+		// находим слово, обозначающее keyWord - выполн€ем. Jump как обычно выполн€ем (по стеку). ¬се просто
+	}
+}
+
+constant interpretator::execute(function* func, std::vector<constant> arguments) {
 
 	// действи€ требуютс€ только при ключевых словах, т.е:
 	// int, double...
 	// while, if, else
 
-	size_t pos;
+	constant result("##UNNAMED##", -1, -1, func->type);
+	size_t pos, argsCounter;
+	size_t begin, end;
 	bool flag = false;
-	std::vector<variable*> argvars; // SET!!!!!!
-//	std::set<variable*, variableCMP> vars;
+//	std::vector<variable*> argvars; // SET!!!!!!
+	std::set<variable*, variableCMP> vars;
+	variable* var;
 
 	pos = func->begin;
+	argsCounter = 0;
 	++pos;
 	if (pos >= program.size() || program[pos]->getName() != "(") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - No opening bracket");
 	++pos;
@@ -266,7 +314,13 @@ void interpretator::execute(function* func, std::vector<constant> arguments) {
 		++pos;
 		// variable
 		if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
-		argvars.push_back(dynamic_cast<variable*>(program[pos]));
+		if (argsCounter >= arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
+		var = dynamic_cast<variable*>(program[pos]);
+		if (arguments[argsCounter].getTypeId() != var->getTypeId()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - Incompatible types of arguments");
+		if (vars.find(var) != vars.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
+		var->setValue(arguments[argsCounter].getValue());
+		vars.insert(var);
+		++argsCounter;
 		++pos;
 		// ) or ,
 		if (pos >= program.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
@@ -274,27 +328,65 @@ void interpretator::execute(function* func, std::vector<constant> arguments) {
 			flag = true;
 			break;
 		}
-		else if (program[pos]->getClass() != "specialSymbol" || program[pos]->getName() != ",")  throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Comma or closing bracket is missing");
+		else if (program[pos]->getClass() != "specialLexem" || program[pos]->getName() != ",")  throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Comma or closing bracket is missing");
 		++pos;
 	}
 	if (!flag) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
 	++pos;
 	if (pos >= program.size() || program[pos]->getName() != "{") throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no opening figure bracket found");
 	++pos;
+	if (argsCounter != arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
 	// setting variables as given arguments
+	/*
 	if (argvars.size() != arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
 	for (size_t i = 0; i < arguments.size(); ++i) {
 		if (argvars[i]->getTypeId() != arguments[i].getTypeId()) throw std::runtime_error("Line " + std::to_string(argvars[i]->getInd()) + ", symbol " + std::to_string(argvars[i]->getPos()) + ": " + argvars[i]->getName() + " - Incompatible types of arguments");
 		argvars[i]->setValue(arguments[i].getValue());
 	}
+	*/
 
 	flag = false;
+	bool returnFlag = false;
 	std::stack<size_t> cycles;
-	std::set<variable*, variableCMP> vars; // SET!!!!
 
 	for (; pos <= func->end; ++pos) {
 		// executing
 		// находим слово, обозначающее dataType - добавл€ем в переменные, провер€€, есть ли там така€ же. ≈сли есть - ошибка. 
+		if (program[pos]->getClass() == "dataType") {
+			++pos;
+			if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
+			var = dynamic_cast<variable*>(program[pos]);
+			if (vars.find(var) != vars.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
+			vars.insert(var);
+			begin = pos++;
+		}
 		// находим слово, обозначающее keyWord - выполн€ем. Jump как обычно выполн€ем (по стеку). ¬се просто
+		else if (program[pos]->getClass() == "myoperators") {
+			if (program[pos]->getName() == "return") {
+				begin = ++pos;
+				returnFlag = true;
+			}
+			else if (program[pos]->getName() == "while") {
+
+			}
+			else if (program[pos]->getName() == "if") {
+
+			}
+			else {
+				throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Invalid key word operator");
+			}
+		}
+		// вычисл€ем арифметические выражени€
+		while (pos <= func->end && program[pos]->getName() != ";") ++pos;
+		end = pos;
+		calculator calc(program, begin, end, vars);
+		constant tmpResult = calc.calculate();
+		if (flag) {
+			result = tmpResult;
+			break;
+		}
 	}
+
+	if (result.getTypeId() != func->type) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - Incompatible types of arguments");
+	return result;
 }
