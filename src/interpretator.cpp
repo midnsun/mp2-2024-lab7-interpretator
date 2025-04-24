@@ -370,7 +370,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 
 			}
 			else if (program[pos]->getName() == "if") {
-
+				
 			}
 			else {
 				throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Invalid key word operator");
