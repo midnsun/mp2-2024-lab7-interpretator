@@ -251,6 +251,7 @@ void interpretator::process(const std::vector<std::string>& source)
 			}
 			if (program[pos]->getName() == "if") {
 				// ¬от тут посчитать конец последнего блока. ѕотом выполн€ть все нижеперечисленное в цикле.
+				//   тому же, чтобы все заработало, нужно исправить парсинг else и разрешить ему исполн€тьс€ без {} если после него стоит if
 
 				tmpKeyWordOperatorPos = pos;
 				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
@@ -390,6 +391,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 
 	flag = false;
 	bool returnFlag = false;
+	myoperators* tmpKeyWord;
 
 	for (; pos <= func->end; ++pos) {
 		// executing
@@ -408,11 +410,21 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 				begin = ++pos;
 				returnFlag = true;
 			}
-			else if (program[pos]->getName() == "while") {
-				
+			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if") {
+				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
+				calculator calc(program, pos + 1, tmpKeyWord->getBegin(), vars);
+				tmpResult = calc.calculate();
+				pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
+
+				--pos;
+				continue;
 			}
-			else if (program[pos]->getName() == "if") {
-				
+			else if (program[pos]->getName() == "JMP") {
+				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
+				pos = tmpKeyWord->getInd();
+
+				--pos;
+				continue;
 			}
 			else {
 				throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Invalid key word operator");
@@ -420,7 +432,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 		}
 		// вычисл€ем арифметические выражени€
 		while (pos <= func->end && program[pos]->getName() != ";") ++pos;
-		end = pos;
+		end = pos + 1;
 		calculator calc(program, begin, end, vars);
 		tmpResult = calc.calculate();
 		if (flag) {
