@@ -13,7 +13,8 @@ public:
 	// возвращает n байт пам€ти в виде константы, одно из полей	константы должно объ€снить, как интерпретировать результат
 	// в идеале, constant.getValue() должен сразу возвращать то значение, которое там получилось (double, int ...)
 	constant calculate() {
-
+		constant result("##UNNAMED##", -1, -1, -1);
+		return result;
 	}
 	~calculator() {
 		// NO COMMONLEXEM* DELETING!!!!!!!

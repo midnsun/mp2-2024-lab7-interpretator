@@ -230,6 +230,19 @@ void interpretator::process(const std::vector<std::string>& source)
 	// Позиции перехода пишутся в индексах таблицы программы
 	// Непонятно, как работать с массивами
 
+	// Реализуем систему JMP:
+
+	for (pos = 0; pos < program.size(); ++pos) {
+		if (program[pos]->getClass() == "myoperators") {
+			if (program[pos]->getName() == "while") {
+				
+			}
+			if (program[pos]->getName() == "if") {
+				continue;
+			}
+		}
+	}
+
 	// PRINTING
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 		std::cout << wordInd << ":	";
@@ -282,6 +295,7 @@ constant interpretator::executeWithoutErrorsHandling(function* func, std::vector
 		// находим слово, обозначающее dataType - добавляем в переменные, проверяя, есть ли там такая же. Если есть - ошибка. 
 		// находим слово, обозначающее keyWord - выполняем. Jump как обычно выполняем (по стеку). Все просто
 	}
+	return result;
 }
 
 constant interpretator::execute(function* func, std::vector<constant> arguments) {
@@ -291,6 +305,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 	// while, if, else
 
 	constant result("##UNNAMED##", -1, -1, func->type);
+	constant tmpResult = result;
 	size_t pos, argsCounter;
 	size_t begin, end;
 	bool flag = false;
@@ -347,7 +362,6 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 
 	flag = false;
 	bool returnFlag = false;
-	std::stack<size_t> cycles;
 
 	for (; pos <= func->end; ++pos) {
 		// executing
@@ -367,7 +381,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 				returnFlag = true;
 			}
 			else if (program[pos]->getName() == "while") {
-
+				
 			}
 			else if (program[pos]->getName() == "if") {
 				
@@ -380,13 +394,13 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 		while (pos <= func->end && program[pos]->getName() != ";") ++pos;
 		end = pos;
 		calculator calc(program, begin, end, vars);
-		constant tmpResult = calc.calculate();
+		tmpResult = calc.calculate();
 		if (flag) {
 			result = tmpResult;
 			break;
 		}
 	}
 
-	if (result.getTypeId() != func->type) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - Incompatible types of arguments");
+	if (result.getTypeId() != func->type) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incompatible types of arguments");
 	return result;
 }

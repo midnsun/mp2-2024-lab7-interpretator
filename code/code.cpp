@@ -15,6 +15,12 @@ double norm2() {
         res+=pMem[i]*pMem[i];
         i+=1;
     }
+    if (res > 0) {
+        i = 0;
+    }
+    else {
+        i = 1;
+    } 
     return sqrt(res);
 }
 

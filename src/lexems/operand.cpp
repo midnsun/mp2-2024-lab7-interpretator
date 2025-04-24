@@ -18,3 +18,8 @@ void operand::setValue(void* v) {
 operand::~operand() {
 	delete value;
 }
+
+bool operand::isTrue() const {
+	bool result = false;
+	return false;
+}

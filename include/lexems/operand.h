@@ -15,5 +15,6 @@ public:
 	char getTypeId() const;
 	void* getValue() const;
 	void setValue(void* v);
+	bool isTrue() const;
 	virtual ~operand();
 };
