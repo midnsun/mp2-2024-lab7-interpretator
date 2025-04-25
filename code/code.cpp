@@ -1,49 +1,30 @@
-double add(double a, double b) {
-    return a + b;
-}
-double sub(double a, double b) {
-    return a - b;
-}
-double mul(double a, double b) {
-    return a * b;
-}
-double div(double a, double b) {
-    return a / b;
+double norm1() {
+    double res = 0.0;
+    int i = 0;
+    while (i < sz) {
+        res+=abs(pMem[i]);
+        i+=1;
+    }
+    if (res > 0) {
+        i = 0;
+    }
+    return res;
 }
 
-int main() {
-    double a
-    double b;
-    double c;
-    int op = -1;
-    print(0);
-    while (op != 0) {
-        print(1);
-        scan(op);
-        print(2);
-        scan(a);
-        scan(b);
-        if (op > 4 && op < 0) {
-            print(3);
-            return 0;
-        }
-        else {
-            if (op==1) {
-                c = add(a, b);
-            }
-            if (op==2) {
-                c = sub(a, b);
-            }
-            if (op==3) {
-                c = mul(a, b);
-            }
-            if (op==4) {
-                c = div(a, b);
-            }
-        }
-        print(4);
-        print(c);
+double norm2() {
+    double res = 0.0;
+    int i = 0;
+    while (i < sz) {
+        res+=pMem[i]*pMem[i];
+        i+=1;
     }
-    print(5);
-    return 0;
+    if (res > 0) {
+        i = 0;
+    }
+    else {
+        i = 1;
+    } 
+    return sqrt(res);
 }
+
+norm1();
