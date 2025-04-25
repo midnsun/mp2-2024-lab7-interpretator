@@ -135,11 +135,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\calculator.cpp" />
     <ClCompile Include="..\..\src\interpretator.cpp" />
     <ClCompile Include="..\..\src\lexems\commonLexem.cpp" />
     <ClCompile Include="..\..\src\lexems\constant.cpp" />
     <ClCompile Include="..\..\src\lexems\dataType.cpp" />
     <ClCompile Include="..\..\src\lexems\function.cpp" />
+    <ClCompile Include="..\..\src\lexems\keyWords.cpp" />
     <ClCompile Include="..\..\src\lexems\myoperators.cpp" />
     <ClCompile Include="..\..\src\lexems\operand.cpp" />
     <ClCompile Include="..\..\src\lexems\operation.cpp" />

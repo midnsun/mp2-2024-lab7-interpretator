@@ -2,6 +2,8 @@
 
 std::set<char> specialLexems{ '(', ')', '{', '}', '[', ']', ',', ';' };
 
+specialLexem::specialLexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) { }
+
 bool specialLexem::isSpecialLexem(char c)
 {
 	if (specialLexems.find(c) != specialLexems.end()) return true;

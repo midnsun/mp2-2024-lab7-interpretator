@@ -13,7 +13,7 @@ public:
 	// 1 int B;
 	//
 	// lexem B has ind = 1, pos = 4
-	commonLexem(std::string s, size_t ind, size_t pos) : lex(s), lineIndex(ind), linePos(pos) { // name of lexem, number of line, position in the line
+	commonLexem(std::string s, size_t ind, size_t pos); // name of lexem, number of line, position in the line
 		// Allowed Lexem: 
 		// 1. key word:
 		// 1.1 data types: int, double, void (functions only), var[size]
@@ -36,7 +36,6 @@ public:
 		// JMPIF (expr) cmd - jump if expression is true
 		// JMP cmd - jump always
 		//
-	}
 	std::string getName() const noexcept;
 	size_t getInd() const noexcept;
 	size_t getPos() const noexcept;

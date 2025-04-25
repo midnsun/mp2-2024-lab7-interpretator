@@ -327,6 +327,41 @@ constant interpretator::executeWithoutErrorsHandling(function* func, std::vector
 	return result;
 }
 
+constant interpretator::startExecute()
+{
+	//в программе есть ровно одна функция main
+	bool flag = false;
+	function* main = nullptr;
+	for (size_t wordInd = 0; wordInd < program.size(); ++wordInd)
+	{
+		if (program[wordInd]->getClass() == "function" && program[wordInd]->getName() == "main")
+		{
+			if (flag)
+			{
+				throw std::runtime_error("Line " + std::to_string(program[wordInd]->getInd()) + "duplicate main");
+			}
+			flag = true;
+			main = dynamic_cast<function*>(program[wordInd]);
+		}
+	}
+	if (!flag)
+	{
+		throw std::runtime_error("main not found");
+	}
+	execute(main, std::vector<constant>());//main не принимает аргументы
+	return constant("name", 0, 0, 0);
+}
+
+interpretator::interpretator(std::vector<std::string>& source) {
+	process(source); // предобработка кода для исполнения
+}
+
+interpretator::~interpretator() {
+	for (size_t i = 0; i < program.size(); ++i) {
+		delete program[i];
+	}
+}
+
 constant interpretator::execute(function* func, std::vector<constant> arguments) {
 
 	// действия требуются только при ключевых словах, т.е:
@@ -392,10 +427,10 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 	flag = false;
 	bool returnFlag = false;
 	myoperators* tmpKeyWord;
-
 	for (; pos <= func->end; ++pos) {
 		// executing
 		// находим слово, обозначающее dataType - добавляем в переменные, проверяя, есть ли там такая же. Если есть - ошибка. 
+		begin = pos;
 		if (program[pos]->getClass() == "dataType") {
 			++pos;
 			if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
@@ -413,7 +448,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if") {
 				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
 				calculator calc(program, pos + 1, tmpKeyWord->getBegin(), vars);
-				tmpResult = calc.calculate();
+				tmpResult = calc.calculate(this);
 				pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
 
 				--pos;
@@ -432,9 +467,9 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 		}
 		// вычисляем арифметические выражения
 		while (pos <= func->end && program[pos]->getName() != ";") ++pos;
-		end = pos + 1;
+		end = pos;
 		calculator calc(program, begin, end, vars);
-		tmpResult = calc.calculate();
+		tmpResult = calc.calculate(this);
 		if (flag) {
 			result = tmpResult;
 			break;

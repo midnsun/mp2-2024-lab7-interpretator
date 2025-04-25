@@ -18,10 +18,12 @@ class interpretator {
 //	std::set< variable, variableCMP > variables;
 	std::set< function*, functionCMP > functions;
 public:
-	
+	interpretator(std::vector<std::string>& source);
+	~interpretator();
 	void process(const std::vector<std::string>& source);
 	constant execute(function* func, std::vector<constant> agruments);
 	constant executeWithoutErrorsHandling(function* func, std::vector<constant> agruments);
+	constant startExecute();
 
 	// ВЫПОЛНЕНИЕ НАЧИНАЕТСЯ С ФУНКЦИИ main, завершается return.
 	// В общем случае, начинается с прозвольной функции
@@ -78,13 +80,4 @@ public:
 	// lexem* lex = vec[i];
 	// vec[i] = new operand {lex->name, lex->pos, lex->ind};
 	// delete[] lex;
-	interpretator(std::vector<std::string>& source) {
-		process(source); // предобработка кода для исполнения
-	}
-
-	~interpretator() {
-		for (size_t i = 0; i < program.size(); ++i) {
-			delete program[i];
-		}
-	}
 };

@@ -12,7 +12,7 @@ class variable : public operand {
 	// В стеке вызовов хранится только точка возврата, по команде возврата удаляются все переменные с filed = номеру функции
 public:
 	//	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {}
-	variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand{ str, ind, pos, _type }, arr(_arr) {}
+	variable(std::string str, size_t ind, size_t pos, char _type, int _arr);
 	static bool isValidCharForVariable(char c);
 	static bool isValidVariable(const std::string& str);
 	virtual void showInfo() const;

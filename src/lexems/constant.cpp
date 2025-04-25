@@ -1,5 +1,7 @@
 #include "constant.h"
 
+constant::constant(const std::string& str, size_t ind, size_t pos, char type) : operand(str, ind, pos, type) { }
+
 bool constant::isValidConstant(const std::string& str) // проверить, это число или нет
 {
 	char junk;
