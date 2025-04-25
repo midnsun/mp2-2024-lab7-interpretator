@@ -27,4 +27,7 @@ double norm2() {
     return sqrt(res);
 }
 
-norm1();
+int main() {
+    norm1();
+    return 0;
+}

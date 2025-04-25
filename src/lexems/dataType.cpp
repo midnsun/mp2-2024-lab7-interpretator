@@ -2,6 +2,8 @@
 
 std::set<std::string> dataTypes{ "int", "double", "void" };
 
+dataType::dataType(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) { }
+
 bool dataType::isDataType(const std::string& str)
 {
 	if (dataTypes.find(str) != dataTypes.end()) return true;

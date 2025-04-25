@@ -39,6 +39,7 @@ int main() {
 	printFileContent(file_content);
 	try {
 		interpretator program(file_content);
+		program.startExecute();
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << endl;

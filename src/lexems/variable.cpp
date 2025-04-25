@@ -1,5 +1,7 @@
 #include "variable.h"
 
+variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand{ str, ind, pos, _type }, arr(_arr) {}
+
 bool variable::isValidCharForVariable(char c)
 {
 	if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return true;
