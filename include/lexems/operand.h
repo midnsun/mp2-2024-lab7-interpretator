@@ -5,7 +5,7 @@
 
 class operand : public commonLexem {
 private:
-	char type; // 1 - int, 2 - double
+	char type; // 1 - int, 2 - double, 3 - string
 	void* value;
 public:
 	static bool isValidCharForOperand(char c);

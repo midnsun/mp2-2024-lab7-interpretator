@@ -134,7 +134,7 @@ void interpretator::process(const std::vector<std::string>& source)
 									break;
 								}
 							}
-							if (bracketCounter < 0)  throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+							if (bracketCounter < 0) throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
 						}
 						if (exitFlag) break;
 					}
@@ -250,6 +250,7 @@ void interpretator::process(const std::vector<std::string>& source)
 				pos = tmpKeyWordOperatorPos;
 			}
 			if (program[pos]->getName() == "if") {
+				elseFlag = false;
 				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
 				// К тому же, чтобы все заработало, нужно исправить парсинг else и разрешить ему исполняться без {} если после него стоит if
 
