@@ -1,6 +1,6 @@
 #include "specialLexem.h"
 
-std::set<char> specialLexems{ '(', ')', '{', '}', '[', ']', ',', ';' };
+std::set<char> specialLexems{ '(', ')', '{', '}', '[', ']', ',', ';', '"' };
 
 bool specialLexem::isSpecialLexem(char c)
 {

@@ -1,3 +1,35 @@
+double norm1() {
+    double res = 0.0;
+    int i = 0;
+    while (i < sz) {
+        res+=abs(pMem[i]);
+        i+=1;
+    }
+    if (res > 0) {
+        i = 0;
+    }
+    return res;
+}
+
+double norm2() {
+    double res = 0.0;
+    int i = 0;
+    while (i < sz) {
+        res+=pMem[i]*pMem[i];
+        i+=1;
+    }
+    if (res > 0) {
+        i = 0;
+    }
+    else {
+        i = 1;
+    } 
+    return sqrt(res);
+}
+
+norm1();
+
+
 double add(double a, double b) {
     return a + b;
 }
@@ -16,15 +48,15 @@ int main() {
     double b;
     double c;
     int op = -1;
-    print(0);
+    print("This is calculator!");
     while (op != 0) {
-        print(1);
+        print("Type 0 for quit, 1 for add, 2 for sub, 3 for mul 4 for div");
         scan(op);
-        print(2);
+        print("Enter two operands with enter after each");
         scan(a);
         scan(b);
         if (op > 4 && op < 0) {
-            print(3);
+            print("Invalid operation input");
             return 0;
         }
         else {
@@ -41,9 +73,9 @@ int main() {
                 c = div(a, b);
             }
         }
-        print(4);
+        print("Your result is: ");
         print(c);
     }
-    print(5);
+    print("Calculator ended its work");
     return 0;
 }

@@ -94,7 +94,30 @@ void interpretator::process(const std::vector<std::string>& source)
 			wordPos = strProgram[lineInd][wordInd].second;
 
 			// SPECIAL LEXEM
-			if (word.length() == 1 && specialLexem::isSpecialLexem(word[0])) program.push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
+			if (word.length() == 1 && specialLexem::isSpecialLexem(word[0])) {
+				/*
+				// String constant
+				if (word[0] == '"') {
+					bool tmpflag = false;
+					while (wordInd < strProgram[lineInd].size()) {
+						++wordInd;
+						word += strProgram[lineInd][wordInd].first;
+						if (strProgram[lineInd][wordInd].first.size() == 1 && strProgram[lineInd][wordInd].first[0] == '"') {
+							tmpflag = true;
+							break;
+						}
+					}
+					if (!tmpflag) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + " - No closing quotation mark");
+					program.push_back(new constant{ word, lineInd, size_t(wordPos), 3 });
+
+					continue;
+				}
+				else {
+					program.push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
+				}
+				*/
+				program.push_back(new specialLexem{ word, lineInd, size_t(wordPos) });
+			}
 
 			// OPERATIONS (+, -, ...)
 			else if (operation::isOperation(word)) program.push_back(new operation{ word, lineInd, size_t(wordPos) });
@@ -134,7 +157,7 @@ void interpretator::process(const std::vector<std::string>& source)
 									break;
 								}
 							}
-							if (bracketCounter < 0)  throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+							if (bracketCounter < 0) throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
 						}
 						if (exitFlag) break;
 					}
@@ -250,6 +273,7 @@ void interpretator::process(const std::vector<std::string>& source)
 				pos = tmpKeyWordOperatorPos;
 			}
 			if (program[pos]->getName() == "if") {
+				elseFlag = false;
 				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
 				// К тому же, чтобы все заработало, нужно исправить парсинг else и разрешить ему исполняться без {} если после него стоит if
 
