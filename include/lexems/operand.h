@@ -12,7 +12,8 @@ public:
 	operand(const std::string str, size_t ind, size_t pos, char _type);
 	virtual void showInfo() const = 0;
 	virtual std::string getClass() const = 0;
-	char getTypeId() const;
+	char getTypeId() const noexcept;
+	void setTypeId(const char& _type) noexcept;
 	void* getValue() const;
 	void setValue(void* v);
 	bool isTrue() const;

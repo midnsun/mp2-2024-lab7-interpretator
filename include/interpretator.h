@@ -21,8 +21,8 @@ public:
 	interpretator(std::vector<std::string>& source);
 	~interpretator();
 	void process(const std::vector<std::string>& source);
-	constant execute(function* func, std::vector<constant> agruments);
-	constant executeWithoutErrorsHandling(function* func, std::vector<constant> agruments);
+	constant execute(const function const* func, const std::vector<constant>& agruments);
+	constant executeWithoutErrorsHandling(const function const* func, const std::vector<constant>& agruments);
 	constant startExecute();
 
 	// ÂÛÏÎËÍÅÍÈÅ ÍÀ×ÈÍÀÅÒÑß Ñ ÔÓÍÊÖÈÈ main, çàâåğøàåòñÿ return.

@@ -218,7 +218,7 @@ void interpretator::process(const std::vector<std::string>& source)
 					dataTypeAppeared = -1;
 				}
 			}
-			else {
+			else if (word != "\t") {
 				throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - Unknown word");
 			}
 		}
@@ -277,13 +277,15 @@ void interpretator::process(const std::vector<std::string>& source)
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 		std::cout << wordInd << ":	";
 		program[wordInd]->showInfo();
+		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
+			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
 		std::cout << std::endl;
 	}
 
 	// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
 }
 
-constant interpretator::executeWithoutErrorsHandling(function* func, std::vector<constant> arguments) {
+constant interpretator::executeWithoutErrorsHandling(const function const* func, const std::vector<constant>& arguments) {
 	constant result("##UNNAMED##", -1, -1, func->type);
 	size_t pos, argsCounter;
 	bool flag = false;
@@ -330,27 +332,9 @@ constant interpretator::executeWithoutErrorsHandling(function* func, std::vector
 
 constant interpretator::startExecute()
 {
-	//в программе есть ровно одна функция main
-	bool flag = false;
-	function* main = nullptr;
-	for (size_t wordInd = 0; wordInd < program.size(); ++wordInd)
-	{
-		if (program[wordInd]->getClass() == "function" && program[wordInd]->getName() == "main")
-		{
-			if (flag)
-			{
-				throw std::runtime_error("Line " + std::to_string(program[wordInd]->getInd()) + "duplicate main");
-			}
-			flag = true;
-			main = dynamic_cast<function*>(program[wordInd]);
-		}
-	}
-	if (!flag)
-	{
-		throw std::runtime_error("main not found");
-	}
-	execute(main, std::vector<constant>());//main не принимает аргументы
-	return constant("name", 0, 0, 0);
+	function* tmpptr = new function("main", -1, -1, -1, -1, -1);
+	if (functions.find(tmpptr) == functions.end()) throw std::runtime_error("main not found"); //main не принимает аргументы
+	return execute(*functions.find(tmpptr), std::vector<constant>());
 }
 
 interpretator::interpretator(std::vector<std::string>& source) {
@@ -359,11 +343,11 @@ interpretator::interpretator(std::vector<std::string>& source) {
 
 interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
-		delete program[i];
+		//delete program[i];
 	}
 }
 
-constant interpretator::execute(function* func, std::vector<constant> arguments) {
+constant interpretator::execute(const function const* func, const std::vector<constant>& arguments) {
 
 	// действия требуются только при ключевых словах, т.е:
 	// int, double...
@@ -428,7 +412,7 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 	flag = false;
 	bool returnFlag = false;
 	myoperators* tmpKeyWord;
-	for (; pos <= func->end; ++pos) {
+	for (; pos < func->end - 1; ++pos) {
 		// executing
 		// находим слово, обозначающее dataType - добавляем в переменные, проверяя, есть ли там такая же. Если есть - ошибка. 
 		begin = pos;
@@ -467,11 +451,11 @@ constant interpretator::execute(function* func, std::vector<constant> arguments)
 			}
 		}
 		// вычисляем арифметические выражения
-		while (pos <= func->end && program[pos]->getName() != ";") ++pos;
+		while (pos < func->end && program[pos]->getName() != ";") ++pos;
 		end = pos;
 		calculator calc(program, begin, end, vars);
 		tmpResult = calc.calculate(this);
-		if (flag) {
+		if (returnFlag) {
 			result = tmpResult;
 			break;
 		}

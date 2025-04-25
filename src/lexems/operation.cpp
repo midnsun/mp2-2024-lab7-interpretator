@@ -1,6 +1,6 @@
 #include "operation.h"
 
-std::set<std::string> operations{ "=", "+", "-", "*", "/", "%", "+=", "-=", "*=", "/=", "&&", "||", "==", "<=", "<", ">=", ">", "!=" };
+std::set<std::string> operations{ "=", "+", "-", "*", "/", "%", "+=", "-=", "*=", "/=", "%=", "&&", "||", "==", "<=", "<", ">=", ">", "!="};
 
 operation::operation(const std::string& str, size_t ind, size_t pos) : commonLexem(str, ind, pos)
 {

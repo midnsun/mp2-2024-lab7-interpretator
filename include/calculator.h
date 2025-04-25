@@ -6,6 +6,29 @@ class calculator {
 	const std::vector<commonLexem*>& data;
 	const std::set<variable*, variableCMP>& vars;
 	size_t begin, end;
+	std::vector<commonLexem*> toPostfix(const std::vector<commonLexem*>& expr);
+	operand* calcPlus(operand* v1, operand* v2);
+	operand* calcBinaryNegative(operand* v1, operand* v2);
+	operand* calcUnaryNegative(operand* v1);
+	operand* calcMultiplication(operand* v1, operand* v2);
+	operand* calcDivision(operand* v1, operand* v2);
+	operand* calcDivisionWithRemainder(operand* v1, operand* v2);
+	operand* calcAnd(operand* v1, operand* v2);
+	operand* calcOr(operand* v1, operand* v2);
+	operand* calcLess(operand* v1, operand* v2);
+	operand* calcMore(operand* v1, operand* v2);
+	operand* calclessEqual(operand* v1, operand* v2);
+	operand* calcMoreEqual(operand* v1, operand* v2);
+	operand* calcEqually(operand* v1, operand* v2);
+	operand* calcNotEqually(operand* v1, operand* v2);
+	operand* assignment(operand* v1, operand* v2);
+	operand* addAndAssign(operand* v1, operand* v2);
+	operand* NegativeAndAssign(operand* v1, operand* v2);
+	operand* MultiplicationAndAssign(operand* v1, operand* v2);
+	operand* DivisionAndAssign(operand* v1, operand* v2);
+	operand* DivisionWithRemainderAndAssign(operand* v1, operand* v2);
+	
+	operand* calcArithmetic(const std::vector<commonLexem*>& expr);
 public:
 	calculator(const std::vector<commonLexem*>& _data, size_t _begin, size_t _end, const std::set<variable*, variableCMP>& _vars);
 	~calculator();

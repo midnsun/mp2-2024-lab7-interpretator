@@ -25,5 +25,38 @@ void constant::showInfo() const
 std::string constant::getClass() const { return "constant"; }
 
 constant& constant::operator=(const constant& c) {
+	if (getTypeId() == c.getTypeId())
+	{
+		setPos(c.getPos());
+		setInd(c.getInd());
+		if (getTypeId() == 1)
+		{
+			int* a = new int(*(int*)c.getValue());
+			setValue(a);
+		}
+		else if (getTypeId() == 2)
+		{
+			double* a = new double(*(double*)c.getValue());
+			setValue(a);
+		}
+		else if (getTypeId() == 3)
+		{
+			std::string* a = new std::string(*(std::string*)c.getValue());
+			setValue(a);
+		}
+		setName(c.getName());
+	}
+	else if (getTypeId() == 2 && c.getTypeId() == 1)
+	{
+		setPos(c.getPos());
+		setInd(c.getInd());
+		setName(c.getName());
+		double* a = new double(*(int*)c.getValue());
+		setValue(a);
+	}
+	else
+	{
+		throw std::runtime_error("the types of constants do not match");
+	}
 	return *this;
 }
