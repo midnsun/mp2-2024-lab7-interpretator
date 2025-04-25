@@ -1,6 +1,6 @@
 #include "variable.h"
 
-variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand{ str, ind, pos, _type }, arr(_arr) {}
+variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand(str, ind, pos, _type), arr(_arr) {}
 
 bool variable::isValidCharForVariable(char c)
 {

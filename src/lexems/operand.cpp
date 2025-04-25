@@ -8,7 +8,16 @@ bool operand::isValidCharForOperand(char c)
 	return false;
 }
 
-char operand::getTypeId() const { return type; }
+char operand::getTypeId() const noexcept
+{
+	return type; 
+}
+
+void operand::setTypeId(const char& _type) noexcept
+{
+	type = _type;
+	return;
+}
 
 void* operand::getValue() const {
 	return value;

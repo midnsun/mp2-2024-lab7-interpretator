@@ -12,7 +12,7 @@ double div(double a, double b) {
 }
 
 int main() {
-    double a
+    double a;
     double b;
     double c;
     int op = -1;

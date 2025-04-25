@@ -30,7 +30,7 @@ void checkFileContent(std::vector<std::string>& v) { //
 }
 
 int main() {
-	std::fstream file("../../code/code.cpp");
+	std::fstream file("../../code/test.cpp");
 	std::string str;
 	std::vector<std::string> file_content;
 	while (std::getline(file, str)) {
@@ -39,11 +39,12 @@ int main() {
 	printFileContent(file_content);
 	try {
 		interpretator program(file_content);
-		program.startExecute();
+		constant res = program.startExecute();
+		//std::cout << *(int*)res.getValue();
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << endl;
 	}
-
+	int a = std::string("443") == std::string("43");
 	return 0;
 }
