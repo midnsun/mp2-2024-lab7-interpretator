@@ -72,7 +72,7 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
 					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the opening parenthesis before the unary minus was skipped");
 			}
-			if (expr.size() > i + 1 && expr[i + 1]->getClass() == "operation")
+			if (expr.size() > i + 1 && expr[i + 1]->getClass() == "operation" && expr[i]->getName() != "=")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
 					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the operand for this operation is lost");
@@ -898,7 +898,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calcLess(v2, v1));
 			}
 			else if (expr[i]->getName() == "<=" && val.size() >= 2)
 			{
@@ -906,7 +906,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calclessEqual(v2, v1));
 			}
 			else if (expr[i]->getName() == ">" && val.size() >= 2)
 			{
@@ -914,7 +914,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calcMore(v2, v1));
 			}
 			else if (expr[i]->getName() == ">=" && val.size() >= 2)
 			{
@@ -922,7 +922,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calcMoreEqual(v2, v1));
 			}
 			else if (expr[i]->getName() == "==" && val.size() >= 2)
 			{
@@ -930,7 +930,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calcEqually(v2, v1));
 			}
 			else if (expr[i]->getName() == "!=" && val.size() >= 2)
 			{
@@ -938,7 +938,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(calcOr(v2, v1));
+				val.push(calcNotEqually(v2, v1));
 				}
 			else if (expr[i]->getName() == "=" && val.size() >= 2)
 			{
@@ -954,7 +954,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(assignment(v2, v1));
+				val.push(addAndAssign(v2, v1));
 			}
 			else if (expr[i]->getName() == "-=" && val.size() >= 2)
 			{
@@ -962,7 +962,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(assignment(v2, v1));
+				val.push(NegativeAndAssign(v2, v1));
 			}
 			else if (expr[i]->getName() == "*=" && val.size() >= 2)
 			{
@@ -970,7 +970,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(assignment(v2, v1));
+				val.push(MultiplicationAndAssign(v2, v1));
 			}
 			else if (expr[i]->getName() == "/=" && val.size() >= 2)
 			{
@@ -978,7 +978,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(assignment(v2, v1));
+				val.push(DivisionAndAssign(v2, v1));
 			}
 			else if (expr[i]->getName() == "%=" && val.size() >= 2)
 			{
@@ -986,7 +986,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 				val.pop();
 				operand* v2 = dynamic_cast<operand*>(val.top());
 				val.pop();
-				val.push(assignment(v2, v1));
+				val.push(DivisionWithRemainderAndAssign(v2, v1));
 			}
 			else
 			{

@@ -17,6 +17,8 @@ class interpretator {
 	std::vector <  commonLexem* > program;
 //	std::set< variable, variableCMP > variables;
 	std::set< function*, functionCMP > functions;
+	void executePrint(const std::vector<constant>& agruments);
+
 public:
 	interpretator(std::vector<std::string>& source);
 	~interpretator();
