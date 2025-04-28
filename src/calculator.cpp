@@ -104,6 +104,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) + *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2 || v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -111,6 +112,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double(*((double*)(v1->getValue())) + *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -118,6 +120,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double(*((int*)(v1->getValue())) + *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -125,6 +128,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double(*((double*)(v1->getValue())) + *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -132,6 +136,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 3);
 		std::string* a = new std::string(*((std::string*)(v1->getValue())) + *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -144,6 +149,7 @@ operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int((*((int*)(v1->getValue())) - *((int*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2 || v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -151,6 +157,7 @@ operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((double*)(v1->getValue())) - *((double*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -158,6 +165,7 @@ operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((int*)(v1->getValue())) - *((double*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -165,6 +173,7 @@ operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((double*)(v1->getValue())) - *((int*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -178,6 +187,7 @@ operand* calculator::calcUnaryNegative(operand* v1)
 		int* a = new int(*((int*)(v1->getValue())));
 		*a = -(*a);
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2)
@@ -186,6 +196,7 @@ operand* calculator::calcUnaryNegative(operand* v1)
 		double* a = new double(*((double*)(v1->getValue())));
 		*a = -(*a);
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -198,6 +209,7 @@ operand* calculator::calcMultiplication(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int((*((int*)(v1->getValue())) * (*((int*)(v2->getValue())))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2 || v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -205,6 +217,7 @@ operand* calculator::calcMultiplication(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((double*)(v1->getValue())) * *((double*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -212,6 +225,7 @@ operand* calculator::calcMultiplication(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((int*)(v1->getValue())) * *((double*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -219,6 +233,7 @@ operand* calculator::calcMultiplication(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double((*((double*)(v1->getValue())) * *((int*)(v2->getValue()))));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -231,6 +246,7 @@ operand* calculator::calcDivision(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int (*((int*)(v1->getValue())) / *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2 || v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -238,6 +254,7 @@ operand* calculator::calcDivision(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double (*((double*)(v1->getValue())) / *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -245,6 +262,7 @@ operand* calculator::calcDivision(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double (*((int*)(v1->getValue())) / *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -252,6 +270,7 @@ operand* calculator::calcDivision(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double (*((double*)(v1->getValue())) / *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -264,6 +283,7 @@ operand* calculator::calcDivisionWithRemainder(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) % *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -276,6 +296,7 @@ operand* calculator::calcAnd(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) && *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -283,6 +304,7 @@ operand* calculator::calcAnd(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) && *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -290,6 +312,7 @@ operand* calculator::calcAnd(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) && *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -297,6 +320,7 @@ operand* calculator::calcAnd(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) && *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -309,6 +333,7 @@ operand* calculator::calcOr(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) || *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -316,6 +341,7 @@ operand* calculator::calcOr(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) || *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -323,6 +349,7 @@ operand* calculator::calcOr(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) || *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -330,6 +357,7 @@ operand* calculator::calcOr(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) || *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -342,6 +370,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) < *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -349,6 +378,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) < *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -356,6 +386,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) < *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -363,6 +394,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) < *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -370,6 +402,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) < *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -382,6 +415,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) > *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -389,6 +423,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) > *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -396,6 +431,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) > *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -403,6 +439,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) > *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -410,6 +447,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) > *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -422,6 +460,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) <= *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -429,6 +468,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) < *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -436,6 +476,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) <= *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -443,6 +484,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) <= *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -450,6 +492,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) <= *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -462,6 +505,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) >= *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -469,6 +513,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) >= *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -476,6 +521,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) >= *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -483,6 +529,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) >= *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -490,6 +537,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) >= *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -502,6 +550,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) == *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -509,6 +558,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) == *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -516,6 +566,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) == *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -523,6 +574,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) == *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -530,6 +582,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) == *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -542,6 +595,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) != *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
@@ -549,6 +603,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) != *((int*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
@@ -556,6 +611,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) != *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
@@ -563,6 +619,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((double*)(v1->getValue())) != *((double*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
@@ -570,6 +627,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((std::string*)(v1->getValue())) != *((std::string*)(v2->getValue())));
 		tmpres->setValue((void*)(a));
+		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
 	throw std::runtime_error("");//недопустимая операция
@@ -578,29 +636,14 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 operand* calculator::assignment(operand* v1, operand* v2)
 {
 	if (v1->getClass() != "variable") throw std::runtime_error("");
-	if (v1->getTypeId() == 1 && v2->getTypeId() == 1)
+	bool canAssign = v1->getTypeId() == 1 && v2->getTypeId() == 1 ||
+					 v1->getTypeId() == 2 && v2->getTypeId() == 2 ||
+					 v1->getTypeId() == 2 && v2->getTypeId() == 1 ||
+					 v1->getTypeId() == 3 && v2->getTypeId() == 3;
+	if (canAssign)
 	{
-		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*(int*)v2->getValue());
-		v1->setValue(a);
-	}
-	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
-	{
-		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
-		double* a = new double(*(double*)v2->getValue());
-		v1->setValue(a);
-	}
-	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
-	{
-		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
-		double* a = new double(*(int*)v2->getValue());
-		v1->setValue(a);
-	}
-	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
-	{
-		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
-		std::string* a = new std::string(*(std::string*)v2->getValue());
-		v1->setValue(a);
+		v1->setValue(v2->getValue());
+		(*vars.find(dynamic_cast<variable*>(v1)))->setValue(v2->getValue());
 	}
 	else std::runtime_error("");//недопустимая операция
 	return v1;
@@ -631,8 +674,152 @@ operand* calculator::DivisionWithRemainderAndAssign(operand* v1, operand* v2)
 	return assignment(v1, calcDivisionWithRemainder(v1, v2));
 }
 
+std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
+{
+	std::vector<commonLexem*> expression;
+	for (size_t pos = begin; pos < end; pos++)
+	{
+		if (data[pos]->getClass() == "function")
+		{
+			function* func = dynamic_cast<function*>(data[pos]);
+			std::vector<constant> args;
+			bool flag = false;
+			size_t argsCounter = 0;
+			++pos;
+			if (pos >= data.size() || data[pos]->getName() != "(")
+			{
+				throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - No opening bracket");
+			}
+			++pos;
+			if (pos >= data.size())
+			{
+				throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
+			}
+			if (data[pos]->getName() == ")")
+			{
+				flag = true;
+			}
+			while (pos < data.size() && !flag)
+			{
+				std::vector<commonLexem*> tmpExp;
+				size_t tBegin = pos;
+				while (pos < data.size() && data[pos]->getName() != "," && data[pos]->getName() != ")")
+				{
+					tmpExp.push_back(data[pos]);
+					pos++;
+				}
+				calculator calc(data, tBegin, pos, vars);
+				args.push_back(calc.calculate(inter));
+				if (data[pos]->getName() == ")")
+				{
+					flag = true;
+				}
+				if (pos > 0 && data[pos - 1]->getName() == "," && data[pos]->getName() != ")")
+				{
+					throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - Variable is missing");
+				}
+				pos++;
+			}
+			constant* val = new constant("##UNNAMED##", -1, -1, func->type);
+			val->setValue(inter->execute(func, args).getValue());
+			//если функция типа void ничего не добаляем
+			if (func->type != -1) expression.push_back(dynamic_cast<commonLexem*>(val));
+			pos--;
+		}
+		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
+		{
+			throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + "an unexpected symbol");
+		}
+		else
+		{
+			expression.push_back(data[pos]);
+		}
+	}
+	return expression;
+}
+
+void calculator::checkUnaryNegative()
+{
+	for (size_t pos = 0; pos < data.size(); pos++)
+	{
+		if (data[pos]->getName() == "-" && (pos == 0 || data[pos - 1]->getName() == "(" || data[pos - 1]->getClass() == "operation"))
+		{
+			dynamic_cast<operation*>(data[pos])->setPriority(0);
+		}
+	}
+	return;
+}
+
+void calculator::initialConstantAndVarisble()
+{
+	for (size_t pos = begin; pos < end; pos++)
+	{
+		if (data[pos]->getClass() == "variable")
+		{
+			if (vars.find(dynamic_cast<variable*>(data[pos])) == vars.end())
+			{
+				//ошибка не нашли переменную
+			}
+			else if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() != nullptr)
+			{
+				dynamic_cast<variable*>(data[pos])->setTypeId((*vars.find(dynamic_cast<variable*>(data[pos])))->getTypeId());
+				if (dynamic_cast<variable*>(data[pos])->getTypeId() == 1)
+				{
+					int* t = new int(*(int*)((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
+					dynamic_cast<variable*>(data[pos])->setValue(t);
+				}
+				else if (dynamic_cast<variable*>(data[pos])->getTypeId() == 2)
+				{
+					double* t = new double((*(double*)(*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
+					dynamic_cast<variable*>(data[pos])->setValue(t);
+				}
+				else if (dynamic_cast<variable*>(data[pos])->getTypeId() == 3)
+				{
+					std::string* t = new std::string((*(std::string*)(*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
+					dynamic_cast<variable*>(data[pos])->setValue(t);
+				}
+			}
+		}
+		else if (data[pos]->getClass() == "constant")
+		{
+			//проверка, что значение константы задано корректно
+
+			if (data[pos]->getName()[0] == '\"' && data[pos]->getName()[data[pos]->getName().size() - 1] == '\"')
+			{
+				std::string* val = new std::string(data[pos]->getName());
+				dynamic_cast<operand*>(data[pos])->setValue(val);
+				dynamic_cast<operand*>(data[pos])->setTypeId(3);
+				delete val;
+			}
+			else
+			{
+				double* t = new double(std::stod(data[pos]->getName()));
+				if (!constant::isInteger(data[pos]->getName()))
+				{
+					dynamic_cast<operand*>(data[pos])->setValue(t);
+					dynamic_cast<operand*>(data[pos])->setTypeId(2);
+				}
+				else
+				{
+					int* t2 = new int(*t);
+					dynamic_cast<operand*>(data[pos])->setValue(t2);
+					dynamic_cast<operand*>(data[pos])->setTypeId(1);
+					delete t2;
+				}
+				delete t;
+			}
+		}
+	}
+	return;
+}
+
 operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 {
+	if (expr.size() == 0)
+	{
+		constant* tmpres = new constant("##UNNAMED##", -1, -1, -1);
+		return dynamic_cast<operand*>(tmpres);
+	}
 	std::stack<operand*> val; // constant or variable
 	for (int i = 0; i < expr.size(); i++)
 	{
@@ -819,143 +1006,36 @@ calculator::~calculator() {
 	// NO COMMONLEXEM* DELETING!!!!!!!
 }
 
-constant calculator::calculate(interpretator* inter) {
-	//ш1 вычисляем значения всех функций
-	//ш2 переводим в польскую запись
-	//ш3 вычисляем арифметическое выражение
-	std::vector<commonLexem*> expression;
-	for (size_t pos = begin; pos < end; pos++)
-	{
-		if (data[pos]->getClass() == "function")
-		{
-			function* func = dynamic_cast<function*>(data[pos]);
-			std::vector<constant> args;
-			bool flag = false;
-			size_t argsCounter = 0;
-			++pos;
-			if (pos >= data.size() || data[pos]->getName() != "(")
-			{
-				throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - No opening bracket");
-			}
-			++pos;
-			if (pos >= data.size())
-			{
-				throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
-			}
-			if (data[pos]->getName() == ")")
-			{
-				flag = true;
-			}
-			while (pos < data.size() && !flag)
-			{
-				if (data[pos]->getClass() == "variable")
-				{
-					constant tmp("##UNNAMED##", -1, -1, dynamic_cast<variable*>(data[pos])->getTypeId());
-					tmp.setValue(dynamic_cast<variable*>(data[pos])->getValue());
-					args.push_back(tmp);
-				}
-				else if (data[pos]->getClass() == "constant")
-				{
-					args.push_back(*(dynamic_cast<constant*>(data[pos])));
-				}
-				else
-				{
-					throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - Variable is missing");
-				}
-				pos++;
-				if (data[pos]->getName() == ")")
-				{
-					flag = true;
-				}
-				else if (data[pos]->getClass() != "specialLexems" && data[pos]->getName() != ",")
-				{
-					throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - comma is missing");
-				}
-				pos++;
-			}
-			constant tmp("##UNNAMED##", -1, -1, func->type);
-			tmp = inter->execute(func, args);
-			expression.push_back(dynamic_cast<commonLexem*>(&tmp));
-		}
-		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
-		{
-			throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + "an unexpected symbol");
-		}
-		else
-		{
-			expression.push_back(data[pos]);
-		}
-	}
-
-	//унарные минусы
+void printExpression(const std::vector<commonLexem*>& expression)
+{
+	if (expression.size() == 0) return;
 	for (size_t pos = 0; pos < expression.size(); pos++)
 	{
-		if (expression[pos]->getName() == "-" && (pos == 0 || expression[pos - 1]->getName() == "(" || expression[pos - 1]->getClass() == "operation"))
-		{
-			dynamic_cast<operation*>(expression[pos])->setPriority(0);
-		}
+		std::cout << expression[pos]->getName() << " ";
 	}
+	std::cout << std::endl;
+	return;
+}
+
+//ш1 вычисляем значения всех функций
+//ш2 переводим в польскую запись
+//ш3 вычисляем арифметическое выражение
+constant calculator::calculate(interpretator* inter)
+{
+	
+	initialConstantAndVarisble();
+	checkUnaryNegative();
+	std::vector<commonLexem*> expression = calculatingFunctions(inter);
+
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	for (size_t pos = 0; pos < expression.size(); pos++)
-	{
-		std::cout << expression[pos]->getName() << " ";
-	}
-	std::cout << std::endl;
-
+	printExpression(expression);
 	expression = toPostfix(expression);
+	printExpression(expression);
 
-	for (size_t pos = 0; pos < expression.size(); pos++)
-	{
-		std::cout << expression[pos]->getName() << " ";
-	}
-	std::cout << std::endl;
-	for (size_t pos = 0; pos < expression.size(); pos++)
-	{
-		if (expression[pos]->getClass() == "constant")
-		{
-			//проверка, что значение константы задано корректно
-
-			if (expression[pos]->getName()[0] == '\"' && expression[pos]->getName()[expression[pos]->getName().size() - 1] == '\"')
-			{
-				std::string* val = new std::string(expression[pos]->getName());
-				dynamic_cast<operand*>(expression[pos])->setValue(val);
-				dynamic_cast<operand*>(expression[pos])->setTypeId(3);
-			}
-			else
-			{
-				double* t = new double(std::stod(expression[pos]->getName()));
-				if (*t - (int)*t > 0)
-				{
-					dynamic_cast<operand*>(expression[pos])->setValue(t);
-					dynamic_cast<operand*>(expression[pos])->setTypeId(2);
-				}
-				else
-				{
-					int* t2 = new int(*t);
-					dynamic_cast<operand*>(expression[pos])->setValue(t2);
-					dynamic_cast<operand*>(expression[pos])->setTypeId(1);
-					delete t;
-				}
-				
-			}
-		}
-		else if (expression[pos]->getClass() == "variable")
-		{
-			if (vars.find(dynamic_cast<variable*>(expression[pos])) == vars.end())
-			{
-				//ошибка не нашли переменную
-			}
-			else
-			{
-				dynamic_cast<variable*>(expression[pos])->setValue((*vars.find(dynamic_cast<variable*>(expression[pos])))->getValue());
-			}
-		}
-	}
-
-	
 	operand* tmp = calcArithmetic(expression);
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
+	//std::cout << *(int*)result.getValue() << std::endl;
 	return result;
 }

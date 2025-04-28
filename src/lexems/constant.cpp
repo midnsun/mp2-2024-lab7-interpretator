@@ -2,6 +2,38 @@
 
 constant::constant(const std::string& str, size_t ind, size_t pos, char type) : operand(str, ind, pos, type) { }
 
+constant::constant(const constant& c) : operand(c.getName(), c.getInd(), c.getPos(), c.getTypeId())
+{
+	if (c.getValue() != nullptr)
+	{
+		if (getTypeId() == 1)
+		{
+			int* a = new int(*(int*)c.getValue());
+			setValue(a);
+		}
+		else if (getTypeId() == 2)
+		{
+			double* a = new double(*(double*)c.getValue());
+			setValue(a);
+		}
+		else if (getTypeId() == 3)
+		{
+			std::string* a = new std::string(*(std::string*)c.getValue());
+			setValue(a);
+		}
+	}
+}
+
+constant::constant(constant&& c) : operand(c.getName(), c.getInd(), c.getPos(), c.getTypeId())
+{
+	setValue(c.getValue());
+	c.setValue(nullptr);
+	c.setName("");
+	c.setInd(-1);
+	c.setPos(-1);
+	c.setTypeId(-1);
+}
+
 bool constant::isValidConstant(const std::string& str) // проверить, это число или нет
 {
 	char junk;
@@ -56,7 +88,10 @@ constant& constant::operator=(const constant& c) {
 	}
 	else
 	{
-		throw std::runtime_error("the types of constants do not match");
+		setPos(c.getPos());
+		setInd(c.getInd());
+		setName(c.getName());
+		setValue(nullptr);
 	}
 	return *this;
 }
