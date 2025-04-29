@@ -22,8 +22,19 @@ void operand::setTypeId(const char& _type) noexcept
 void* operand::getValue() const {
 	return value;
 }
+
+#include <iostream>
+
 void operand::setValue(void* v) {
-	value = v;
+	if (v != nullptr)
+	{
+		value = malloc(sizeof(v));
+		memcpy(value, v, sizeof(v));
+	}
+	else
+	{
+		v = nullptr;
+	}
 }
 
 operand::~operand() {

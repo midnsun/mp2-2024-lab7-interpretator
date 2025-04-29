@@ -337,13 +337,39 @@ constant interpretator::startExecute()
 	return execute(*functions.find(tmpptr), std::vector<constant>());
 }
 
+void interpretator::executePrint(const std::vector<constant>& arguments)
+{
+	for (size_t i = 0; i < arguments.size(); i++)
+	{
+		if (arguments[i].getValue() == nullptr)
+		{
+			throw std::runtime_error("Line " + std::to_string(arguments[i].getInd()) + ", symbol " + std::to_string(arguments[i].getPos())
+				+ ": " + arguments[i].getName() + " - an uninitialized variable");
+		}
+		if (arguments[i].getTypeId() == 1)
+		{
+			std::cout << *(int*)arguments[i].getValue() << " ";
+		}
+		else if (arguments[i].getTypeId() == 2)
+		{
+			std::cout << *(double*)arguments[i].getValue() << " ";
+		}
+		else if (arguments[i].getTypeId() == 3)
+		{
+			std::cout << *(std::string*)arguments[i].getValue() << " ";
+		}
+	}
+	std::cout << std::endl;
+	return;
+}
+
 interpretator::interpretator(std::vector<std::string>& source) {
 	process(source); // предобработка кода для исполнения
 }
 
 interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
-		//delete program[i];
+		delete program[i];
 	}
 }
 
@@ -352,8 +378,16 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	// действия требуются только при ключевых словах, т.е:
 	// int, double...
 	// while, if, else
-
+	
 	constant result("##UNNAMED##", -1, -1, func->type);
+	if (standartFuinction.find(func->getName()) != standartFuinction.end())
+	{
+		if (func->getName() == "print") executePrint(arguments);
+		//как писать scan если метод принимает только константы, придётся писать костыли(
+		// 
+		//если функция из стандартных, то точно будет значение, которое можно вернуть
+		return result;
+	}
 	constant tmpResult = result;
 	size_t pos, argsCounter;
 	size_t begin, end;
