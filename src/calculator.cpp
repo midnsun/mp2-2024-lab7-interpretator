@@ -1022,7 +1022,6 @@ void printExpression(const std::vector<commonLexem*>& expression)
 //ш3 вычисляем арифметическое выражение
 constant calculator::calculate(interpretator* inter)
 {
-	
 	initialConstantAndVarisble();
 	checkUnaryNegative();
 	std::vector<commonLexem*> expression = calculatingFunctions(inter);
@@ -1036,6 +1035,7 @@ constant calculator::calculate(interpretator* inter)
 	operand* tmp = calcArithmetic(expression);
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
-	//std::cout << *(int*)result.getValue() << std::endl;
+
+	//std::cout << "Result is: " << *(int*)result.getValue() << std::endl;
 	return result;
 }

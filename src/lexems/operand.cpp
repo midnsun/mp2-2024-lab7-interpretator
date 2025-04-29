@@ -43,5 +43,10 @@ operand::~operand() {
 
 bool operand::isTrue() const {
 	bool result = false;
-	return false;
+
+	if (type == 1) result = *(int*)value;
+	else if (type == 2) result = *(double*)value;
+	else if (type == 3) result = (*(std::string*)value).length();
+
+	return result;
 }
