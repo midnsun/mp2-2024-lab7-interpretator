@@ -4,24 +4,7 @@ constant::constant(const std::string& str, size_t ind, size_t pos, char type) : 
 
 constant::constant(const constant& c) : operand(c.getName(), c.getInd(), c.getPos(), c.getTypeId())
 {
-	if (c.getValue() != nullptr)
-	{
-		if (getTypeId() == 1)
-		{
-			int* a = new int(*(int*)c.getValue());
-			setValue(a);
-		}
-		else if (getTypeId() == 2)
-		{
-			double* a = new double(*(double*)c.getValue());
-			setValue(a);
-		}
-		else if (getTypeId() == 3)
-		{
-			std::string* a = new std::string(*(std::string*)c.getValue());
-			setValue(a);
-		}
-	}
+	setValue(c.getValue());
 }
 
 constant::constant(constant&& c) : operand(c.getName(), c.getInd(), c.getPos(), c.getTypeId())
@@ -61,21 +44,7 @@ constant& constant::operator=(const constant& c) {
 	{
 		setPos(c.getPos());
 		setInd(c.getInd());
-		if (getTypeId() == 1)
-		{
-			int* a = new int(*(int*)c.getValue());
-			setValue(a);
-		}
-		else if (getTypeId() == 2)
-		{
-			double* a = new double(*(double*)c.getValue());
-			setValue(a);
-		}
-		else if (getTypeId() == 3)
-		{
-			std::string* a = new std::string(*(std::string*)c.getValue());
-			setValue(a);
-		}
+		setValue(c.getValue());
 		setName(c.getName());
 	}
 	else if (getTypeId() == 2 && c.getTypeId() == 1)

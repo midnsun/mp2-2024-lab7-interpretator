@@ -1,6 +1,24 @@
 #include <stack>
 #include "calculator.h"
 
+void printResult(const constant& res)
+{
+	if (res.getValue() == nullptr) return;
+	if (res.getTypeId() == 1)
+	{
+		std::cout << "Result is: " << *(int*)res.getValue() << std::endl;
+	}
+	else if (res.getTypeId() == 2)
+	{
+		std::cout << "Result is: " << *(double*)res.getValue() << std::endl;
+	}
+	else if (res.getTypeId() == 3)
+	{
+		std::cout << "Result is: " << *(std::string*)res.getValue() << std::endl;
+	}
+	return;
+}
+
 std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>& expr)
 {
 	std::stack<commonLexem*> op;
@@ -703,8 +721,18 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 			{
 				std::vector<commonLexem*> tmpExp;
 				size_t tBegin = pos;
-				while (pos < data.size() && data[pos]->getName() != "," && data[pos]->getName() != ")")
+				bool flFoo = false;
+				int cnt = 0;
+				while (pos < data.size() && data[pos]->getName() != "," && data[pos]->getName() != ")" || pos < data.size() && flFoo)
 				{
+					if (data[pos]->getClass() == "function")
+					{
+						flFoo = true;
+						pos++;
+					}
+					if (data[pos]->getName() == "(") cnt++;
+					if (data[pos]->getName() == ")") cnt--;
+					if (cnt == 0) flFoo = false;
 					tmpExp.push_back(data[pos]);
 					pos++;
 				}
@@ -721,9 +749,14 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 				pos++;
 			}
 			constant* val = new constant("##UNNAMED##", -1, -1, func->type);
-			val->setValue(inter->execute(func, args).getValue());
+			constant t = inter->execute(func, args);
+			if (func->getName() == "abs")
+			{
+				val->setTypeId(t.getTypeId());
+			}
+			val->setValue(t.getValue());
 			//если функция типа void ничего не добаляем
-			if (func->type != -1) expression.push_back(dynamic_cast<commonLexem*>(val));
+			if (val->getTypeId() != -1) expression.push_back(dynamic_cast<commonLexem*>(val));
 			pos--;
 		}
 		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
@@ -1028,14 +1061,14 @@ constant calculator::calculate(interpretator* inter)
 
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	printExpression(expression);
+	//printExpression(expression);
 	expression = toPostfix(expression);
-	printExpression(expression);
+	//printExpression(expression);
 
 	operand* tmp = calcArithmetic(expression);
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
 
-	//std::cout << "Result is: " << *(int*)result.getValue() << std::endl;
+	//printResult(result);
 	return result;
 }

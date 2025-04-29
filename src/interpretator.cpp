@@ -1,6 +1,7 @@
 #include "interpretator.h"
 #include "calculator.h"
 #include <stack>
+#include <algorithm>
 
 // Идея создать вектор векторов лексем, разбиение первого вектора идет по командам, второго по ключевым словам, т.е. по лексемам
 	// Пример:
@@ -79,7 +80,10 @@ void interpretator::process(const std::vector<std::string>& source)
 
 	for (auto& s : standartFuinction) {
 		//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
-		functions.insert(new function{ s, 0, 0, -1, 0, 0 });
+		//abs может возвращить int и double, но имя у него одно
+		if (s == "cos" || s == "sin" || s == "sqrt"/* || s == "abs"*/) functions.insert(new function{s, 0, 0, 2, 0, 0});
+		else functions.insert(new function{ s, 0, 0, -1, 0, 0 });
+		
 	}
 
 	size_t begin = 0, end = 0;
@@ -363,6 +367,82 @@ void interpretator::executePrint(const std::vector<constant>& arguments)
 	return;
 }
 
+constant interpretator::executeCos(const std::vector<constant>& agruments)
+{
+	if (agruments.size() == 0) throw std::runtime_error("not enough arguments");
+	if (agruments.size() > 1) throw std::runtime_error("There are too many arguments");
+	if (agruments[0].getTypeId() == 3 || agruments[0].getTypeId() == -1) throw std::runtime_error("invalid type of argument");
+	constant result("##UNNAMED##", -1, -1, 2);
+	if (agruments[0].getTypeId() == 1)
+	{
+		double t = std::cos(*(int*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	if (agruments[0].getTypeId() == 2)
+	{
+		double t = std::cos(*(double*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	return result;
+}
+
+constant interpretator::executeSin(const std::vector<constant>& agruments)
+{
+	if (agruments.size() == 0) throw std::runtime_error("not enough arguments");
+	if (agruments.size() > 1) throw std::runtime_error("There are too many arguments");
+	if (agruments[0].getTypeId() == 3 || agruments[0].getTypeId() == -1) throw std::runtime_error("invalid type of argument");
+	constant result("##UNNAMED##", -1, -1, 2);
+	if (agruments[0].getTypeId() == 1)
+	{
+		double t = std::sin(*(int*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	if (agruments[0].getTypeId() == 2)
+	{
+		double t = std::sin(*(double*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	return result;
+}
+
+constant interpretator::executeAbs(const std::vector<constant>& agruments)
+{
+	if (agruments.size() == 0) throw std::runtime_error("not enough arguments");
+	if (agruments.size() > 1) throw std::runtime_error("There are too many arguments");
+	if (agruments[0].getTypeId() == 3 || agruments[0].getTypeId() == -1) throw std::runtime_error("invalid type of argument");
+	constant result("##UNNAMED##", -1, -1, agruments[0].getTypeId());
+	if (agruments[0].getTypeId() == 1)
+	{
+		int t = std::abs(*(int*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	if (agruments[0].getTypeId() == 2)
+	{
+		double t = std::abs(*(double*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	return result;
+}
+
+constant interpretator::executeSqrt(const std::vector<constant>& agruments)
+{
+	if (agruments.size() == 0) throw std::runtime_error("not enough arguments");
+	if (agruments.size() > 1) throw std::runtime_error("There are too many arguments");
+	if (agruments[0].getTypeId() == 3 || agruments[0].getTypeId() == -1) throw std::runtime_error("invalid type of argument");
+	constant result("##UNNAMED##", -1, -1, 2);
+	if (agruments[0].getTypeId() == 1)
+	{
+		double t = std::sqrt(*(int*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	if (agruments[0].getTypeId() == 2)
+	{
+		double t = std::sqrt(*(double*)(agruments[0].getValue()));
+		result.setValue(&t);
+	}
+	return result;
+}
+
 interpretator::interpretator(std::vector<std::string>& source) {
 	process(source); // предобработка кода для исполнения
 }
@@ -383,9 +463,17 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	if (standartFuinction.find(func->getName()) != standartFuinction.end())
 	{
 		if (func->getName() == "print") executePrint(arguments);
-		//как писать scan если метод принимает только константы, придётся писать костыли(
-		// 
-		//если функция из стандартных, то точно будет значение, которое можно вернуть
+		try
+		{
+			if (func->getName() == "cos") return executeCos(arguments);
+			if (func->getName() == "sin") return executeSin(arguments);
+			if (func->getName() == "sqrt") return executeSqrt(arguments);
+			if (func->getName() == "abs") return executeAbs(arguments);
+		}
+		catch (std::exception& e)
+		{
+			throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - " + e.what());
+		}
 		return result;
 	}
 	constant tmpResult = result;
