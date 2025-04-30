@@ -18,6 +18,10 @@ class interpretator {
 //	std::set< variable, variableCMP > variables;
 	std::set< function*, functionCMP > functions;
 	void executePrint(const std::vector<constant>& agruments);
+	constant executeCos(const std::vector<constant>& agruments);
+	constant executeSin(const std::vector<constant>& agruments);
+	constant executeAbs(const std::vector<constant>& agruments);
+	constant executeSqrt(const std::vector<constant>& agruments);
 
 public:
 	interpretator(std::vector<std::string>& source);

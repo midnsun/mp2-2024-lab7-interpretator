@@ -25,15 +25,24 @@ void* operand::getValue() const {
 
 #include <iostream>
 
+//обязательно сначала задавать тип операнда и только потом устанавливать значение!
 void operand::setValue(void* v) {
-	if (v != nullptr)
+	if (v == nullptr) return;
+	if (getTypeId() == 1)
 	{
-		value = malloc(sizeof(v));
-		memcpy(value, v, sizeof(v));
+		value = new int(*(int*)v);
+	}
+	else if (getTypeId() == 2)
+	{
+		value = new double(*(double*)v);
+	}
+	else if (getTypeId() == 3)
+	{
+		value = new std::string(*(std::string*)v);
 	}
 	else
 	{
-		v = nullptr;
+		value = nullptr;
 	}
 }
 
