@@ -125,7 +125,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2 || v1->getTypeId() == 2 && v2->getTypeId() == 1)
+	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
 		double* a = new double(*((double*)(v1->getValue())) + *((double*)(v2->getValue())));
@@ -730,9 +730,9 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 						flFoo = true;
 						pos++;
 					}
-					if (data[pos]->getName() == "(") cnt++;
-					if (data[pos]->getName() == ")") cnt--;
-					if (cnt == 0) flFoo = false;
+					if (flFoo && data[pos]->getName() == "(") cnt++;
+					if (flFoo && data[pos]->getName() == ")") cnt--;
+					if (flFoo && cnt == 0) flFoo = false;
 					tmpExp.push_back(data[pos]);
 					pos++;
 				}
@@ -1061,7 +1061,7 @@ constant calculator::calculate(interpretator* inter)
 
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	//printExpression(expression);
+	printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
 
@@ -1069,6 +1069,6 @@ constant calculator::calculate(interpretator* inter)
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
 
-	//printResult(result);
+	printResult(result);
 	return result;
 }
