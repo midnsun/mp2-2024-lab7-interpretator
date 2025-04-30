@@ -157,7 +157,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");
 }
 
 operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
@@ -194,7 +194,7 @@ operand* calculator::calcBinaryNegative(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcUnaryNegative(operand* v1)
@@ -217,7 +217,7 @@ operand* calculator::calcUnaryNegative(operand* v1)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcMultiplication(operand* v1, operand* v2)
@@ -254,7 +254,7 @@ operand* calculator::calcMultiplication(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcDivision(operand* v1, operand* v2)
@@ -291,7 +291,7 @@ operand* calculator::calcDivision(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcDivisionWithRemainder(operand* v1, operand* v2)
@@ -304,7 +304,7 @@ operand* calculator::calcDivisionWithRemainder(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcAnd(operand* v1, operand* v2)
@@ -341,7 +341,7 @@ operand* calculator::calcAnd(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcOr(operand* v1, operand* v2)
@@ -378,7 +378,7 @@ operand* calculator::calcOr(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcLess(operand* v1, operand* v2)
@@ -423,7 +423,7 @@ operand* calculator::calcLess(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcMore(operand* v1, operand* v2)
@@ -468,7 +468,7 @@ operand* calculator::calcMore(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calclessEqual(operand* v1, operand* v2)
@@ -513,7 +513,7 @@ operand* calculator::calclessEqual(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcMoreEqual(operand* v1, operand* v2)
@@ -558,7 +558,7 @@ operand* calculator::calcMoreEqual(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcEqually(operand* v1, operand* v2)
@@ -603,7 +603,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::calcNotEqually(operand* v1, operand* v2)
@@ -648,7 +648,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
-	throw std::runtime_error("");//недопустимая операция
+	throw std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 }
 
 operand* calculator::assignment(operand* v1, operand* v2)
@@ -663,7 +663,7 @@ operand* calculator::assignment(operand* v1, operand* v2)
 		v1->setValue(v2->getValue());
 		(*vars.find(dynamic_cast<variable*>(v1)))->setValue(v2->getValue());
 	}
-	else std::runtime_error("");//недопустимая операция
+	else std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 	return v1;
 }
 
@@ -692,6 +692,52 @@ operand* calculator::DivisionWithRemainderAndAssign(operand* v1, operand* v2)
 	return assignment(v1, calcDivisionWithRemainder(v1, v2));
 }
 
+void calculator::executeScan(const size_t& sBegin, const size_t& sEnd)
+{
+	for (size_t pos = sBegin; pos < sEnd; pos++)
+	{
+		if (data[pos]->getClass() == "constant")
+		{
+			throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos())
+				+ ": " + data[pos]->getName() + " - the value cannot be considered as an rValue");
+		}
+		else if (data[pos - 1]->getName() == "," && data[pos]->getName() == ",")
+		{
+			throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos())
+				+ ": " + data[pos]->getName() + " - variable was be skipped");
+		}
+		else if (data[pos]->getClass() == "variable")
+		{
+			operand* tOp = new constant("##UNNAMED##", -1, -1, (dynamic_cast<variable*>(data[pos]))->getTypeId());
+			if (tOp->getTypeId() == 1)
+			{
+				int t;
+				std::cin >> t;
+				tOp->setValue(&t);
+			}
+			else if (tOp->getTypeId() == 2)
+			{
+				double t;
+				std::cin >> t;
+				tOp->setValue(&t);
+			}
+			else if (tOp->getTypeId() == 3)
+			{
+				std::string t;
+				std::cin >> t;
+				tOp->setValue(&t);
+			}
+			else
+			{
+				throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos())
+					+ ": " + data[pos]->getName() + " - a variable of this type cannot be read");
+			}
+			assignment(dynamic_cast<operand*>(data[pos]), tOp);
+		}
+	}
+	return;
+}
+
 std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 {
 	std::vector<commonLexem*> expression;
@@ -700,9 +746,6 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 		if (data[pos]->getClass() == "function")
 		{
 			function* func = dynamic_cast<function*>(data[pos]);
-			std::vector<constant> args;
-			bool flag = false;
-			size_t argsCounter = 0;
 			++pos;
 			if (pos >= data.size() || data[pos]->getName() != "(")
 			{
@@ -713,6 +756,26 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 			{
 				throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Invalid agruments processing: no closing bracket found");
 			}
+
+			if (func->getName() == "scan")
+			{
+				int cnt = 1;
+				size_t sBegin = pos;
+				while (pos < data.size() && cnt != 0)
+				{
+					if (data[pos]->getClass() == "specialLexem" && data[pos]->getName() != "," && data[pos]->getName() != ")")
+					{
+						throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - an unexpected symbol");
+					}
+					if (data[pos]->getName() == ")") cnt--;
+					pos++;
+				}
+				executeScan(sBegin, pos - 1);
+				continue;
+			}
+			std::vector<constant> args;
+			bool flag = false;
+			size_t argsCounter = 0;
 			if (data[pos]->getName() == ")")
 			{
 				flag = true;
@@ -791,11 +854,12 @@ void calculator::initialConstantAndVarisble()
 		{
 			if (vars.find(dynamic_cast<variable*>(data[pos])) == vars.end())
 			{
-				//ошибка не нашли переменную
+				throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - variable was not found"); 
 			}
-			else if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() != nullptr)
+			else
 			{
 				dynamic_cast<variable*>(data[pos])->setTypeId((*vars.find(dynamic_cast<variable*>(data[pos])))->getTypeId());
+				if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() == nullptr) continue;
 				if (dynamic_cast<variable*>(data[pos])->getTypeId() == 1)
 				{
 					int* t = new int(*(int*)((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
@@ -820,8 +884,8 @@ void calculator::initialConstantAndVarisble()
 			if (data[pos]->getName()[0] == '\"' && data[pos]->getName()[data[pos]->getName().size() - 1] == '\"')
 			{
 				std::string* val = new std::string(data[pos]->getName());
-				dynamic_cast<operand*>(data[pos])->setValue(val);
 				dynamic_cast<operand*>(data[pos])->setTypeId(3);
+				dynamic_cast<operand*>(data[pos])->setValue(val);
 				delete val;
 			}
 			else
@@ -829,14 +893,14 @@ void calculator::initialConstantAndVarisble()
 				double* t = new double(std::stod(data[pos]->getName()));
 				if (!constant::isInteger(data[pos]->getName()))
 				{
-					dynamic_cast<operand*>(data[pos])->setValue(t);
 					dynamic_cast<operand*>(data[pos])->setTypeId(2);
+					dynamic_cast<operand*>(data[pos])->setValue(t);
 				}
 				else
 				{
 					int* t2 = new int(*t);
-					dynamic_cast<operand*>(data[pos])->setValue(t2);
 					dynamic_cast<operand*>(data[pos])->setTypeId(1);
+					dynamic_cast<operand*>(data[pos])->setValue(t2);
 					delete t2;
 				}
 				delete t;
@@ -863,168 +927,176 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 		else if (expr[i]->getClass() == "operation")
 		{
 			operation* op = dynamic_cast<operation*>(expr[i]);
-			if (expr[i]->getName() == "+" && val.size() >= 2)
+			try
 			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcPlus(v1, v2));
-			}
-			else if (expr[i]->getName() == "-" && val.size() >= 2 && dynamic_cast<operation*>(expr[i])->getPriority() != 0) //бинарный минус
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcBinaryNegative(v2, v1));
-			}
-			else if (expr[i]->getName() == "*" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcMultiplication(v1, v2));
-			}
-			else if (expr[i]->getName() == "/" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcDivision(v2, v1));
-			}
-			else if (expr[i]->getName() == "-" && val.size() >= 1 && dynamic_cast<operation*>(expr[i])->getPriority() == 0) //унарный минус
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcUnaryNegative(v1));
-			}
-			else if (expr[i]->getName() == "%" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcDivisionWithRemainder(v2, v1));
-			}
-			else if (expr[i]->getName() == "&&" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcAnd(v2, v1));
-			}
-			else if (expr[i]->getName() == "||" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcOr(v2, v1));
-			}
-			else if (expr[i]->getName() == "<" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcLess(v2, v1));
-			}
-			else if (expr[i]->getName() == "<=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calclessEqual(v2, v1));
-			}
-			else if (expr[i]->getName() == ">" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcMore(v2, v1));
-			}
-			else if (expr[i]->getName() == ">=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcMoreEqual(v2, v1));
-			}
-			else if (expr[i]->getName() == "==" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcEqually(v2, v1));
-			}
-			else if (expr[i]->getName() == "!=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(calcNotEqually(v2, v1));
+				if (expr[i]->getName() == "+" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcPlus(v1, v2));
 				}
-			else if (expr[i]->getName() == "=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(assignment(v2, v1));
+				else if (expr[i]->getName() == "-" && val.size() >= 2 && dynamic_cast<operation*>(expr[i])->getPriority() != 0) //бинарный минус
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcBinaryNegative(v2, v1));
+				}
+				else if (expr[i]->getName() == "*" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcMultiplication(v1, v2));
+				}
+				else if (expr[i]->getName() == "/" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcDivision(v2, v1));
+				}
+				else if (expr[i]->getName() == "-" && val.size() >= 1 && dynamic_cast<operation*>(expr[i])->getPriority() == 0) //унарный минус
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcUnaryNegative(v1));
+				}
+				else if (expr[i]->getName() == "%" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcDivisionWithRemainder(v2, v1));
+				}
+				else if (expr[i]->getName() == "&&" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcAnd(v2, v1));
+				}
+				else if (expr[i]->getName() == "||" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcOr(v2, v1));
+				}
+				else if (expr[i]->getName() == "<" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcLess(v2, v1));
+				}
+				else if (expr[i]->getName() == "<=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calclessEqual(v2, v1));
+				}
+				else if (expr[i]->getName() == ">" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcMore(v2, v1));
+				}
+				else if (expr[i]->getName() == ">=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcMoreEqual(v2, v1));
+				}
+				else if (expr[i]->getName() == "==" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcEqually(v2, v1));
+				}
+				else if (expr[i]->getName() == "!=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(calcNotEqually(v2, v1));
+				}
+				else if (expr[i]->getName() == "=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(assignment(v2, v1));
+				}
+				else if (expr[i]->getName() == "+=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(addAndAssign(v2, v1));
+				}
+				else if (expr[i]->getName() == "-=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(NegativeAndAssign(v2, v1));
+				}
+				else if (expr[i]->getName() == "*=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(MultiplicationAndAssign(v2, v1));
+				}
+				else if (expr[i]->getName() == "/=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(DivisionAndAssign(v2, v1));
+				}
+				else if (expr[i]->getName() == "%=" && val.size() >= 2)
+				{
+					operand* v1 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					operand* v2 = dynamic_cast<operand*>(val.top());
+					val.pop();
+					val.push(DivisionWithRemainderAndAssign(v2, v1));
+				}
+				else
+				{
+					throw std::runtime_error("the operand for this operation is lost");
+				}
 			}
-			else if (expr[i]->getName() == "+=" && val.size() >= 2)
+			catch (std::exception& e)
 			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(addAndAssign(v2, v1));
+				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd()) + ", symbol " + std::to_string(expr[i]->getPos()) + ": " + expr[i]->getName() + " - " + e.what());
 			}
-			else if (expr[i]->getName() == "-=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(NegativeAndAssign(v2, v1));
-			}
-			else if (expr[i]->getName() == "*=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(MultiplicationAndAssign(v2, v1));
-			}
-			else if (expr[i]->getName() == "/=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(DivisionAndAssign(v2, v1));
-			}
-			else if (expr[i]->getName() == "%=" && val.size() >= 2)
-			{
-				operand* v1 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				operand* v2 = dynamic_cast<operand*>(val.top());
-				val.pop();
-				val.push(DivisionWithRemainderAndAssign(v2, v1));
-			}
-			else
-			{
-				throw std::runtime_error("the operand for this operation is lost " + expr[i]->getPos());
-			}
+			
 		}
 	}
 	if (val.size() != 1) throw std::runtime_error("The operation was lost");
@@ -1061,7 +1133,7 @@ constant calculator::calculate(interpretator* inter)
 
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	printExpression(expression);
+	//printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
 
@@ -1069,6 +1141,6 @@ constant calculator::calculate(interpretator* inter)
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
 
-	printResult(result);
+	//printResult(result);
 	return result;
 }

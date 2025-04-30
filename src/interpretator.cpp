@@ -556,15 +556,17 @@ constant interpretator::execute(const function const* func, const std::vector<co
 				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
 				calculator calc(program, pos + 1, tmpKeyWord->getBegin(), vars);
 				tmpResult = calc.calculate(this);
-				pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
+				pos = (tmpResult.isTrue()) ? tmpKeyWord->getBegin() : tmpKeyWord->getEnd();
+				//pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
 
-				--pos;
+				//--pos;
+				if (pos + 1 < program.size() && program[pos + 1]->getName() == "else") pos++;
+				if (pos + 1 < program.size() && program[pos + 1]->getName() == "{") pos++;
 				continue;
 			}
 			else if (program[pos]->getName() == "JMP") {
 				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
 				pos = tmpKeyWord->getInd();
-
 				--pos;
 				continue;
 			}
@@ -572,6 +574,7 @@ constant interpretator::execute(const function const* func, const std::vector<co
 				throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Invalid key word operator");
 			}
 		}
+		else if (program[pos]->getName() == "}") continue;
 		// вычисляем арифметические выражения
 		while (pos < func->end && program[pos]->getName() != ";") ++pos;
 		end = pos;
