@@ -30,8 +30,8 @@ void checkFileContent(std::vector<std::string>& v) { //
 }
 
 int main() {
-	std::fstream file("../../code/test.cpp");
-//	std::fstream file("../../code/code.cpp");
+//	std::fstream file("../../code/test.cpp");
+	std::fstream file("../../code/code.cpp");
 	std::string str;
 	std::vector<std::string> file_content;
 	while (std::getline(file, str)) {

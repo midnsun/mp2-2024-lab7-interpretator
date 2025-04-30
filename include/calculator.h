@@ -27,6 +27,7 @@ class calculator {
 	operand* MultiplicationAndAssign(operand* v1, operand* v2);
 	operand* DivisionAndAssign(operand* v1, operand* v2);
 	operand* DivisionWithRemainderAndAssign(operand* v1, operand* v2);
+	void executeScan(const size_t& sBegin, const size_t& sEnd);
 	std::vector<commonLexem*> calculatingFunctions(interpretator* inter);
 	void checkUnaryNegative();
 	void initialConstantAndVarisble();

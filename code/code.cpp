@@ -21,14 +21,15 @@ int main() {
         print(1);
         scan(op);
         print(2);
-        scan(a);
-        scan(b);
-        if (op > 4 && op < 0) {
+        if (op > 4 || op < 1) {
             print(3);
             return 0;
         }
         else {
+            scan(a);
+            scan(b);
             if (op==1) {
+                c = 0;
                 c = add(a, b);
             }
             if (op==2) {
