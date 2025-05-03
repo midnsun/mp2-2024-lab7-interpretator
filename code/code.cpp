@@ -3,7 +3,11 @@ int fibonacci(int n) {
         return 1;
     }
     else {
-        return fibonacci(n - 1) + fibonacci(n - 2);
+        int r1 = fibonacci(n - 1);
+        print(r1);
+        int r2 = fibonacci(n - 2);
+        print(r2);
+        return r1 + r2;
     }
     return 0;
 }
@@ -11,6 +15,7 @@ int fibonacci(int n) {
 int main() {
     int n;
     scan(n);
-    print(fibonacci(n));
-    return 1;
+    n = fibonacci(n);
+    print(n);
+    return 0;
 }
