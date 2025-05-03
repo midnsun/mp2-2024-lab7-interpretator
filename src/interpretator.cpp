@@ -107,8 +107,94 @@ void interpretator::process(std::vector<std::string> source)
 		
 	}
 
-	size_t begin = 0, end = 0;
-	size_t counter = 0;
+	// тут сделать парсинг for. ѕринцип: 
+	// for (expr1; expr2; expr3) { doSomething(); } ->
+	// expr1;
+	// while(expr2) {
+	//  doSomething();
+	// expr3;
+	// }
+	size_t begin = 0, end = 0, exprEnd = 0;
+	size_t counter = 0, semicolon = 0;
+
+	strCommand.clear();
+	for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
+		for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
+			if (strProgram[lineInd][wordInd].first == "for") {
+				if (wordInd + 1 >= strProgram[lineInd].size() || strProgram[lineInd][wordInd + 1].first != "(") throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No expressions");
+				++counter;
+				for (exprEnd = wordInd + 2; exprEnd < strProgram[lineInd].size(); ++exprEnd) {
+					if (strProgram[lineInd][exprEnd].first == "(") ++counter;
+					if (strProgram[lineInd][exprEnd].first == ")") --counter;
+					if (strProgram[lineInd][exprEnd].first == ";") ++semicolon;
+					if (counter == 0) {
+						++exprEnd;
+						break;
+					}
+				}
+				if (counter != 0) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No closing bracket");
+				if (semicolon != 2) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No expressions");
+
+				strProgram[lineInd][wordInd].first = "while";
+				//expr1
+				begin = wordInd + 2; end = wordInd + 2;
+				while (strProgram[lineInd][end].first != ";") {
+					strCommand.push_back(strProgram[lineInd][end]);
+					++end;
+				}
+				strCommand.push_back(strProgram[lineInd][end++]);
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + begin, strProgram[lineInd].begin() + end);
+				strProgram[lineInd].insert(strProgram[lineInd].begin() + wordInd, strCommand.begin(), strCommand.end());
+				strCommand.clear();
+
+				//expr2
+				begin = end;
+				while (strProgram[lineInd][end].first != ";") {
+					++end;
+				}
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + end);
+
+				//expr3
+				begin = end;
+				while (strProgram[lineInd][end].first != ")") {
+					strCommand.push_back(strProgram[lineInd][end]);
+					++end;
+				}
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + begin, strProgram[lineInd].begin() + end);
+				strCommand.push_back(std::make_pair(";", -1));
+
+				int bracketCounter = 0;
+				bool exitFlag = false;
+				size_t i;
+				for (i = lineInd; i < strProgram.size(); ++i) {
+					size_t j;
+					if (i == lineInd) j = wordInd;
+					else j = 0;
+					for (; j < strProgram[i].size(); ++j) {
+						if (strProgram[i][j].first == "{") {
+							++bracketCounter;
+						}
+						if (strProgram[i][j].first == "}") {
+							--bracketCounter;
+							if (bracketCounter == 0) {
+								end = j;
+								exitFlag = true;
+								break;
+							}
+						}
+						if (bracketCounter < 0) throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+					}
+					if (exitFlag) break;
+				}
+				strProgram[i].insert(strProgram[i].begin() + end, strCommand.begin(), strCommand.end());
+
+				//end
+				strCommand.clear();
+				begin = 0; end = 0; exprEnd = 0; counter = 0; semicolon = 0;
+			}
+		}
+	}
+
 	int arrCounter = -1;
 	char dataTypeAppeared = -1;
 	//		string context = "GLOBAL";
@@ -240,6 +326,8 @@ void interpretator::process(std::vector<std::string> source)
 					// посчитать размерность массива
 //						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, context, arrCounter });
 					program.push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
+					program[program.size() - 1]->showInfo(); ///
+					std::cout << std::endl;
 					dataTypeAppeared = -1;
 				}
 			}
@@ -358,6 +446,14 @@ void interpretator::process(std::vector<std::string> source)
 		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
 			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
 		std::cout << std::endl;
+	}
+	lineInd = 0;
+	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+		if (lineInd != program[wordInd]->getInd()) {
+			lineInd = program[wordInd]->getInd();
+			std::cout << std::endl;
+		}
+		std::cout << program[wordInd]->getName() << " ";
 	}
 
 	// 3. «аписать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов

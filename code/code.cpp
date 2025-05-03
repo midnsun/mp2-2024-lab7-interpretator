@@ -7,14 +7,10 @@ void testString() {
     return;
 }
 
-void testFor(int f) {
-    if (f) {
-        print("for");
+void testFor(int a) {
+    for (int i = 0; i < 10; i+=1) {
+        print(1);
     }
-    else {
-        print("not");
-    }
-    return;
 }
 
 void testElif(int n) {
@@ -55,5 +51,7 @@ int main() {
     testElse(2);
     testElse(1);
     testElse(3);
+    print(-1);
+    testFor(1);
     return 0;
 }

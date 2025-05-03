@@ -37,12 +37,12 @@ int main() {
 		file_content.push_back(str);
 	}
 	printFileContent(file_content);
-	try {
+//	try {
 		interpretator program(file_content);
 		constant res = program.startExecute();
-	}
-	catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
-	}
+//	}
+//	catch (std::exception& e) {
+//		std::cout << e.what() << std::endl;
+//	}
 	return 0;
 }
