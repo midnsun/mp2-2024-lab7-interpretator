@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 int fibonacci(int n) {
     if (n <= 2) {
         return 1;
@@ -5,12 +8,11 @@ int fibonacci(int n) {
     else {
         return fibonacci(n - 1) + fibonacci(n - 2);
     }
-    return 0;
 }
 
 int main() {
     int n;
-    scan(n);
-    print(fibonacci(n));
-    return 1;
+    cin >> n;
+    cout << fibonacci(n) << " ";
+    system("pause");
 }
