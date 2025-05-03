@@ -25,9 +25,8 @@ void interpretator::process(const std::vector<std::string>& source)
 			if (source[lineInd][pos] == '"') {
 				startPos = pos;
 				// Found a string - add to vector of strings
-				while (source[lineInd][++pos] != '"') {
+				while (source[lineInd][++pos] != '"')
 					if (pos + 1 >= source[lineInd].length()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(startPos) + ": " + source[lineInd][startPos] + " - No closing quotes");
-				}
 				strParsing.push_back(source[lineInd].substr(startPos + 1, pos - startPos - 1));
 				// change it to 0s ... 10s
 				source[lineInd]. ///!!!! souce[lineInd].replace(startPos, pos - startPos + 1, std::to_string(strParsing.size() - 1) + "s");
