@@ -18,6 +18,7 @@ void testFor(int f) {
 }
 
 void testElif(int n) {
+    print(n);
     if (n == 0) {
         print(10);
     }
@@ -33,11 +34,26 @@ void testElif(int n) {
     return;
 }
 
+void testElse(int n) {
+    print(n);
+    if (n == 0) {
+        print(10);
+    }
+    else {
+        print(30);
+    }
+    return;
+}
+
 int main() {
-    testString();
     testElif(0);
     testElif(2);
     testElif(1);
     testElif(3);
+    print(-1);
+    testElse(0);
+    testElse(2);
+    testElse(1);
+    testElse(3);
     return 0;
 }
