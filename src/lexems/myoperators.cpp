@@ -1,6 +1,6 @@
 #include "myoperators.h"
 
-std::set<std::string> keyWordOperators{ "if", "else", "while", "return" }; // + JMP
+std::set<std::string> keyWordOperators{ "if", "else", "elif", "while", "return" }; // + JMP
 
 myoperators::myoperators(const std::string str, size_t ind, size_t pos, size_t _begin, size_t _end) :
 	keyWords(str, ind, pos), begin(_begin), end(_end) {

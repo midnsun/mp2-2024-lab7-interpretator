@@ -12,14 +12,35 @@
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
 void interpretator::process(const std::vector<std::string>& source)
 {
-	// 1. Разбиение на слова - строки лексемы
-		// 1.1 Разбиение по словам между пробелов
-		// 
+	std::vector<std::string> strParsing;
 	std::string word;
 	int wordPos, wordLen, tmpwordPos;
 	std::vector <std::vector <std::pair <std::string, int> > > strProgram;
 	std::vector< std::pair<std::string, int> > strCommand;
 	size_t lineInd, pos, wordInd;
+	//0. Замена строк константами типа 0s ... ns
+	for (lineInd = 0; lineInd < source.size(); ++lineInd) {
+		size_t startPos;
+		for (pos = 0; pos < source[lineInd].length(); ++pos) {
+			if (source[lineInd][pos] == '"') {
+				startPos = pos;
+				// Found a string - add to vector of strings
+				while (source[lineInd][++pos] != '"') {
+					if (pos + 1 >= source[lineInd].length()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(startPos) + ": " + source[lineInd][startPos] + " - No closing quotes");
+				}
+				strParsing.push_back(source[lineInd].substr(startPos + 1, pos - startPos - 1));
+				// change it to 0s ... 10s
+				source[lineInd]. ///!!!! souce[lineInd].replace(startPos, pos - startPos + 1, std::to_string(strParsing.size() - 1) + "s");
+				continue;
+			}
+		}
+	}
+
+
+	// 1. Разбиение на слова - строки лексемы
+		// 1.1 Разбиение по словам между пробелов
+		// 
+
 	for (lineInd = 0; lineInd < source.size(); ++lineInd) {
 		strProgram.push_back(std::vector<std::pair <std::string, int>>());
 		pos = 0;
@@ -237,6 +258,7 @@ void interpretator::process(const std::vector<std::string>& source)
 	myoperators* tmpKeyWordOperator;
 	size_t tmpKeyWordOperatorPos;
 	bool elseFlag = false;
+	bool elifFlag = false;
 
 	for (pos = 0; pos < program.size(); ++pos) {
 		if (program[pos]->getClass() == "myoperators") {
@@ -253,25 +275,63 @@ void interpretator::process(const std::vector<std::string>& source)
 				program[pos] = new myoperators{ "JMP", tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos };
 				pos = tmpKeyWordOperatorPos;
 			}
+
 			if (program[pos]->getName() == "if") {
 				elseFlag = false;
-				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
-				// К тому же, чтобы все заработало, нужно исправить парсинг else и разрешить ему исполняться без {} если после него стоит if
-
+				elifFlag = true;
 				tmpKeyWordOperatorPos = pos;
-				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
-				// Прыжок если не выполнилось условие (на следующий else, но после этого слова)
-				pos = tmpKeyWordOperator->getBegin();
-				if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "else") elseFlag = true;
-				delete program[pos];
-				program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag };
-				// Прыжок на конец блока else if если else есть. В случае else if можно просто поставить while и искать последний блок, запомнить конец последнего блока и всегда ставить прыжок туда
-				pos = tmpKeyWordOperator->getEnd();
-				if (elseFlag) {
-					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos + 1]);
-					delete program[pos];
-					program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1 };
+				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
+				size_t endOfLastBlock;
+				while (elifFlag || elseFlag) {
+					elifFlag = false;
+					elseFlag = false;
+					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+					pos = tmpKeyWordOperator->getBegin();
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "else") elseFlag = true;
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "elif") elifFlag = true;
+					endOfLastBlock = tmpKeyWordOperator->getEnd() + 1;
+					pos = endOfLastBlock; // Block iteration
 				}
+
+				// обработка if
+				elifFlag = false;
+				pos = tmpKeyWordOperatorPos;
+				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+				pos = tmpKeyWordOperator->getBegin();
+				// Прыжок если не выполнилось условие (на следующий else, но после слова else или на слово elif)
+				delete program[pos];
+				program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag };
+				// Прыжок в конце if в конец блока
+				pos = tmpKeyWordOperator->getEnd();
+				delete program[pos];
+				program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+				pos += 1;
+
+				// обработка elif
+				if (pos < program.size() && program[pos]->getName() == "elif") elifFlag = true;
+				while (elifFlag) {
+					elifFlag = false;
+					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+					pos = tmpKeyWordOperator->getBegin();
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "elif") elifFlag = true;
+					// Прыжок если не выполнилось условие (на следующий else, но после слова else или на слово elif)
+					delete program[pos];
+					program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag, tmpKeyWordOperator->getEnd() + elseFlag };
+					// Прыжок в конце elif в конец блока
+					pos = tmpKeyWordOperator->getEnd();
+					delete program[pos];
+					program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+					pos += 1; // block iteration
+				}
+
+				// обработка else (Больше не требуется!)
+//				pos = tmpKeyWordOperator->getEnd();
+//				if (elseFlag) {
+//					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos + 1]);
+//					delete program[pos];
+//					program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+//				}
+
 				pos = tmpKeyWordOperatorPos;
 			}
 		}
@@ -552,7 +612,7 @@ constant interpretator::execute(const function const* func, const std::vector<co
 				begin = ++pos;
 				returnFlag = true;
 			}
-			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if") {
+			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if" || program[pos]->getName() == "elif") {
 				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
 				calculator calc(program, pos + 1, tmpKeyWord->getBegin(), vars);
 				tmpResult = calc.calculate(this);
@@ -560,6 +620,7 @@ constant interpretator::execute(const function const* func, const std::vector<co
 				//pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
 
 				//--pos;
+				if (pos + 1 < program.size() && program[pos + 1]->getName() == "elif") continue;
 				if (pos + 1 < program.size() && program[pos + 1]->getName() == "else") pos++;
 				if (pos + 1 < program.size() && program[pos + 1]->getName() == "{") pos++;
 				continue;

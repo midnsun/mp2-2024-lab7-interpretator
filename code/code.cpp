@@ -1,21 +1,29 @@
-int fibonacci(int n) {
-    if (n <= 2) {
-        return 1;
+void testString() {
+    print("Hello, world!");
+    print("Type your age...");
+    int age;
+    scan(age);
+    print("Your age is: ", age, "!", "");
+    return;
+}
+
+void testElif(int n) {
+    if (n == 0) {
+        print("if");
+    }
+    elif (n == 1) {
+        print("elif1");
+    }
+    elif (n == 2) {
+        print("elif2");
     }
     else {
-        int r1 = fibonacci(n - 1);
-        print(r1);
-        int r2 = fibonacci(n - 2);
-        print(r2);
-        return r1 + r2;
+        print("else");
     }
-    return 0;
+    return;
 }
 
 int main() {
-    int n;
-    scan(n);
-    n = fibonacci(n);
-    print(n);
+    testString();
     return 0;
 }
