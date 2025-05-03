@@ -26,7 +26,7 @@ class interpretator {
 public:
 	interpretator(std::vector<std::string>& source);
 	~interpretator();
-	void process(const std::vector<std::string>& source);
+	void process(std::vector<std::string> source);
 	constant execute(const function const* func, const std::vector<constant>& agruments);
 	constant executeWithoutErrorsHandling(const function const* func, const std::vector<constant>& agruments);
 	constant startExecute();

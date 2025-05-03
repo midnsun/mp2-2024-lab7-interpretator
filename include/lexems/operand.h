@@ -15,7 +15,8 @@ public:
 	char getTypeId() const noexcept;
 	void setTypeId(const char& _type) noexcept;
 	void* getValue() const;
-	void setValue(void* v);
+	void setValue(const void* v);
+	void setValue(const std::string& v);
 	bool isTrue() const;
 	virtual ~operand();
 };

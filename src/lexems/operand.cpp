@@ -26,7 +26,7 @@ void* operand::getValue() const {
 #include <iostream>
 
 //обязательно сначала задавать тип операнда и только потом устанавливать значение!
-void operand::setValue(void* v) {
+void operand::setValue(const void* v) {
 	if (v == nullptr) return;
 	if (getTypeId() == 1)
 	{
@@ -38,10 +38,21 @@ void operand::setValue(void* v) {
 	}
 	else if (getTypeId() == 3)
 	{
+		std::cout << "string " << *((std::string*)v) << std::endl;
 		value = new std::string(*(std::string*)v);
 	}
 	else
 	{
+		value = nullptr;
+	}
+}
+
+void operand::setValue(const std::string& s) {
+	if (getTypeId() == 3)
+	{
+		value = new std::string(s);
+	}
+	else {
 		value = nullptr;
 	}
 }

@@ -1,6 +1,6 @@
 #include "dataType.h"
 
-std::set<std::string> dataTypes{ "int", "double", "void" };
+std::set<std::string> dataTypes{ "int", "double", "void", "string" };
 
 dataType::dataType(const std::string str, size_t ind, size_t pos) : keyWords(str, ind, pos) { }
 
@@ -15,6 +15,7 @@ char dataType::getTypeId()
 	if (this->getName() == "void") return 0;
 	else if (this->getName() == "int") return 1;
 	else if (this->getName() == "double") return 2;
+	else if (this->getName() == "string") return 3;
 	else return -1;
 }
 

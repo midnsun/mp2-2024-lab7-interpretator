@@ -10,7 +10,7 @@
 	// b = a / b;
 	// [ ["int", "a", "=", "1"], ["int", "b", "=", "2"], ["b", "=", "a", "/", "b"] ] - 
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
-void interpretator::process(const std::vector<std::string>& source)
+void interpretator::process(std::vector<std::string> source)
 {
 	std::vector<std::string> strParsing;
 	std::string word;
@@ -29,7 +29,8 @@ void interpretator::process(const std::vector<std::string>& source)
 					if (pos + 1 >= source[lineInd].length()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(startPos) + ": " + source[lineInd][startPos] + " - No closing quotes");
 				strParsing.push_back(source[lineInd].substr(startPos + 1, pos - startPos - 1));
 				// change it to 0s ... 10s
-				source[lineInd]. ///!!!! souce[lineInd].replace(startPos, pos - startPos + 1, std::to_string(strParsing.size() - 1) + "s");
+				source[lineInd].replace(startPos, pos - startPos + 1, std::to_string(strParsing.size() - 1) + "s");
+				pos = startPos;
 				continue;
 			}
 		}
@@ -242,6 +243,12 @@ void interpretator::process(const std::vector<std::string>& source)
 					dataTypeAppeared = -1;
 				}
 			}
+			else if (word[word.length() - 1] == 's' && constant::isInteger(word.substr(0, word.length() - 1))) {
+				constant* tmpstr = new constant{ word, lineInd, size_t(wordPos), 3 };
+				size_t tmpind = std::stoi(word.substr(0, word.length() - 1));
+				tmpstr->setValue(strParsing[tmpind]);
+				program.push_back(tmpstr);
+			}
 			else if (word != "\t") {
 				throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - Unknown word");
 			}
@@ -419,7 +426,7 @@ void interpretator::executePrint(const std::vector<constant>& arguments)
 		}
 		else if (arguments[i].getTypeId() == 3)
 		{
-			std::cout << *(std::string*)arguments[i].getValue() << " ";
+			std::cout << *reinterpret_cast<std::string*>(arguments[i].getValue()) << " ";
 		}
 	}
 	std::cout << std::endl;
