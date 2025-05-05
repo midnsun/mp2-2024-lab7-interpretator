@@ -1,6 +1,6 @@
 #include "specialLexem.h"
 
-std::set<char> specialLexems{ '(', ')', '{', '}', '[', ']', ',', ';', '"' };
+std::set<char> specialLexems{ '(', ')', '{', '}', '[', ']', ',', ';' };
 
 specialLexem::specialLexem(const std::string str, size_t ind, size_t pos) : commonLexem(str, ind, pos) { }
 

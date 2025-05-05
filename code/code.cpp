@@ -1,50 +1,57 @@
-double add(double a, double b) {
-    return a + b;
+void testString() {
+    print("Hello, world!");
+    print("Type your age...");
+    int age;
+    scan(age);
+    print("Your age is: ", age, "!", "");
+    return;
 }
-double sub(double a, double b) {
-    return a - b;
+
+void testFor(int a) {
+    for (int i = 0; i < 10; i+=1) {
+        print(1);
+    }
 }
-double mul(double a, double b) {
-    return a * b;
+
+void testElif(int n) {
+    print(n);
+    if (n == 0) {
+        print(10);
+    }
+    elif (n == 1) {
+        print(15);
+    }
+    elif (n == 2) {
+        print(20);
+    }
+    else {
+        print(30);
+    }
+    return;
 }
-double div(double a, double b) {
-    return a / b;
+
+void testElse(int n) {
+    print(n);
+    if (n == 0) {
+        print(10);
+    }
+    else {
+        print(30);
+    }
+    return;
 }
 
 int main() {
-    double a;
-    double b;
-    double c;
-    int op = -1;
-    print(0);
-    while (op != 0) {
-        print(1);
-        scan(op);
-        print(2);
-        if (op > 4 || op < 1) {
-            print(3);
-            return 0;
-        }
-        else {
-            scan(a);
-            scan(b);
-            if (op==1) {
-                c = 0;
-                c = add(a, b);
-            }
-            if (op==2) {
-                c = sub(a, b);
-            }
-            if (op==3) {
-                c = mul(a, b);
-            }
-            if (op==4) {
-                c = div(a, b);
-            }
-        }
-        print(4);
-        print(c);
-    }
-    print(5);
+    testElif(0);
+    testElif(2);
+    testElif(1);
+    testElif(3);
+    print(-1);
+    testElse(0);
+    testElse(2);
+    testElse(1);
+    testElse(3);
+    print(-1);
+    testFor(1);
     return 0;
 }

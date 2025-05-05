@@ -10,16 +10,37 @@
 	// b = a / b;
 	// [ ["int", "a", "=", "1"], ["int", "b", "=", "2"], ["b", "=", "a", "/", "b"] ] - 
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
-void interpretator::process(const std::vector<std::string>& source)
+void interpretator::process(std::vector<std::string> source)
 {
-	// 1. Разбиение на слова - строки лексемы
-		// 1.1 Разбиение по словам между пробелов
-		// 
+	std::vector<std::string> strParsing;
 	std::string word;
 	int wordPos, wordLen, tmpwordPos;
 	std::vector <std::vector <std::pair <std::string, int> > > strProgram;
 	std::vector< std::pair<std::string, int> > strCommand;
 	size_t lineInd, pos, wordInd;
+	//0. Замена строк константами типа 0s ... ns
+	for (lineInd = 0; lineInd < source.size(); ++lineInd) {
+		size_t startPos;
+		for (pos = 0; pos < source[lineInd].length(); ++pos) {
+			if (source[lineInd][pos] == '"') {
+				startPos = pos;
+				// Found a string - add to vector of strings
+				while (source[lineInd][++pos] != '"')
+					if (pos + 1 >= source[lineInd].length()) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(startPos) + ": " + source[lineInd][startPos] + " - No closing quotes");
+				strParsing.push_back(source[lineInd].substr(startPos + 1, pos - startPos - 1));
+				// change it to 0s ... 10s
+				source[lineInd].replace(startPos, pos - startPos + 1, std::to_string(strParsing.size() - 1) + "s");
+				pos = startPos;
+				continue;
+			}
+		}
+	}
+
+
+	// 1. Разбиение на слова - строки лексемы
+		// 1.1 Разбиение по словам между пробелов
+		// 
+
 	for (lineInd = 0; lineInd < source.size(); ++lineInd) {
 		strProgram.push_back(std::vector<std::pair <std::string, int>>());
 		pos = 0;
@@ -86,8 +107,94 @@ void interpretator::process(const std::vector<std::string>& source)
 		
 	}
 
-	size_t begin = 0, end = 0;
-	size_t counter = 0;
+	// тут сделать парсинг for. Принцип: 
+	// for (expr1; expr2; expr3) { doSomething(); } ->
+	// expr1;
+	// while(expr2) {
+	//  doSomething();
+	// expr3;
+	// }
+	size_t begin = 0, end = 0, exprEnd = 0;
+	size_t counter = 0, semicolon = 0;
+
+	strCommand.clear();
+	for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
+		for (wordInd = 0; wordInd < strProgram[lineInd].size(); ++wordInd) {
+			if (strProgram[lineInd][wordInd].first == "for") {
+				if (wordInd + 1 >= strProgram[lineInd].size() || strProgram[lineInd][wordInd + 1].first != "(") throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No expressions");
+				++counter;
+				for (exprEnd = wordInd + 2; exprEnd < strProgram[lineInd].size(); ++exprEnd) {
+					if (strProgram[lineInd][exprEnd].first == "(") ++counter;
+					if (strProgram[lineInd][exprEnd].first == ")") --counter;
+					if (strProgram[lineInd][exprEnd].first == ";") ++semicolon;
+					if (counter == 0) {
+						++exprEnd;
+						break;
+					}
+				}
+				if (counter != 0) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No closing bracket");
+				if (semicolon != 2) throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(strProgram[lineInd][wordInd].second) + ": " + strProgram[lineInd][wordInd].first + " - No expressions");
+
+				strProgram[lineInd][wordInd].first = "while";
+				//expr1
+				begin = wordInd + 2; end = wordInd + 2;
+				while (strProgram[lineInd][end].first != ";") {
+					strCommand.push_back(strProgram[lineInd][end]);
+					++end;
+				}
+				strCommand.push_back(strProgram[lineInd][end++]);
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + begin, strProgram[lineInd].begin() + end);
+				strProgram[lineInd].insert(strProgram[lineInd].begin() + wordInd, strCommand.begin(), strCommand.end());
+				strCommand.clear();
+
+				//expr2
+				begin = end;
+				while (strProgram[lineInd][end].first != ";") {
+					++end;
+				}
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + end);
+
+				//expr3
+				begin = end;
+				while (strProgram[lineInd][end].first != ")") {
+					strCommand.push_back(strProgram[lineInd][end]);
+					++end;
+				}
+				strProgram[lineInd].erase(strProgram[lineInd].begin() + begin, strProgram[lineInd].begin() + end);
+				strCommand.push_back(std::make_pair(";", -1));
+
+				int bracketCounter = 0;
+				bool exitFlag = false;
+				size_t i;
+				for (i = lineInd; i < strProgram.size(); ++i) {
+					size_t j;
+					if (i == lineInd) j = wordInd;
+					else j = 0;
+					for (; j < strProgram[i].size(); ++j) {
+						if (strProgram[i][j].first == "{") {
+							++bracketCounter;
+						}
+						if (strProgram[i][j].first == "}") {
+							--bracketCounter;
+							if (bracketCounter == 0) {
+								end = j;
+								exitFlag = true;
+								break;
+							}
+						}
+						if (bracketCounter < 0) throw std::runtime_error("Line " + std::to_string(i) + ", symbol " + std::to_string(strProgram[i][j].second) + ": " + strProgram[i][j].first + " - Invalid bracket");
+					}
+					if (exitFlag) break;
+				}
+				strProgram[i].insert(strProgram[i].begin() + end, strCommand.begin(), strCommand.end());
+
+				//end
+				strCommand.clear();
+				begin = 0; end = 0; exprEnd = 0; counter = 0; semicolon = 0;
+			}
+		}
+	}
+
 	int arrCounter = -1;
 	char dataTypeAppeared = -1;
 	//		string context = "GLOBAL";
@@ -219,8 +326,16 @@ void interpretator::process(const std::vector<std::string>& source)
 					// посчитать размерность массива
 //						program[lineInd].push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, context, arrCounter });
 					program.push_back(new variable{ word, lineInd, size_t(wordPos), dataTypeAppeared, arrCounter });
+					program[program.size() - 1]->showInfo(); ///
+					std::cout << std::endl;
 					dataTypeAppeared = -1;
 				}
+			}
+			else if (word[word.length() - 1] == 's' && constant::isInteger(word.substr(0, word.length() - 1))) {
+				constant* tmpstr = new constant{ word, lineInd, size_t(wordPos), 3 };
+				size_t tmpind = std::stoi(word.substr(0, word.length() - 1));
+				tmpstr->setValue(strParsing[tmpind]);
+				program.push_back(tmpstr);
 			}
 			else if (word != "\t") {
 				throw std::runtime_error("Line " + std::to_string(lineInd) + ", symbol " + std::to_string(wordPos) + ": " + word + " - Unknown word");
@@ -233,10 +348,19 @@ void interpretator::process(const std::vector<std::string>& source)
 	// Позиции перехода пишутся в индексах таблицы программы
 	// Непонятно, как работать с массивами
 
+//	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+//		std::cout << wordInd << ":	";
+//		program[wordInd]->showInfo();
+//		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
+//			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
+//		std::cout << std::endl;
+//	}
+
 	// Реализуем систему JMP:
 	myoperators* tmpKeyWordOperator;
 	size_t tmpKeyWordOperatorPos;
 	bool elseFlag = false;
+	bool elifFlag = false;
 
 	for (pos = 0; pos < program.size(); ++pos) {
 		if (program[pos]->getClass() == "myoperators") {
@@ -253,25 +377,63 @@ void interpretator::process(const std::vector<std::string>& source)
 				program[pos] = new myoperators{ "JMP", tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos, tmpKeyWordOperatorPos };
 				pos = tmpKeyWordOperatorPos;
 			}
+
 			if (program[pos]->getName() == "if") {
 				elseFlag = false;
-				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
-				// К тому же, чтобы все заработало, нужно исправить парсинг else и разрешить ему исполняться без {} если после него стоит if
-
+				elifFlag = true;
 				tmpKeyWordOperatorPos = pos;
+				// Вот тут посчитать конец последнего блока. Потом выполнять все нижеперечисленное в цикле.
+				size_t endOfLastBlock;
+				while (elifFlag || elseFlag) {
+					elifFlag = false;
+					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+					pos = tmpKeyWordOperator->getBegin();
+					endOfLastBlock = tmpKeyWordOperator->getEnd() + 1;
+					pos = endOfLastBlock; // Block iteration
+					if (elseFlag) break;
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "else") elseFlag = true;
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "elif") elifFlag = true;
+				}
+
+				// обработка if
+				elifFlag = false;
+				pos = tmpKeyWordOperatorPos;
 				tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
-				// Прыжок если не выполнилось условие (на следующий else, но после этого слова)
 				pos = tmpKeyWordOperator->getBegin();
-				if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "else") elseFlag = true;
+				// Прыжок если не выполнилось условие (на следующий else, но после слова else или на слово elif)
 				delete program[pos];
 				program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag };
-				// Прыжок на конец блока else if если else есть. В случае else if можно просто поставить while и искать последний блок, запомнить конец последнего блока и всегда ставить прыжок туда
+				// Прыжок в конце if в конец блока
 				pos = tmpKeyWordOperator->getEnd();
-				if (elseFlag) {
-					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos + 1]);
+				delete program[pos];
+				program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+				pos += 1;
+
+				// обработка elif
+				if (pos < program.size() && program[pos]->getName() == "elif") elifFlag = true;
+				while (elifFlag) {
+					elifFlag = false;
+					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos]);
+					pos = tmpKeyWordOperator->getBegin();
+					if (tmpKeyWordOperator->getEnd() + 1 < program.size() && program[tmpKeyWordOperator->getEnd() + 1]->getName() == "elif") elifFlag = true;
+					// Прыжок если не выполнилось условие (на следующий else, но после слова else или на слово elif)
 					delete program[pos];
-					program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1, tmpKeyWordOperator->getEnd() + 1 };
+					program[pos] = new myoperators{ "JMP", tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag, tmpKeyWordOperator->getEnd() + 1 + elseFlag };
+					// Прыжок в конце elif в конец блока
+					pos = tmpKeyWordOperator->getEnd();
+					delete program[pos];
+					program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+					pos += 1; // block iteration
 				}
+
+				// обработка else (Больше не требуется!)
+//				pos = tmpKeyWordOperator->getEnd();
+//				if (elseFlag) {
+//					tmpKeyWordOperator = dynamic_cast<myoperators*>(program[pos + 1]);
+//					delete program[pos];
+//					program[pos] = new myoperators{ "JMP", endOfLastBlock, endOfLastBlock, endOfLastBlock, endOfLastBlock };
+//				}
+
 				pos = tmpKeyWordOperatorPos;
 			}
 		}
@@ -284,6 +446,14 @@ void interpretator::process(const std::vector<std::string>& source)
 		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
 			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
 		std::cout << std::endl;
+	}
+	lineInd = 0;
+	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+		if (lineInd != program[wordInd]->getInd()) {
+			lineInd = program[wordInd]->getInd();
+			std::cout << std::endl;
+		}
+		std::cout << program[wordInd]->getName() << " ";
 	}
 
 	// 3. Записать функции и переменные в соответствующие таблицы, рассмотреть случаи массивов
@@ -360,7 +530,7 @@ void interpretator::executePrint(const std::vector<constant>& arguments)
 		}
 		else if (arguments[i].getTypeId() == 3)
 		{
-			std::cout << *(std::string*)arguments[i].getValue() << " ";
+			std::cout << *reinterpret_cast<std::string*>(arguments[i].getValue()) << " ";
 		}
 	}
 	std::cout << std::endl;
@@ -535,6 +705,7 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	bool returnFlag = false;
 	myoperators* tmpKeyWord;
 	for (; pos < func->end - 1; ++pos) {
+//		std::cout << "pos is: " << program[pos]->getName() << std::endl;// 
 		// executing
 		// находим слово, обозначающее dataType - добавляем в переменные, проверяя, есть ли там такая же. Если есть - ошибка. 
 		begin = pos;
@@ -552,16 +723,19 @@ constant interpretator::execute(const function const* func, const std::vector<co
 				begin = ++pos;
 				returnFlag = true;
 			}
-			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if") {
+			else if (program[pos]->getName() == "while" || program[pos]->getName() == "if" || program[pos]->getName() == "elif") {
 				tmpKeyWord = dynamic_cast<myoperators*>(program[pos]);
 				calculator calc(program, pos + 1, tmpKeyWord->getBegin(), vars);
+//				std::cout << "Calculator: " << pos + 1 << " " << tmpKeyWord->getBegin() << std::endl; //
 				tmpResult = calc.calculate(this);
-				pos = (tmpResult.isTrue()) ? tmpKeyWord->getBegin() : tmpKeyWord->getEnd();
-				//pos = tmpKeyWord->getBegin() + tmpResult.isTrue(); // if true, avoid JMP operator by increasing value on 1
-
+//				std::cout << tmpResult.isTrue() << " " << tmpKeyWord->getName() << " " << tmpKeyWord->getInd() << std::endl; //
+//				pos = (tmpResult.isTrue()) ? tmpKeyWord->getBegin() : tmpKeyWord->getEnd();
+				pos = tmpKeyWord->getBegin() - tmpResult.isTrue() + 1; // if true, avoid JMP operator by increasing value on 1
+//				std::cout << "pos is: " << pos << "; istrue: " << tmpResult.isTrue() << std::endl; //
 				//--pos;
-				if (pos + 1 < program.size() && program[pos + 1]->getName() == "else") pos++;
-				if (pos + 1 < program.size() && program[pos + 1]->getName() == "{") pos++;
+//				if (pos + 1 < program.size() && program[pos + 1]->getName() == "elif") continue;
+//				if (pos + 1 < program.size() && program[pos + 1]->getName() == "else") pos++;
+//				if (pos + 1 < program.size() && program[pos + 1]->getName() == "{") pos++;
 				continue;
 			}
 			else if (program[pos]->getName() == "JMP") {

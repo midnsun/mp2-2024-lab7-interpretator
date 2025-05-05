@@ -30,7 +30,6 @@ void checkFileContent(std::vector<std::string>& v) { //
 }
 
 int main() {
-//	std::fstream file("../../code/test.cpp");
 	std::fstream file("../../code/code.cpp");
 	std::string str;
 	std::vector<std::string> file_content;
@@ -38,12 +37,12 @@ int main() {
 		file_content.push_back(str);
 	}
 	printFileContent(file_content);
-	try {
+//	try {
 		interpretator program(file_content);
 		constant res = program.startExecute();
-	}
-	catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
-	}
+//	}
+//	catch (std::exception& e) {
+//		std::cout << e.what() << std::endl;
+//	}
 	return 0;
 }
