@@ -8,9 +8,28 @@ void testString() {
 }
 
 void testFor(int a) {
+    if (a == 0) {
     for (int i = 0; i < 10; i+=1) {
-        print(1);
+        print(i * i);
     }
+    }
+    else {
+        int j = 0;
+        while (j < 10) {
+            print(j + j);
+            j += 1;
+        }
+    }
+    return;
+}
+
+void testWhile(int a) {
+    int i = 0;
+    while (i < 10) {
+        print(i);
+        i += 1;
+    }
+    return;
 }
 
 void testElif(int n) {
@@ -41,17 +60,32 @@ void testElse(int n) {
     return;
 }
 
+int fibonacci(int n) {
+    if (n <= 2) {
+        return 1;
+    }
+    else {
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+}
+
 int main() {
+    print("block 0");
+    for (int i = 1; i < 10; i += 1) {
+        print(fibonacci(i));
+    }
+    print("block 1")
     testElif(0);
     testElif(2);
     testElif(1);
     testElif(3);
-    print(-1);
+    print("block 2");
     testElse(0);
     testElse(2);
     testElse(1);
     testElse(3);
-    print(-1);
+    print("block 4");
     testFor(1);
+    testFor(0);
     return 0;
 }
