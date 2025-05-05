@@ -40,7 +40,7 @@ void constant::showInfo() const
 std::string constant::getClass() const { return "constant"; }
 
 constant& constant::operator=(const constant& c) {
-	if (getTypeId() == c.getTypeId())
+	/*if (getTypeId() == c.getTypeId())
 	{
 		setPos(c.getPos());
 		setInd(c.getInd());
@@ -61,6 +61,11 @@ constant& constant::operator=(const constant& c) {
 		setInd(c.getInd());
 		setName(c.getName());
 		setValue(nullptr);
-	}
+	}*/
+	setTypeId(c.getTypeId());
+	setPos(c.getPos());
+	setInd(c.getInd());
+	setValue(c.getValue());
+	setName(c.getName());
 	return *this;
 }
