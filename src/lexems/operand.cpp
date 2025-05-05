@@ -64,9 +64,9 @@ operand::~operand() {
 bool operand::isTrue() const {
 	bool result = false;
 
-	if (type == 1) result = *(int*)value == true;
-	else if (type == 2) result = *(double*)value == true;
-	else if (type == 3) result = (*(std::string*)value).length() == true;
+	if (type == 1) result = *(int*)value != 0;
+	else if (type == 2) result = std::abs(*(double*)value) > 1e-14;
+	else if (type == 3) result = (*(std::string*)value).length() != 0;
 
 	return result;
 }
