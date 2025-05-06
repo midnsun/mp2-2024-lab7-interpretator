@@ -121,7 +121,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
 		int* a = new int(*((int*)(v1->getValue())) + *((int*)(v2->getValue())));
-		tmpres->setValue((void*)(a));
+ 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
 	}
@@ -132,7 +132,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
-	}
+	} 
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 2);
@@ -152,7 +152,7 @@ operand* calculator::calcPlus(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 3 && v2->getTypeId() == 3)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 3);
-		std::string* a = new std::string(*((std::string*)(v1->getValue())) + *((std::string*)(v2->getValue())));
+		std::string* a = new std::string(*((std::string*)(v2->getValue())) + *((std::string*)(v1->getValue())));
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -779,6 +779,7 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 			if (data[pos]->getName() == ")")
 			{
 				flag = true;
+				pos++;
 			}
 			while (pos < data.size() && !flag)
 			{
@@ -818,8 +819,9 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 				val->setTypeId(t.getTypeId());
 			}
 			val->setValue(t.getValue());
+			//if (val->getTypeId() != -1) std::cout << "val = " <<  * (int*)val->getValue() << std::endl;
 			//если функция типа void ничего не добаляем
-			if (val->getTypeId() != -1) expression.push_back(dynamic_cast<commonLexem*>(val));
+			if (val->getTypeId() != -1 && val->getTypeId() != 0) expression.push_back(dynamic_cast<commonLexem*>(val));
 			pos--;
 		}
 		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
@@ -881,14 +883,15 @@ void calculator::initialConstantAndVarisble()
 		{
 			//проверка, что значение константы задано корректно
 
-			if (data[pos]->getName()[0] == '\"' && data[pos]->getName()[data[pos]->getName().size() - 1] == '\"')
-			{
-				std::string* val = new std::string(data[pos]->getName());
-				dynamic_cast<operand*>(data[pos])->setTypeId(3);
-				dynamic_cast<operand*>(data[pos])->setValue(val);
-				delete val;
-			}
-			else
+			//if (data[pos]->getName()[0] == '\"' && data[pos]->getName()[data[pos]->getName().size() - 1] == '\"')
+			//{
+			//	std::string* val = new std::string(data[pos]->getName());
+			//	dynamic_cast<operand*>(data[pos])->setTypeId(3);
+			//	dynamic_cast<operand*>(data[pos])->setValue(val);
+			//	ynamic_cast<operand*>(data[pos])->setValue();
+			//	delete val;
+			//}
+			if (dynamic_cast<operand*>(data[pos])->getTypeId() != 3)
 			{
 				double* t = new double(std::stod(data[pos]->getName()));
 				if (!constant::isInteger(data[pos]->getName()))
@@ -914,7 +917,7 @@ operand* calculator::calcArithmetic(const std::vector<commonLexem*>& expr)
 {
 	if (expr.size() == 0)
 	{
-		constant* tmpres = new constant("##UNNAMED##", -1, -1, -1);
+		constant* tmpres = new constant("##UNNAMED##", -1, -1, 0);
 		return dynamic_cast<operand*>(tmpres);
 	}
 	std::stack<operand*> val; // constant or variable
@@ -1127,7 +1130,6 @@ void printExpression(const std::vector<commonLexem*>& expression)
 //ш3 вычисляем арифметическое выражение
 constant calculator::calculate(interpretator* inter)
 {
-	initialConstantAndVarisble();
 	checkUnaryNegative();
 	std::vector<commonLexem*> expression = calculatingFunctions(inter);
 
@@ -1136,11 +1138,10 @@ constant calculator::calculate(interpretator* inter)
 	//printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
-
+	initialConstantAndVarisble();
 	operand* tmp = calcArithmetic(expression);
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
-
 	//printResult(result);
 	return result;
 }
