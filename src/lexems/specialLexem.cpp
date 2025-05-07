@@ -12,7 +12,7 @@ bool specialLexem::isSpecialLexem(char c)
 
 void specialLexem::showInfo() const
 {
-	std::cout << "special lexem: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	std::cout << "class: special lexem name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " ";
 	return;
 }
 

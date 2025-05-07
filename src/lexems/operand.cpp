@@ -1,3 +1,4 @@
+#include <iostream>
 #include "operand.h"
 
 operand::operand(const std::string str, size_t ind, size_t pos, char _type) : commonLexem(str, ind, pos), type(_type), value(nullptr) { }
@@ -28,8 +29,6 @@ void operand::setTypeId(const char& _type) noexcept
 void* operand::getValue() const {
 	return value;
 }
-
-#include <iostream>
 
 //обязательно сначала задавать тип операнда и только потом устанавливать значение!
 void operand::setValue(const void* v) {

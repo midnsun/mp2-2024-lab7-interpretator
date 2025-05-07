@@ -1130,6 +1130,7 @@ void printExpression(const std::vector<commonLexem*>& expression)
 //ш3 вычисляем арифметическое выражение
 constant calculator::calculate(interpretator* inter)
 {
+	initialConstantAndVarisble();
 	checkUnaryNegative();
 	std::vector<commonLexem*> expression = calculatingFunctions(inter);
 

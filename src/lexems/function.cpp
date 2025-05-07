@@ -9,7 +9,7 @@ function::function(const std::string str, size_t ind, size_t pos, char _type, si
 
 void function::showInfo() const
 {
-	std::cout << "function: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << int(type) << " " << begin << " " << end << " ";
+	std::cout << "class: function name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << int(type) << " BeginOfBlock: " << begin << " EndOfBlock: " << end << " ";
 	return;
 }
 
