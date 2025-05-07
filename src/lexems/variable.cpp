@@ -2,6 +2,11 @@
 
 variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand(str, ind, pos, _type), arr(_arr) {}
 
+variable::variable(const variable& var) : operand(var.getName(), var.getInd(), var.getPos(), var.getTypeId()), arr(var.arr)
+{
+	this->setValue(var.getValue());
+}
+
 bool variable::isValidCharForVariable(char c)
 {
 	if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return true;

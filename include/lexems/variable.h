@@ -13,6 +13,7 @@ class variable : public operand {
 public:
 	//	variable(std::string str, size_t ind, size_t pos, char _type, string _context, int _arr) : operand{ str, ind, pos }, type(_type), context(_context), arr(_arr) {}
 	variable(std::string str, size_t ind, size_t pos, char _type, int _arr);
+	variable(const variable& var);
 	static bool isValidCharForVariable(char c);
 	static bool isValidVariable(const std::string& str);
 	virtual void showInfo() const;

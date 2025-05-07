@@ -10,6 +10,7 @@ private:
 public:
 	static bool isValidCharForOperand(char c);
 	operand(const std::string str, size_t ind, size_t pos, char _type);
+	operand(const operand& op);
 	virtual void showInfo() const = 0;
 	virtual std::string getClass() const = 0;
 	char getTypeId() const noexcept;

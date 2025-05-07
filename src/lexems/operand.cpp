@@ -2,6 +2,12 @@
 
 operand::operand(const std::string str, size_t ind, size_t pos, char _type) : commonLexem(str, ind, pos), type(_type), value(nullptr) { }
 
+operand::operand(const operand& op) : commonLexem(op.getName(), op.getInd(), op.getPos())
+{
+	type = op.getTypeId();
+	setValue(op.getValue());
+}
+
 bool operand::isValidCharForOperand(char c)
 {
 	if (c <= 'z' && c >= 'A' || c <= '9' && c >= '0' || c == '.') return true;
@@ -38,7 +44,7 @@ void operand::setValue(const void* v) {
 	}
 	else if (getTypeId() == 3)
 	{
-		std::cout << "string " << *((std::string*)v) << std::endl;
+		//std::cout << "string " << *((std::string*)v) << std::endl;
 		value = new std::string(*(std::string*)v);
 	}
 	else

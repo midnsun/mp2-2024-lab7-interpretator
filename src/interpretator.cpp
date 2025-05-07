@@ -672,7 +672,8 @@ constant interpretator::execute(const function const* func, const std::vector<co
 		// variable
 		if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
 		if (argsCounter >= arguments.size()) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incorrect count of arguments");
-		var = dynamic_cast<variable*>(program[pos]);
+		//var = dynamic_cast<variable*>(program[pos]);
+		var = new variable(*dynamic_cast<variable*>(program[pos]));
 		if (arguments[argsCounter].getTypeId() != var->getTypeId()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - Incompatible types of arguments");
 		if (vars.find(var) != vars.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
 		var->setValue(arguments[argsCounter].getValue());
@@ -712,7 +713,8 @@ constant interpretator::execute(const function const* func, const std::vector<co
 		if (program[pos]->getClass() == "dataType") {
 			++pos;
 			if (pos >= program.size() || program[pos]->getClass() != "variable") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Variable is missing");
-			var = dynamic_cast<variable*>(program[pos]);
+			//var = dynamic_cast<variable*>(program[pos]);
+			var = new variable(*dynamic_cast<variable*>(program[pos]));
 			if (vars.find(var) != vars.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
 			vars.insert(var);
 			begin = pos++;
