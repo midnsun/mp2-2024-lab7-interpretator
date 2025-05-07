@@ -574,7 +574,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((double*)(v1->getValue())) == *((int*)(v2->getValue())));
+		int* a = new int(std::abs(*((double*)(v1->getValue())) - *((int*)(v2->getValue()))) < 1e-9);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -582,7 +582,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((int*)(v1->getValue())) == *((double*)(v2->getValue())));
+		int* a = new int(std::abs(*((int*)(v1->getValue())) - *((double*)(v2->getValue()))) < 1e-9);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -590,7 +590,7 @@ operand* calculator::calcEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((double*)(v1->getValue())) == *((double*)(v2->getValue())));
+		int* a = new int(std::abs(*((double*)(v1->getValue())) - *((double*)(v2->getValue()))) < 1e-9);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -619,7 +619,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 1)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((double*)(v1->getValue())) != *((int*)(v2->getValue())));
+		int* a = new int(std::abs(*((double*)(v1->getValue())) - *((int*)(v2->getValue()))) > 1e-9);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -627,7 +627,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 1 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((int*)(v1->getValue())) != *((double*)(v2->getValue())));
+		int* a = new int(std::abs(*((int*)(v1->getValue())) - *((double*)(v2->getValue()))) > 1e-9);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -635,7 +635,7 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 	else if (v1->getTypeId() == 2 && v2->getTypeId() == 2)
 	{
 		constant* tmpres = new constant("##UNNAMED##", -1, -1, 1);
-		int* a = new int(*((double*)(v1->getValue())) != *((double*)(v2->getValue())));
+		int* a = new int(std::abs(*((double*)(v1->getValue())) - *((double*)(v2->getValue()))) > 1e-0);
 		tmpres->setValue((void*)(a));
 		delete a;
 		return dynamic_cast<operand*>(tmpres);
@@ -669,7 +669,7 @@ operand* calculator::assignment(operand* v1, operand* v2)
 
 operand* calculator::addAndAssign(operand* v1, operand* v2)
 {
-	return assignment(v1, calcPlus(v1, v2));
+	return assignment(v1, calcPlus(v2, v1));
 }
 
 operand* calculator::NegativeAndAssign(operand* v1, operand* v2)
