@@ -21,7 +21,7 @@ char dataType::getTypeId()
 
 void dataType::showInfo() const
 {
-	std::cout << "dataType: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	std::cout << "class: dataType name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " ";
 	return;
 }
 

@@ -22,7 +22,7 @@ bool operation::isOperation(const std::string& str)
 
 void operation::showInfo() const
 {
-	std::cout << "operation: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " ";
+	std::cout << "class operation name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " ";
 	return;
 }
 

@@ -24,7 +24,7 @@ bool variable::isValidVariable(const std::string& str)
 
 void variable::showInfo() const
 {
-	std::cout << "variable: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << this->getTypeId() << " " << arr << " ";
+	std::cout << "class variable name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << this->getTypeId() << /*" " << arr << */" ";
 	return;
 }
 

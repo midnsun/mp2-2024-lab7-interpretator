@@ -33,7 +33,7 @@ bool constant::isInteger(const std::string& str)
 
 void constant::showInfo() const
 {
-	std::cout << "constant: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << this->getTypeId();
+	std::cout << "class: constant " << "name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << this->getTypeId();
 	return;
 }
 

@@ -15,7 +15,7 @@ bool myoperators::isKeyWordOperator(const std::string& str)
 
 void myoperators::showInfo() const
 {
-	std::cout << "keyWordOperator: " << this->getName() << " " << this->getInd() << " " << this->getPos() << " " << begin << " " << end << " ";
+	std::cout << "class: keyWordOperator name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " BeginOfBlock: " << begin << " EndOfBlock: " << end << " ";
 	return;
 }
 

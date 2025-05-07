@@ -103,7 +103,7 @@ void interpretator::process(std::vector<std::string> source)
 		//			functions.insert(*(new function{ s, size_t(-1), size_t(-1), -1, size_t(-1), size_t(-1), size_t(-1), size_t(-1) }));
 		//abs может возвращить int и double, но имя у него одно
 		if (s == "cos" || s == "sin" || s == "sqrt"/* || s == "abs"*/) functions.insert(new function{s, 0, 0, 2, 0, 0});
-		else functions.insert(new function{ s, 0, 0, -1, 0, 0 });
+		else functions.insert(new function{ s, 0, 0, 0, 0, 0 });
 		
 	}
 
