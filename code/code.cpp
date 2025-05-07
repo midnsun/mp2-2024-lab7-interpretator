@@ -89,3 +89,48 @@ int main() {
     testFor(0);
     return 0;
 }
+
+
+int testIf(int n) {
+    if (n == 0) {
+        return 10;
+    }
+    elif (n == 1) {
+        return 15;
+    }
+    elif (n == 2) {
+        return 20;
+    }
+    else {
+        return 30;
+    }
+}
+
+int testsIf() {
+    int res = 1;
+    res *= (testIf(2) == 20);
+    res *= (testIf(1) == 15);
+    res *= (testIf(0) == 10);
+    res *= (testIf(3) == 30);
+    return res;
+}
+
+
+int main() {
+    print("tests");
+
+    if (!testsOperations()) {
+        print("Error test Operations");
+        return 0;
+    }
+    print("tests operations passed");
+
+    if (!testsIf()) {
+        print("Error test If");
+        return 0;
+    }
+    print("tests If passed");
+
+
+    return 0;
+}
