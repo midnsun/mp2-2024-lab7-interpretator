@@ -36,7 +36,10 @@ void variable::setSizes(const std::vector<int>& v) {
 
 void variable::showInfo() const
 {
-	std::cout << "class variable name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << this->getTypeId() << /*" " << arr << */" ";
+	std::cout << "class variable name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << this->getTypeId() << " sizes: " << sizes.size() << " ";
+	for (size_t i = 0; i < sizes.size(); ++i) {
+		std::cout << sizes[i] << " ";
+	}
 	return;
 }
 
