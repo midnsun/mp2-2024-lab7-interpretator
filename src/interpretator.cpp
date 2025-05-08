@@ -195,7 +195,7 @@ void interpretator::process(std::vector<std::string> source)
 		}
 	}
 
-	int arrCounter = -1;
+	int arrCounter = 0;
 	char dataTypeAppeared = -1;
 	//		string context = "GLOBAL";
 	for (lineInd = 0; lineInd < strProgram.size(); ++lineInd) {
@@ -444,7 +444,21 @@ void interpretator::process(std::vector<std::string> source)
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 		if (program[wordInd]->getClass() == "variable") {
 			var = dynamic_cast<variable*>(program[wordInd]);
-			if 
+			if (var->getTypeId() == -1) continue;
+			arrCounter = 0;
+			while (wordInd + 1 < program.size() && program[wordInd + 1]->getName() == "[") {
+				counter = 1;
+				wordInd += 2;
+				while (counter != 0 && wordInd < program.size()) {
+					if (program[wordInd]->getName() == "[") ++counter;
+					if (program[wordInd]->getName() == "]") --counter;
+					++wordInd;
+				}
+				if (counter != 0) throw std::runtime_error("Line " + std::to_string(program[wordInd]->getInd()) + ", symbol " + std::to_string(program[wordInd]->getPos()) + ": " + program[wordInd]->getName() + " - No closing ]");
+				++arrCounter;
+				--wordInd;
+			}
+			var->setArr(arrCounter);
 		}
 	}
 
@@ -657,8 +671,9 @@ constant interpretator::execute(const function const* func, const std::vector<co
 		return result;
 	}
 	constant tmpResult = result;
-	size_t pos, argsCounter;
-	size_t begin, end;
+	size_t pos, argsCounter, counter;
+	size_t begin, end, arrBegin, arrEnd;
+	std::vector<int> arrCounter;
 	bool flag = false;
 //	std::vector<variable*> argvars; // SET!!!!!!
 	std::set<variable*, variableCMP> vars;
@@ -711,7 +726,6 @@ constant interpretator::execute(const function const* func, const std::vector<co
 		argvars[i]->setValue(arguments[i].getValue());
 	}
 	*/
-
 	flag = false;
 	bool returnFlag = false;
 	myoperators* tmpKeyWord;
@@ -726,6 +740,25 @@ constant interpretator::execute(const function const* func, const std::vector<co
 			var = new variable(*dynamic_cast<variable*>(program[pos]));
 			if (vars.find(var) != vars.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
 			vars.insert(var);
+			if (var->getSizes().size() > 0) {
+				pos += 1; // first [
+				while (arrCounter.size() < var->getSizes().size()) {
+					if (program[pos]->getName() != "[") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Missing [");
+					pos += 1; // pos probably [
+					arrBegin = pos; // symbol after [
+					counter = 1;
+					while (counter != 0 && pos < func->end) {
+						if (program[pos]->getName() == "[") ++counter;
+						if (program[pos]->getName() == "]") --counter;
+						++pos;
+					}
+					arrEnd = pos - 1; // pos - symbol after ], probably [
+					calculator calc(program, arrBegin, arrEnd, vars);
+					tmpResult = calc.calculate(this);
+					arrCounter.push_back(*(int*)tmpResult.getValue());
+				}
+				var->setSizes(arrCounter);
+			}
 			begin = pos++;
 		}
 		// находим слово, обозначающее keyWord - выполняем. Jump как обычно выполняем (по стеку). Все просто
