@@ -22,6 +22,19 @@ bool variable::isValidVariable(const std::string& str)
 	return true;
 }
 
+void variable::setArr(int _arr) {
+	arr = _arr;
+	sizes.resize(arr);
+}
+
+std::vector<int> variable::getSizes() const {
+	return sizes;
+}
+
+void variable::setSizes(const std::vector<int>& v) {
+	sizes = v;
+}
+
 void variable::showInfo() const
 {
 	std::cout << "class variable name: " << this->getName() << " LineIndex: " << this->getInd() << " PosIndex: " << this->getPos() << " type: " << this->getTypeId() << /*" " << arr << */" ";

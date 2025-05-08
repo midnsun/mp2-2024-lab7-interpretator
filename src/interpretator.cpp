@@ -439,6 +439,11 @@ void interpretator::process(std::vector<std::string> source)
 		}
 	}
 
+	// Обработка массивов.
+	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+		
+	}
+
 	// PRINTING
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 		std::cout << wordInd << ":	";
