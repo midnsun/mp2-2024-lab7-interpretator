@@ -22,6 +22,7 @@ public:
 	void setArr(int _arr);
 	std::vector<int> getSizes() const;
 	void setSizes(const std::vector<int>& v);
+	void* getValueArr(const std::vector<int>& ind);
 };
 
 struct variableCMP {
