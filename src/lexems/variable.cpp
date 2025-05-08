@@ -1,8 +1,8 @@
 #include "variable.h"
 
-variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand(str, ind, pos, _type), arr(_arr) {}
+variable::variable(std::string str, size_t ind, size_t pos, char _type, int _arr) : operand(str, ind, pos, _type), sizes(_arr) {}
 
-variable::variable(const variable& var) : operand(var.getName(), var.getInd(), var.getPos(), var.getTypeId()), arr(var.arr)
+variable::variable(const variable& var) : operand(var.getName(), var.getInd(), var.getPos(), var.getTypeId()), sizes(var.sizes)
 {
 	this->setValue(var.getValue());
 }
@@ -23,8 +23,7 @@ bool variable::isValidVariable(const std::string& str)
 }
 
 void variable::setArr(int _arr) {
-	arr = _arr;
-	sizes.resize(arr);
+	sizes.resize(_arr);
 }
 
 std::vector<int> variable::getSizes() const {

@@ -440,8 +440,12 @@ void interpretator::process(std::vector<std::string> source)
 	}
 
 	// Обработка массивов.
+	variable* var;
 	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
-		
+		if (program[wordInd]->getClass() == "variable") {
+			var = dynamic_cast<variable*>(program[wordInd]);
+			if 
+		}
 	}
 
 	// PRINTING
