@@ -824,6 +824,31 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 			if (val->getTypeId() != -1 && val->getTypeId() != 0) expression.push_back(dynamic_cast<commonLexem*>(val));
 			pos--;
 		}
+		//встретили массив
+		//идея в том, чтобы вместо A[i][j] подставить конкретный адрес в памяти
+		else if (data[pos]->getClass() == "variable" && dynamic_cast<variable*>(data[pos])->getSizes().size() > 0)
+		{
+			variable* var = dynamic_cast<variable*>(data[pos]);
+			constant* val = new constant("##UNNAMED##", -1, -1, var->getTypeId());
+			std::vector<int> inds;
+			pos += 1; // first [
+			while (inds.size() < var->getSizes().size()) {
+				if (data[pos]->getName() != "[") throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - Missing [");
+				pos += 1; // pos probably [
+				size_t arrBegin = pos; // symbol after [
+				int counter = 1;
+				while (counter != 0 && pos < end) {
+					if (data[pos]->getName() == "[") ++counter;
+					if (data[pos]->getName() == "]") --counter;
+					++pos;
+				}
+				size_t arrEnd = pos - 1; // pos - symbol after ], probably [
+				calculator calc(data, arrBegin, arrEnd, vars);
+				inds.push_back(*(int*)calc.calculate(inter).getValue());
+			}
+			val->setValue(var->getValueArr(inds));
+			expression.push_back(dynamic_cast<commonLexem*>(val));
+		}
 		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
 		{
 			throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + "an unexpected symbol");
@@ -860,6 +885,7 @@ void calculator::initialConstantAndVarisble()
 			}
 			else
 			{
+				//как инициализировать переменную массив, неужели копировать весь массив полностью
 				dynamic_cast<variable*>(data[pos])->setTypeId((*vars.find(dynamic_cast<variable*>(data[pos])))->getTypeId());
 				if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() == nullptr) continue;
 				if (dynamic_cast<variable*>(data[pos])->getTypeId() == 1)
@@ -1136,13 +1162,13 @@ constant calculator::calculate(interpretator* inter)
 
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	//printExpression(expression);
+	printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
 	initialConstantAndVarisble();
 	operand* tmp = calcArithmetic(expression);
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
-	//printResult(result);
+	printResult(result);
 	return result;
 }
