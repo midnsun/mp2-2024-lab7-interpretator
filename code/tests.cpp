@@ -358,11 +358,106 @@ void testRecursion() {
     return;
 }
 
+void testArrays() {
+    print("Testing arrays1...");
+    int n1 = 4;
+    int n2 = 5; 
+    int n3 = 2;
+    int n4 = 6;
+    int n5 = 3;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    int l = 0;
+    int p = 0;
+    int A[n1][n2][n3][n4][n5];
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            k = 0;
+            while(k < n3) {
+                l = 0;
+                while(l < n4) {
+                    p = 0;
+                    while(p < n5) {
+                        A[i][j][k][l][p] = i * j * k * l * p;
+                        p += 1;
+                    }
+                    l += 1;
+                }
+                 k += 1;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    k = 0;
+    l = 0;
+    p = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            k = 0;
+            while(k < n3) {
+                l = 0;
+                while(l < n4) {
+                    p = 0;
+                    while(p < n5) {
+                         if (i * j * k * l * p != A[i][j][k][l][p]) {
+                            print("error", "A[", i, "]", "[", j, "]", "[", l, "]", "[", k, "]", "[", p, "] != ", i * j * k * l * p, A[i][j][k][l][p]);
+                        }
+                        p += 1;
+                    }
+                    l += 1;
+                }
+                k += 1;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    return;
+}
+
+void testArrays2()
+{
+    print("Testing arrays2...");
+    int n1 = 4;
+    int n2 = 5; 
+    int i = 0;
+    int j = 0;
+    double A[n1][n2];
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            A[i][j] = sqrt(i * j);
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            if (sqrt(i * j) != A[i][j]) {
+                print("error", "A[", i, "]", "[", j, "] != ", sqrt(i * j), A[i][j]);
+            } 
+            j += 1;
+        }
+        i += 1;
+    }
+    return;
+}
+
 int main() {
     testIntOperation();
     testDoubleOperation();
     testStringOperation();
     testOperators();
     testRecursion();
+    testArrays();
+    testArrays2();
     return 0;
 }

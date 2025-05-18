@@ -22,17 +22,86 @@ bool variable::isValidVariable(const std::string& str)
 	return true;
 }
 
-void variable::setArr(int _arr) {
+void variable::setArr(int _arr) 
+{
 	sizes.resize(_arr);
 }
 
-std::vector<int> variable::getSizes() const {
+std::vector<int> variable::getSizes() const 
+{
 	return sizes;
 }
 
-void variable::setSizes(const std::vector<int>& v) {
+//выполняется один раз при объявление массива
+//тип хранимых значений уже должен быть известен
+void variable::setSizes(const std::vector<int>& v) 
+{
+	sizes = v;
+	size_t cntItem = 1;
+	for (size_t i = 0; i < sizes.size(); i++)
+	{
+		cntItem *= sizes[i];
+	}
+	if (getTypeId() == 1)
+	{
+		setValue(new int[cntItem]);
+	}
+	else if (getTypeId() == 2)
+	{
+		setValue(new double[cntItem]);
+	} 
+	else if (getTypeId() == 3)
+	{
+		setValue(new std::string[cntItem]);
+	}
+	else
+	{
+		throw std::runtime_error("you cannot declare an array of this type");
+	}
+	return;
+}
+
+const std::vector<int>& variable::getSizes()
+{
+	return sizes;
+}
+
+void variable::copySizes(const std::vector<int>& v)
+{
 	sizes = v;
 }
+
+void* variable::getValueArr(const std::vector<int>& ind)
+{
+	size_t shift = 0;
+	if (ind.size() != sizes.size()) throw std::runtime_error("the dimension of the array is violated");
+	for (size_t i = 0; i < ind.size(); i++)
+	{
+		size_t k = ind[i];
+		for (size_t j = 0; j < sizes.size() - i - 1; j++)
+		{
+			k *= sizes[j];
+		}
+		shift += k;
+	}
+	if (getTypeId() == 1)
+	{
+		int* t = (int*)getValue();
+		return (t + shift);
+	}
+	else if (getTypeId() == 2)
+	{
+		double* t = (double*)getValue();
+		return (t + shift);
+	}
+	else
+	{
+		std::string* t = (std::string*)getValue();
+		return (t + shift);
+	}
+	return nullptr;
+}
+
 
 void variable::showInfo() const
 {

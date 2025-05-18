@@ -30,6 +30,13 @@ void* operand::getValue() const {
 	return value;
 }
 
+void operand::copyValue(void* v)
+{
+	value = v;
+	return;
+}
+
+
 //обязательно сначала задавать тип операнда и только потом устанавливать значение!
 void operand::setValue(const void* v) {
 	if (v == nullptr) return;

@@ -643,7 +643,7 @@ interpretator::interpretator(std::vector<std::string>& source) {
 
 interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
-		delete program[i];
+		//delete program[i];
 	}
 }
 
@@ -758,7 +758,9 @@ constant interpretator::execute(const function const* func, const std::vector<co
 					arrCounter.push_back(*(int*)tmpResult.getValue());
 				}
 				var->setSizes(arrCounter);
+				continue;
 			}
+			//begin = pos + 2;
 			begin = pos++;
 		}
 		// находим слово, обозначающее keyWord - выполняем. Jump как обычно выполняем (по стеку). Все просто
