@@ -643,7 +643,7 @@ interpretator::interpretator(std::vector<std::string>& source) {
 
 interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
-		delete program[i];
+		//delete program[i];
 	}
 }
 

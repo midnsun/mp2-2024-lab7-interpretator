@@ -19,5 +19,6 @@ public:
 	void setValue(const void* v);
 	void setValue(const std::string& v);
 	bool isTrue() const;
+	void copyValue(void* v);
 	virtual ~operand();
 };

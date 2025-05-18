@@ -22,17 +22,20 @@ bool variable::isValidVariable(const std::string& str)
 	return true;
 }
 
-void variable::setArr(int _arr) {
+void variable::setArr(int _arr) 
+{
 	sizes.resize(_arr);
 }
 
-std::vector<int> variable::getSizes() const {
+std::vector<int> variable::getSizes() const 
+{
 	return sizes;
 }
 
 //выполняется один раз при объявление массива
 //тип хранимых значений уже должен быть известен
-void variable::setSizes(const std::vector<int>& v) {
+void variable::setSizes(const std::vector<int>& v) 
+{
 	sizes = v;
 	size_t cntItem = 1;
 	for (size_t i = 0; i < sizes.size(); i++)
@@ -56,6 +59,16 @@ void variable::setSizes(const std::vector<int>& v) {
 		throw std::runtime_error("you cannot declare an array of this type");
 	}
 	return;
+}
+
+const std::vector<int>& variable::getSizes()
+{
+	return sizes;
+}
+
+void variable::copySizes(const std::vector<int>& v)
+{
+	sizes = v;
 }
 
 void* variable::getValueArr(const std::vector<int>& ind)
@@ -86,7 +99,9 @@ void* variable::getValueArr(const std::vector<int>& ind)
 		std::string* t = (std::string*)getValue();
 		return (t + shift);
 	}
+	return nullptr;
 }
+
 
 void variable::showInfo() const
 {

@@ -653,15 +653,44 @@ operand* calculator::calcNotEqually(operand* v1, operand* v2)
 
 operand* calculator::assignment(operand* v1, operand* v2)
 {
-	if (v1->getClass() != "variable") throw std::runtime_error("");
+	if (v1->getClass() != "variable" && v1->getName() != "ARR_VARIBLE") throw std::runtime_error("");
 	bool canAssign = v1->getTypeId() == 1 && v2->getTypeId() == 1 ||
 					 v1->getTypeId() == 2 && v2->getTypeId() == 2 ||
 					 v1->getTypeId() == 2 && v2->getTypeId() == 1 ||
 					 v1->getTypeId() == 3 && v2->getTypeId() == 3;
 	if (canAssign)
 	{
-		v1->setValue(v2->getValue());
-		(*vars.find(dynamic_cast<variable*>(v1)))->setValue(v2->getValue());
+		if (v1->getClass() == "variable")
+		{
+			v1->setValue(v2->getValue());
+			//std::cout << *(int*)v1->getValue() << std::endl;
+			(*vars.find(dynamic_cast<variable*>(v1)))->setValue(v2->getValue());
+		}
+		else
+		{
+			if (v1->getTypeId() == 1)
+			{
+				int* t = (int*)v1->getValue();
+				*t = *(int*)(v2->getValue());
+			}
+			else if (v1->getTypeId() == 2)
+			{
+				if (v2->getTypeId() == 1)
+				{
+					double* t = (double*)v1->getValue();
+					*t = *(int*)(v2->getValue());
+				}
+				else
+				{
+					double* t = (double*)v1->getValue();
+					*t = *(double*)(v2->getValue());
+				}
+			}
+			else
+			{
+				//*(std::string*)v1->getValue() = *(std::string*)(v2->getValue());
+			}
+		}
 	}
 	else std::runtime_error("it is not possible to perform this operation with the current operands");//недопустимая операция
 	return v1;
@@ -829,15 +858,17 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 		else if (data[pos]->getClass() == "variable" && dynamic_cast<variable*>(data[pos])->getSizes().size() > 0)
 		{
 			variable* var = dynamic_cast<variable*>(data[pos]);
-			constant* val = new constant("##UNNAMED##", -1, -1, var->getTypeId());
+			constant* val = new constant("ARR_VARIBLE", -1, -1, var->getTypeId());
 			std::vector<int> inds;
 			pos += 1; // first [
-			while (inds.size() < var->getSizes().size()) {
+			while (inds.size() < var->getSizes().size())
+			{
 				if (data[pos]->getName() != "[") throw std::runtime_error("Line " + std::to_string(data[pos]->getInd()) + ", symbol " + std::to_string(data[pos]->getPos()) + ": " + data[pos]->getName() + " - Missing [");
 				pos += 1; // pos probably [
 				size_t arrBegin = pos; // symbol after [
 				int counter = 1;
-				while (counter != 0 && pos < end) {
+				while (counter != 0 && pos < end)
+				{
 					if (data[pos]->getName() == "[") ++counter;
 					if (data[pos]->getName() == "]") --counter;
 					++pos;
@@ -846,8 +877,10 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 				calculator calc(data, arrBegin, arrEnd, vars);
 				inds.push_back(*(int*)calc.calculate(inter).getValue());
 			}
-			val->setValue(var->getValueArr(inds));
+			val->copyValue(var->getValueArr(inds));
+			//printResult(*val);
 			expression.push_back(dynamic_cast<commonLexem*>(val));
+			pos--;
 		}
 		else if (data[pos]->getClass() == "specialLexems" && (data[pos]->getName() != "(" || data[pos]->getName() != ")"))
 		{
@@ -885,9 +918,14 @@ void calculator::initialConstantAndVarisble()
 			}
 			else
 			{
-				//как инициализировать переменную массив, неужели копировать весь массив полностью
 				dynamic_cast<variable*>(data[pos])->setTypeId((*vars.find(dynamic_cast<variable*>(data[pos])))->getTypeId());
 				if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() == nullptr) continue;
+				dynamic_cast<variable*>(data[pos])->setSizes((*vars.find(dynamic_cast<variable*>(data[pos])))->getSizes());
+				if (dynamic_cast<variable*>(data[pos])->getSizes().size() > 0)
+				{
+					dynamic_cast<variable*>(data[pos])->copyValue((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue());
+					continue;
+				}
 				if (dynamic_cast<variable*>(data[pos])->getTypeId() == 1)
 				{
 					int* t = new int(*(int*)((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
@@ -1162,13 +1200,14 @@ constant calculator::calculate(interpretator* inter)
 
 	//expression - вектор из операнд, операций и ( )
 	//можно переводить в постфикс
-	printExpression(expression);
+	//printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
 	initialConstantAndVarisble();
 	operand* tmp = calcArithmetic(expression);
+	//if (tmp->getClass() == "constant") printResult(*(dynamic_cast<constant*>(tmp)));
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
 	result.setValue(tmp->getValue());
-	printResult(result);
+	//printResult(result);
 	return result;
 }
