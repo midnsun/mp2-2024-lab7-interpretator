@@ -72,7 +72,8 @@ void operand::setValue(const std::string& s) {
 }
 
 operand::~operand() {
-	delete value;
+	if (getTypeId() != 3)
+		delete value;
 }
 
 bool operand::isTrue() const {

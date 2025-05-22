@@ -1,3 +1,5 @@
+int GLOB = -1;
+
 void testIntOperation() {
     print("Testing int operators...");
     
@@ -485,6 +487,15 @@ void testArrays5() {
     return;
 }
 
+void processGlobal() {
+    if (GLOB != -1) { print("error: global variable isn't valid", GLOB); }
+    GLOB = GLOB + 1;
+}
+
+void testGlobal() {
+    if (GLOB != 0) { print("error: global variable isn't valid", GLOB); }
+}
+
 int main() {
     testIntOperation();
     testDoubleOperation();
@@ -496,5 +507,7 @@ int main() {
     testArrays3();
     testArrays4();
     testArrays5();
+    processGlobal();
+    testGlobal();
     return 0;
 }

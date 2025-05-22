@@ -677,6 +677,7 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	bool flag = false;
 //	std::vector<variable*> argvars; // SET!!!!!!
 	std::set<variable*, variableCMP> vars;
+	for (const auto v : GlobalVariables) vars.insert(v);
 	variable* var;
 
 	pos = func->begin;
@@ -801,5 +802,6 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	}
 
 	if (result.getTypeId() != func->type) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incompatible types of arguments");
+	for (const auto v : vars) if (GlobalVariables.find(v) == GlobalVariables.end()) delete v;
 	return result;
 }
