@@ -38,26 +38,29 @@ void variable::setSizes(const std::vector<int>& v)
 {
 	sizes = v;
 	size_t cntItem = 1;
+	void* value = this->getValue();
 	for (size_t i = 0; i < sizes.size(); i++)
 	{
+		if (sizes[i] <= 0) throw std::runtime_error("arr size <= 0");
 		cntItem *= sizes[i];
 	}
 	if (getTypeId() == 1)
 	{
-		setValue(new int[cntItem]);
+		value = new int[cntItem];
 	}
 	else if (getTypeId() == 2)
 	{
-		setValue(new double[cntItem]);
+		value = new double[cntItem];
 	} 
 	else if (getTypeId() == 3)
 	{
-		setValue(new std::string[cntItem]);
+		value = new std::string[cntItem];
 	}
 	else
 	{
 		throw std::runtime_error("you cannot declare an array of this type");
 	}
+	this->copyValue(value);
 	return;
 }
 
@@ -73,16 +76,12 @@ void variable::copySizes(const std::vector<int>& v)
 
 void* variable::getValueArr(const std::vector<int>& ind)
 {
-	size_t shift = 0;
+	
 	if (ind.size() != sizes.size()) throw std::runtime_error("the dimension of the array is violated");
-	for (size_t i = 0; i < ind.size(); i++)
+	size_t shift = ind[0];
+	for (size_t i = 1; i < ind.size(); i++)
 	{
-		size_t k = ind[i];
-		for (size_t j = 0; j < sizes.size() - i - 1; j++)
-		{
-			k *= sizes[j];
-		}
-		shift += k;
+		shift = ind[i] + sizes[i] * shift;
 	}
 	if (getTypeId() == 1)
 	{

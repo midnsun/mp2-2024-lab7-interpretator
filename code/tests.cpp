@@ -405,7 +405,7 @@ void testArrays() {
                 while(l < n4) {
                     p = 0;
                     while(p < n5) {
-                         if (i * j * k * l * p != A[i][j][k][l][p]) {
+                        if (i * j * k * l * p != A[i][j][k][l][p]) {
                             print("error", "A[", i, "]", "[", j, "]", "[", l, "]", "[", k, "]", "[", p, "] != ", i * j * k * l * p, A[i][j][k][l][p]);
                         }
                         p += 1;
@@ -451,6 +451,104 @@ void testArrays2()
     return;
 }
 
+void testArrays3() {
+    print("Testing arrays3...");
+    int n1 = 5;
+    int n2 = 7;
+    int i = 0;
+    int j = 0;
+    int A[n1][n2];
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            A[i][j] = i * j;
+            j += 1;
+        }
+        i += 1;
+    }
+    double B[A[4][4]][A[3][6]];
+    int n3 = 16;
+    int n4 = 18;
+    i = 0;
+    j = 0;
+    while(i < n3) {
+        j = 0;
+        while(j < n4) {
+            B[i][j] = sqrt(i * j);
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    while(i < n3) {
+        j = 0;
+        while(j < n4) {
+            if (sqrt(i * j) != B[i][j]) {
+                print("error", "B[", i, "]", "[", j, "] != ", sqrt(i * j), B[i][j]);
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    return;
+}
+
+void testArrays4() {
+    print("Testing arrays4...");
+    int n1 = 5;
+    int n2 = 7;
+    int i = 0;
+    int j = 0;
+    string A[n1][n2];
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            A[i][j] = "aaa";
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            if ("aaa" != A[i][j]) {
+                print("error", "A[", i, "]", "[", j, "] != ", "aaa", A[i][j]);
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    return;
+}
+
+void testArrays5() {
+    print("Testing arrays5...");
+    int n1 = 5;
+    int i = 0;
+    int A[n1];
+    int B[n1];
+    while(i < n1) {
+        A[i] = i;
+        i += 1;
+    }
+    i = 0;
+    while(i < n1) {
+        B[A[n1 - A[i] - 1]] = i;
+        i += 1;
+    }
+    i = 0;
+    while(i < n1) {
+        if (n1 - i - 1 != B[i]) {
+            print("error", "B[", i, "]", " != ", i, B[i]);
+        }
+        i += 1;
+    }
+    return;
+}
+
 int main() {
     testIntOperation();
     testDoubleOperation();
@@ -459,5 +557,8 @@ int main() {
     testRecursion();
     testArrays();
     testArrays2();
+    testArrays3();
+    testArrays4();
+    testArrays5();
     return 0;
 }
