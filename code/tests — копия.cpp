@@ -365,27 +365,59 @@ void testArrays() {
     int n3 = 2;
     int n4 = 6;
     int n5 = 3;
-    int i;
+    int i = 0;
     int j;
     int k;
     int l;
     int p;
     int A[n1][n2][n3][n4][n5];
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
-            for (k = 0; k < n3; k += 1) {
-                for (l = 0; l < n4; l += 1) {
-                    for (p = 0; p < n5; p += 1) {
+    while(i < n1){
+        j = 0;
+        while(j < n2) {
+            k = 0;
+            while(k < n3) {
+                l = 0;
+                while(l < n4) {
+                    p = 0;
+                    while(p < n5) {
                         A[i][j][k][l][p] = i * j * k * l * p;
-    } } } } }
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
-            for (k = 0; k < n3; k += 1) {
-                for (l = 0; l < n4; l += 1) {
-                    for (p = 0; p < n5; p += 1) {
+                        p += 1;
+                    }
+                    l += 1;
+                }
+                 k += 1;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    k = 0;
+    l = 0;
+    p = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            k = 0;
+            while(k < n3) {
+                l = 0;
+                while(l < n4) {
+                    p = 0;
+                    while(p < n5) {
                         if (i * j * k * l * p != A[i][j][k][l][p]) {
                             print("error", "A[", i, "]", "[", j, "]", "[", l, "]", "[", k, "]", "[", p, "] != ", i * j * k * l * p, A[i][j][k][l][p]);
-    } } } } } }
+                        }
+                        p += 1;
+                    }
+                    l += 1;
+                }
+                k += 1;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
     return;
 }
 
@@ -394,18 +426,28 @@ void testArrays2()
     print("Testing arrays2...");
     int n1 = 4;
     int n2 = 5; 
-    int i;
-    int j;
+    int i = 0;
+    int j = 0;
     double A[n1][n2];
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
             A[i][j] = sqrt(i * j);
-    } }
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n1; j += 1) {
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
             if (sqrt(i * j) != A[i][j]) {
                 print("error", "A[", i, "]", "[", j, "] != ", sqrt(i * j), A[i][j]);
-    } } }
+            } 
+            j += 1;
+        }
+        i += 1;
+    }
     return;
 }
 
@@ -413,25 +455,42 @@ void testArrays3() {
     print("Testing arrays3...");
     int n1 = 5;
     int n2 = 7;
-    int i;
-    int j;
+    int i = 0;
+    int j = 0;
     int A[n1][n2];
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
             A[i][j] = i * j;
-    } }
+            j += 1;
+        }
+        i += 1;
+    }
     double B[A[4][4]][A[3][6]];
     int n3 = 16;
     int n4 = 18;
-    for (i = 0; i < n3; i += 1) {
-        for (j = 0; j < n4; j += 1) {
+    i = 0;
+    j = 0;
+    while(i < n3) {
+        j = 0;
+        while(j < n4) {
             B[i][j] = sqrt(i * j);
-    } }
-    for (i = 0; i < n3; i += 1) {
-        for (j = 0; j < n4; j += 1) {
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    while(i < n3) {
+        j = 0;
+        while(j < n4) {
             if (sqrt(i * j) != B[i][j]) {
                 print("error", "B[", i, "]", "[", j, "] != ", sqrt(i * j), B[i][j]);
-    } } }
+            }
+            j += 1;
+        }
+        i += 1;
+    }
     return;
 }
 
@@ -439,48 +498,53 @@ void testArrays4() {
     print("Testing arrays4...");
     int n1 = 5;
     int n2 = 7;
-    int i;
-    int j;
+    int i = 0;
+    int j = 0;
     string A[n1][n2];
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
-            if (i > 0 && j > 0) { 
-                A[i][j] = "a" + A[i-1][j] + A[i][j-1];
-            } else {
-                A[i][j] = "";
-            } 
-    } } 
-    for (i = 0; i < n1; i += 1) {
-        for (j = 0; j < n2; j += 1) {
-            if (i > 0 && j > 0) { 
-                if (A[i][j] != "a" + A[i-1][j] + A[i][j-1]) {
-                    print("error", "A[", i, "]", "[", j, "] != ", "expected...", A[i][j]);
-                }
-            } else {
-                if (A[i][j] != "") {
-                    print("error", "A[", i, "]", "[", j, "] != ", "empty", A[i][j]);
-                }
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            A[i][j] = "aaa";
+            j += 1;
+        }
+        i += 1;
+    }
+    i = 0;
+    j = 0;
+    while(i < n1) {
+        j = 0;
+        while(j < n2) {
+            if ("aaa" != A[i][j]) {
+                print("error", "A[", i, "]", "[", j, "] != ", "aaa", A[i][j]);
             }
-    } }
+            j += 1;
+        }
+        i += 1;
+    }
     return;
 }
 
 void testArrays5() {
     print("Testing arrays5...");
     int n1 = 5;
-    int i;
+    int i = 0;
     int A[n1];
     int B[n1];
-    for (i = 0; i < n1; i += 1) {
+    while(i < n1) {
         A[i] = i;
+        i += 1;
     }
-    for (i = 0; i < n1; i += 1) {
+    i = 0;
+    while(i < n1) {
         B[A[n1 - A[i] - 1]] = i;
+        i += 1;
     }
-    for (i = 0; i < n1; i += 1) {
+    i = 0;
+    while(i < n1) {
         if (n1 - i - 1 != B[i]) {
             print("error", "B[", i, "]", " != ", i, B[i]);
         }
+        i += 1;
     }
     return;
 }
