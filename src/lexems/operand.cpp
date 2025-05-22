@@ -39,7 +39,9 @@ void operand::copyValue(void* v)
 
 //обязательно сначала задавать тип операнда и только потом устанавливать значение!
 void operand::setValue(const void* v) {
+	
 	if (v == nullptr) return;
+	//delete value;
 	if (getTypeId() == 1)
 	{
 		value = new int(*(int*)v);

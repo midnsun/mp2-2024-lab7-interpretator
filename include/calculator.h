@@ -30,7 +30,7 @@ class calculator {
 	void executeScan(const size_t& sBegin, const size_t& sEnd);
 	std::vector<commonLexem*> calculatingFunctions(interpretator* inter);
 	void checkUnaryNegative();
-	void initialConstantAndVarisble();
+	void initialConstantAndVarisble(const bool&);
 	
 	operand* calcArithmetic(const std::vector<commonLexem*>& expr);
 public:

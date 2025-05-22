@@ -670,8 +670,9 @@ operand* calculator::assignment(operand* v1, operand* v2)
 		{
 			if (v1->getTypeId() == 1)
 			{
-				int* t = (int*)v1->getValue();
+				int* t = (int*)(v1->getValue());
 				*t = *(int*)(v2->getValue());
+				t = nullptr;
 			}
 			else if (v1->getTypeId() == 2)
 			{
@@ -679,15 +680,20 @@ operand* calculator::assignment(operand* v1, operand* v2)
 				{
 					double* t = (double*)v1->getValue();
 					*t = *(int*)(v2->getValue());
+					t = nullptr;
 				}
 				else
 				{
 					double* t = (double*)v1->getValue();
 					*t = *(double*)(v2->getValue());
+					t = nullptr;
 				}
 			}
 			else
 			{
+				std::string* t = (std::string*)v1->getValue();
+				*t = *(std::string*)(v2->getValue());
+				t = nullptr;
 				//*(std::string*)v1->getValue() = *(std::string*)(v2->getValue());
 			}
 		}
@@ -877,6 +883,7 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 				calculator calc(data, arrBegin, arrEnd, vars);
 				inds.push_back(*(int*)calc.calculate(inter).getValue());
 			}
+			dynamic_cast<variable*>(data[pos])->setValue(nullptr);
 			val->copyValue(var->getValueArr(inds));
 			//printResult(*val);
 			expression.push_back(dynamic_cast<commonLexem*>(val));
@@ -906,7 +913,7 @@ void calculator::checkUnaryNegative()
 	return;
 }
 
-void calculator::initialConstantAndVarisble()
+void calculator::initialConstantAndVarisble(const bool& initArrays)
 {
 	for (size_t pos = begin; pos < end; pos++)
 	{
@@ -920,12 +927,22 @@ void calculator::initialConstantAndVarisble()
 			{
 				dynamic_cast<variable*>(data[pos])->setTypeId((*vars.find(dynamic_cast<variable*>(data[pos])))->getTypeId());
 				if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue() == nullptr) continue;
-				dynamic_cast<variable*>(data[pos])->setSizes((*vars.find(dynamic_cast<variable*>(data[pos])))->getSizes());
-				if (dynamic_cast<variable*>(data[pos])->getSizes().size() > 0)
+				
+				if ((*vars.find(dynamic_cast<variable*>(data[pos])))->getSizes().size() > 0)
 				{
-					dynamic_cast<variable*>(data[pos])->copyValue((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue());
+					
+					if (initArrays)
+					{
+						dynamic_cast<variable*>(data[pos])->copySizes((*vars.find(dynamic_cast<variable*>(data[pos])))->getSizes());
+						dynamic_cast<variable*>(data[pos])->copyValue((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue());
+					}
+					else
+					{
+						dynamic_cast<variable*>(data[pos])->copyValue(nullptr);
+					}
 					continue;
 				}
+
 				if (dynamic_cast<variable*>(data[pos])->getTypeId() == 1)
 				{
 					int* t = new int(*(int*)((*vars.find(dynamic_cast<variable*>(data[pos])))->getValue()));
@@ -1194,7 +1211,7 @@ void printExpression(const std::vector<commonLexem*>& expression)
 //ш3 вычисляем арифметическое выражение
 constant calculator::calculate(interpretator* inter)
 {
-	initialConstantAndVarisble();
+	initialConstantAndVarisble(1);
 	checkUnaryNegative();
 	std::vector<commonLexem*> expression = calculatingFunctions(inter);
 
@@ -1203,7 +1220,7 @@ constant calculator::calculate(interpretator* inter)
 	//printExpression(expression);
 	expression = toPostfix(expression);
 	//printExpression(expression);
-	initialConstantAndVarisble();
+	initialConstantAndVarisble(0);
 	operand* tmp = calcArithmetic(expression);
 	//if (tmp->getClass() == "constant") printResult(*(dynamic_cast<constant*>(tmp)));
 	constant result("##UNNAMED##", -1, -1, tmp->getTypeId());
