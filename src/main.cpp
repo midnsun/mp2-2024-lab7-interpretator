@@ -36,7 +36,7 @@ int main() {
 	while (std::getline(file, str)) {
 		file_content.push_back(str);
 	}
-	printFileContent(file_content);
+//	printFileContent(file_content);
 	try {
 		interpretator program(file_content);
 		constant res = program.startExecute();
