@@ -489,7 +489,7 @@ void testArrays5() {
 
 void processGlobal() {
     print("Testing processGlobal...");
-    if (GLOB != -1) { print("error: global variable isn't valid", GLOB); }
+    if (GLOB != 1) { print("error: global variable isn't valid", GLOB); }
     GLOB = GLOB + 1;
     return;
 }
@@ -497,14 +497,6 @@ void processGlobal() {
 void testGlobal() {
     print("Testing testGlobal...");
     if (GLOB != 2) { print("error: global variable isn't valid", GLOB); }
-    return;
-}
-
-void testBrackets() {
-    print("Testing testBrackets...");
-    int a = 2;
-    int b = (((a + 2) / 2) == 2);
-    if (b != 1) { print("error", "b != 1", b); }
     return;
 }
 
@@ -519,7 +511,6 @@ int main() {
     testArrays3();
     testArrays4();
     testArrays5();
-    testBrackets();
     processGlobal();
     testGlobal();
     return 0;
