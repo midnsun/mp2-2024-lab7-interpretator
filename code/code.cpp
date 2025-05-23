@@ -123,18 +123,12 @@ void Dijkstra(int n) {
                 }
             }
         }
-
-        
     }
-
     return;
 }
 
 int main() {
-    int q = 1;
-    int n;
-    int i;
-    int tmp;
+    int q = 1; int n; int i; int tmp;
     int tmpPath[15];
     print("Welcome to the Dijkstra algorithm program!");
     fillGraph();
