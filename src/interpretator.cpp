@@ -12,7 +12,6 @@
 	// лексемы внутри векторов лексем (команды) внутри программы (вектора команд)
 void interpretator::process(std::vector<std::string> source)
 {
-	std::vector<std::string> strParsing;
 	std::string word;
 	int wordPos, wordLen, tmpwordPos;
 	std::vector <std::vector <std::pair <std::string, int> > > strProgram;
@@ -694,6 +693,7 @@ interpretator::interpretator(std::vector<std::string>& source) {
 interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
 		delete program[i];
+//		program[i] = nullptr;
 	}
 //	for (auto v : GlobalVariables) delete v;
 }
@@ -853,6 +853,6 @@ constant interpretator::execute(const function const* func, const std::vector<co
 	}
 
 	if (result.getTypeId() != func->type) throw std::runtime_error("Line " + std::to_string(func->getInd()) + ", symbol " + std::to_string(func->getPos()) + ": " + func->getName() + " - Incompatible types of arguments");
-	for (const auto v : vars) if (GlobalVariables.find(v) == GlobalVariables.end()) delete v;
+	for (auto v : vars) if (GlobalVariables.find(v) == GlobalVariables.end()) delete v;
 	return result;
 }

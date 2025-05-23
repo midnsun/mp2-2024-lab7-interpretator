@@ -1,5 +1,6 @@
 #include <iostream>
 #include "operand.h"
+#include <string>
 
 operand::operand(const std::string str, size_t ind, size_t pos, char _type) : commonLexem(str, ind, pos), type(_type), value(nullptr) { }
 
@@ -61,10 +62,10 @@ void operand::setValue(const void* v) {
 	}
 }
 
-void operand::setValue(const std::string& s) {
+void operand::setValue(std::string& s) {
 	if (getTypeId() == 3)
 	{
-		value = new std::string(s);
+		value = &s;
 	}
 	else {
 		value = nullptr;
@@ -73,7 +74,7 @@ void operand::setValue(const std::string& s) {
 
 operand::~operand() {
 	if (getTypeId() != 3)
-		delete value;
+	delete value;
 }
 
 bool operand::isTrue() const {

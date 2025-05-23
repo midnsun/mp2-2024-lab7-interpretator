@@ -17,6 +17,7 @@ class interpretator {
 	std::vector <  commonLexem* > program;
 	std::set< variable*, variableCMP > GlobalVariables;
 	std::set< function*, functionCMP > functions;
+	std::vector<std::string> strParsing;
 	void executePrint(const std::vector<constant>& agruments);
 	constant executeCos(const std::vector<constant>& agruments);
 	constant executeSin(const std::vector<constant>& agruments);
