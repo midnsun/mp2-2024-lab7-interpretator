@@ -489,7 +489,7 @@ void testArrays5() {
 
 void processGlobal() {
     print("Testing processGlobal...");
-    if (GLOB != -1) { print("error: global variable isn't valid", GLOB); }
+    if (GLOB != (-1)) { print("error: global variable isn't valid", GLOB); }
     GLOB = GLOB + 1;
     return;
 }
