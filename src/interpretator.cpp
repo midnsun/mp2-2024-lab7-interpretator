@@ -530,9 +530,59 @@ constant interpretator::executeWithoutErrorsHandling(const function const* func,
 
 constant interpretator::startExecute()
 {
+	globalExecute();
 	function* tmpptr = new function("main", -1, -1, -1, -1, -1);
 	if (functions.find(tmpptr) == functions.end()) throw std::runtime_error("main not found"); //main не принимает аргументы
 	return execute(*functions.find(tmpptr), std::vector<constant>());
+}
+
+void interpretator::globalExecute()
+{
+	size_t pos, arrBegin, counter, arrEnd, begin, end;
+	std::vector<int> arrCounter;
+	constant tmpResult("##UNNAMED##", -1, -1, -1);
+	variable* var;
+	for (pos = 0; pos < program.size(); ++pos) {
+		if (program[pos]->getClass() != "dataType") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos())
+			+ ": " + program[pos]->getName() + " - Data type expected in global field");
+		if (++pos >= program.size()) throw std::runtime_error("Line " + std::to_string(program[pos - 1]->getInd()) + ", symbol " + std::to_string(program[pos - 1]->getPos())
+			+ ": " + program[pos - 1]->getName() + " - No name after data type");
+		if (program[pos]->getClass() == "function") return;
+		else if (program[pos]->getClass() == "variable") {
+			var = dynamic_cast<variable*>(program[pos]);
+			if (GlobalVariables.find(var) != GlobalVariables.end()) throw std::runtime_error("Line " + std::to_string(var->getInd()) + ", symbol " + std::to_string(var->getPos()) + ": " + var->getName() + " - This variable has already exists");
+			GlobalVariables.insert(var);
+			if (var->getSizes().size() > 0) {
+				pos += 1; // first [
+				while (arrCounter.size() < var->getSizes().size()) {
+					if (program[pos]->getName() != "[") throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos()) + ": " + program[pos]->getName() + " - Missing [");
+					pos += 1; // pos probably [
+					arrBegin = pos; // symbol after [
+					counter = 1;
+					while (counter != 0 && pos < program.size()) {
+						if (program[pos]->getName() == "[") ++counter;
+						if (program[pos]->getName() == "]") --counter;
+						++pos;
+					}
+					arrEnd = pos - 1; // pos - symbol after ], probably [
+					calculator calc(program, arrBegin, arrEnd, GlobalVariables);
+					tmpResult = calc.calculate(this);
+					arrCounter.push_back(*(int*)tmpResult.getValue());
+				}
+				var->setSizes(arrCounter);
+				arrCounter.clear();
+				continue;
+			}
+			begin = pos++;
+		}
+		else throw std::runtime_error("Line " + std::to_string(program[pos]->getInd()) + ", symbol " + std::to_string(program[pos]->getPos())
+			+ ": " + program[pos]->getName() + " - Bad lexem");
+
+		while (pos < program.size() && program[pos]->getName() != ";") ++pos;
+		end = pos;
+		calculator calc(program, begin, end, GlobalVariables);
+		tmpResult = calc.calculate(this);
+	}
 }
 
 void interpretator::executePrint(const std::vector<constant>& arguments)
@@ -645,6 +695,7 @@ interpretator::~interpretator() {
 	for (size_t i = 0; i < program.size(); ++i) {
 		delete program[i];
 	}
+//	for (auto v : GlobalVariables) delete v;
 }
 
 constant interpretator::execute(const function const* func, const std::vector<constant>& arguments) {

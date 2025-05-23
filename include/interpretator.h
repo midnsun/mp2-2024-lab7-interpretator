@@ -28,6 +28,7 @@ public:
 	~interpretator();
 	void process(std::vector<std::string> source);
 	constant execute(const function const* func, const std::vector<constant>& agruments);
+	void globalExecute();
 	constant executeWithoutErrorsHandling(const function const* func, const std::vector<constant>& agruments);
 	constant startExecute();
 
