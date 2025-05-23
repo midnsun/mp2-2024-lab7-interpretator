@@ -40,12 +40,38 @@ void swap(int ind1, int ind2) {
 }
 
 void slideDown(int ind) {
-
+    for (int i = ind; i < Size; i += 0) {
+        if (2*i+2 < Size) {
+            if (PriorityQueue[i][1] < PriorityQueue[2*i+1][1] && PriorityQueue[i][1] < PriorityQueue[2*i+2][1]) { return; }
+            if (PriorityQueue[2*i+1][1] < PriorityQueue[2*i+2][1]) {
+                swap(2*i+1, i);
+                i = 2*i+1;
+            }
+            elif (PriorityQueue[2*i+1][1] >= PriorityQueue[2*i+2][1]) {
+                swap(2*i+2, i);
+                i = 2*i+2;
+            }
+        }
+        elif (2*i+2 < Size) {
+            if (PriorityQueue[1][1] < PriorityQueue[2*i+1][1]) { return; }
+            swap(2*i+1, i);
+            i = 2*i+1;
+        }
+        else { return; }
+    }
     return;
 }
 
 void slideUp(int ind) {
-
+    for (int i = ind; i >= 0; i += 0) {
+        if ((i - 1) / 2 >= 0) {
+            if (PriorityQueue[(i - 1) / 2][1] > PriorityQueue[i][1]) {
+                swap((i - 1) / 2, i);
+            }
+            else { return; }
+        }
+        i = (i - 1) / 2;
+    }
     return;
 }
 
@@ -82,7 +108,7 @@ void Dijkstra(int n) {
     int eit1;
     int eit2;
 
-    while (IsEmpty() != 0) {
+    while (IsEmpty() == 0) {
         ExtractMin();
         e1 = tmpe1;
         e2 = tmpe2;
@@ -116,7 +142,7 @@ int main() {
     while (q) {
         print("Enter the number of a vertex you want to find path for");
         scan(n);
-        print("The lenght of the shortest path is: ", Result[n]);
+        print("The lenght of the shortest path is:", Result[n]);
         for (i = 0; n != MaxInt; n = Path[n]) {
             tmpPath[i] = n;
             i += 1;
