@@ -30,7 +30,7 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 			if (i - 1 >= 0 && expr[i - 1]->getName() == ")")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
-					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the operation before this operand was skipped");
+					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the operation before this operand was skipped, code 0");
 			}
 			postfix.push_back(expr[i]);
 		}
@@ -39,17 +39,17 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 			if (expr.size() > i + 1 && expr[i + 1]->getClass() == "operation" && dynamic_cast<operation*>(expr[i + 1])->getPriority() != 0)
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i + 1]->getInd())
-					+ ", symbol " + std::to_string(expr[i + 1]->getPos()) + ": the operation before this operand was skipped");
+					+ ", symbol " + std::to_string(expr[i + 1]->getPos()) + ": the operation before this operand was skipped, code 1");
 			}
 			if (i - 1 >= 0 && (expr[i - 1]->getClass() != "operation" || expr[i - 1]->getName() == ")"))
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i - 1]->getInd())
-					+ ", symbol " + std::to_string(expr[i - 1]->getPos()) + ": the operation before this operand was skipped");
+					+ ", symbol " + std::to_string(expr[i - 1]->getPos()) + ": the operation before this operand was skipped, code 2");
 			}
 			if (expr.size() > i + 1 && expr[i + 1]->getClass() == "operation" && expr[i - 1]->getName() == ")")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i + 1]->getInd())
-					+ ", symbol " + std::to_string(expr[i + 1]->getPos()) + ": the expression in parentheses is lost");
+					+ ", symbol " + std::to_string(expr[i + 1]->getPos()) + ": the expression in parentheses is lost, code 3");
 			}
 			op.push(expr[i]);
 		}
@@ -58,17 +58,17 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 			if (i - 1 >= 0 && expr[i - 1]->getClass() == "operation")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i - 1]->getInd())
-					+ ", symbol " + std::to_string(expr[i - 1]->getPos()) + ": the operation before this operand was skipped");
+					+ ", symbol " + std::to_string(expr[i - 1]->getPos()) + ": the operation before this operand was skipped, code 4");
 			}
 			if (expr.size() < i + 1 && expr[i + 1]->getClass() != "operation")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
-					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the operation before this operand was skipped");
+					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the operation before this operand was skipped, code 5");
 			}
 			if (op.empty())
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
-					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": there is no opening bracket for this closing bracket");
+					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": there is no opening bracket for this closing bracket, code 6");
 			}
 			while (op.top()->getName() != "(")
 			{
@@ -77,7 +77,7 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 				if (op.empty())
 				{
 					throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
-						+ ", symbol " + std::to_string(expr[i]->getPos()) + ": there is no opening bracket for this closing bracket");
+						+ ", symbol " + std::to_string(expr[i]->getPos()) + ": there is no opening bracket for this closing bracket, code 7");
 				}
 			}
 			op.pop();
@@ -88,7 +88,7 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 			if (newOp->getPriority() == 0 && i - 1 >= 0 && expr[i - 1]->getName() == "-")
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i]->getInd())
-					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the opening parenthesis before the unary minus was skipped");
+					+ ", symbol " + std::to_string(expr[i]->getPos()) + ": the opening parenthesis before the unary minus was skipped, code 8");
 			}
 			if (expr.size() > i + 1 && expr[i + 1]->getClass() == "operation" && expr[i]->getName() != "=")
 			{

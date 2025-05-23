@@ -463,14 +463,14 @@ void interpretator::process(std::vector<std::string> source)
 	}
 
 	// PRINTING
-//	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
-//		std::cout << wordInd << ":	";
-//		program[wordInd]->showInfo();
-//		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
-//			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
-//		std::cout << std::endl;
-//	}
-//	std::cout << std::endl;
+	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
+		std::cout << wordInd << ":	";
+		program[wordInd]->showInfo();
+		/*if (program[wordInd]->getClass() == "constant" || program[wordInd]->getClass() == "variable")
+			std::cout << " | " << (int)dynamic_cast<constant*>(program[wordInd])->getTypeId() << " | ";*/
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
 //	lineInd = 0;
 //	for (wordInd = 0; wordInd < program.size(); ++wordInd) {
 //		if (lineInd != program[wordInd]->getInd()) {
