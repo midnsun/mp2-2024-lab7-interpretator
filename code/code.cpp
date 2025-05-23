@@ -45,7 +45,7 @@ void swap(int ind1, int ind2) {
 void slideDown(int ind) {
     int i = ind;
     while(i < Size) {
-        if (2*i+2 < Size) {
+        if ((2*i+2) < Size) {
             if (PriorityQueue[i][1] < PriorityQueue[2*i+1][1] && PriorityQueue[i][1] < PriorityQueue[2*i+2][1]) { return; }
             if (PriorityQueue[2*i+1][1] < PriorityQueue[2*i+2][1]) {
                 swap(2*i+1, i);
@@ -56,7 +56,7 @@ void slideDown(int ind) {
                 i = 2*i+2;
             }
         }
-        elif (2*i+2 < Size) {
+        elif ((2*i+2) < Size) {
             if (PriorityQueue[1][1] < PriorityQueue[2*i+1][1]) { return; }
             swap(2*i+1, i);
             i = 2*i+1;
@@ -69,7 +69,7 @@ void slideDown(int ind) {
 void slideUp(int ind) {
     int i = ind;
     while(i >= 0) {
-        if ((i - 1) / 2 >= 0) {
+        if (((i - 1) / 2) >= 0) {
             if (PriorityQueue[(i - 1) / 2][1] > PriorityQueue[i][1]) {
                 swap((i - 1) / 2, i);
             }

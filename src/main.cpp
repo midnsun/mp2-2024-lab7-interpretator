@@ -30,14 +30,14 @@ void checkFileContent(std::vector<std::string>& v) { //
 }
 
 int main() {
-	std::fstream file("../../code/code.cpp");
+	std::fstream file("../../code/tests1.cpp");
 	std::string str;
 	std::vector<std::string> file_content;
 	while (std::getline(file, str)) {
 		file_content.push_back(str);
 	}
 //	printFileContent(file_content);
-	try {
+		try {
 		interpretator program(file_content);
 		constant res = program.startExecute();
 	}
