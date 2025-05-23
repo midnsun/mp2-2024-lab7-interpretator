@@ -1,4 +1,4 @@
-int GLOB = 1;
+int GLOB = -1;
 
 void testIntOperation() {
     print("Testing int operators...");
@@ -489,14 +489,14 @@ void testArrays5() {
 
 void processGlobal() {
     print("Testing processGlobal...");
-    if (GLOB != 1) { print("error: global variable isn't valid", GLOB); }
+    if (GLOB != -1) { print("error: global variable isn't valid", GLOB); }
     GLOB = GLOB + 1;
     return;
 }
 
 void testGlobal() {
     print("Testing testGlobal...");
-    if (GLOB != 2) { print("error: global variable isn't valid", GLOB); }
+    if (GLOB != 0) { print("error: global variable isn't valid", GLOB); }
     return;
 }
 
