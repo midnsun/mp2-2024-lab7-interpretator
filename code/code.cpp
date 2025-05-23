@@ -28,6 +28,8 @@ void fillGraph() {
         Result[i] = MaxInt;
         Path[i] = MaxInt;
     }
+    Size = 0;
+    return;
 }
 
 void swap(int ind1, int ind2) {
@@ -37,10 +39,12 @@ void swap(int ind1, int ind2) {
     PriorityQueue[ind1][1] = PriorityQueue[ind2][1];
     PriorityQueue[ind2][0] = tmp1;
     PriorityQueue[ind2][1] = tmp2;
+    return;
 }
 
 void slideDown(int ind) {
-    for (int i = ind; i < Size; i += 0) {
+    int i = ind;
+    while(i < Size) {
         if (2*i+2 < Size) {
             if (PriorityQueue[i][1] < PriorityQueue[2*i+1][1] && PriorityQueue[i][1] < PriorityQueue[2*i+2][1]) { return; }
             if (PriorityQueue[2*i+1][1] < PriorityQueue[2*i+2][1]) {
@@ -63,7 +67,8 @@ void slideDown(int ind) {
 }
 
 void slideUp(int ind) {
-    for (int i = ind; i >= 0; i += 0) {
+    int i = ind;
+    while(i >= 0) {
         if ((i - 1) / 2 >= 0) {
             if (PriorityQueue[(i - 1) / 2][1] > PriorityQueue[i][1]) {
                 swap((i - 1) / 2, i);
@@ -101,7 +106,8 @@ void ExtractMin() {
 
 void Dijkstra(int n) {
     Result[n] = 0;
-    Add(n, Result[n]);
+    int tmp;
+    Add(n, 0);
     int i;
     int e1;
     int e2;
@@ -118,7 +124,8 @@ void Dijkstra(int n) {
             eit2 = Graph[e1][i][1];
             if (Result[eit1] > Result[e1] + eit2) {
                 Result[eit1] = Result[e1] + eit2;
-                Add(eit1, Result[eit1]);
+                tmp = Result[eit1];
+                Add(eit1, tmp);
                 Path[eit1] = e1;
             }
         }
@@ -142,7 +149,8 @@ int main() {
     while (q) {
         print("Enter the number of a vertex you want to find path for");
         scan(n);
-        print("The lenght of the shortest path is:", Result[n]);
+        tmp = Result[n];
+        print("The lenght of the shortest path is:", tmp);
         for (i = 0; n != MaxInt; n = Path[n]) {
             tmpPath[i] = n;
             i += 1;
