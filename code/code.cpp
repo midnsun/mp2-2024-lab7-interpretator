@@ -106,29 +106,25 @@ void ExtractMin() {
 
 void Dijkstra(int n) {
     Result[n] = 0;
-    int tmp;
     Add(n, 0);
-    int i;
-    int e1;
-    int e2;
-    int eit1;
-    int eit2;
-
+    int i; int e1; int e2; int eit1; int eit2;
     while (IsEmpty() == 0) {
         ExtractMin();
         e1 = tmpe1;
         e2 = tmpe2;
-        if (e2 != Result[e1]) continue;
-        for (i = 0; i < Adjacency[e1]; i += 1) {
-            eit1 = Graph[e1][i][0];
-            eit2 = Graph[e1][i][1];
-            if (Result[eit1] > Result[e1] + eit2) {
-                Result[eit1] = Result[e1] + eit2;
-                tmp = Result[eit1];
-                Add(eit1, tmp);
-                Path[eit1] = e1;
+        if (e2 == Result[e1]) {
+            for (i = 0; i < Adjacency[e1]; i += 1) {
+                eit1 = Graph[e1][i][0];
+                eit2 = Graph[e1][i][1];
+                if (Result[eit1] > Result[e1] + eit2) {
+                    Result[eit1] = Result[e1] + eit2;
+                    Add(eit1, Result[eit1]);
+                    Path[eit1] = e1;
+                }
             }
         }
+
+        
     }
 
     return;

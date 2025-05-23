@@ -41,7 +41,7 @@ std::vector<commonLexem*> calculator::toPostfix(const std::vector<commonLexem*>&
 				throw std::runtime_error("Line " + std::to_string(expr[i + 1]->getInd())
 					+ ", symbol " + std::to_string(expr[i + 1]->getPos()) + ": the operation before this operand was skipped, code 1");
 			}
-			if (i - 1 >= 0 && (expr[i - 1]->getClass() != "operation" || expr[i - 1]->getName() == ")"))
+			if (i - 1 >= 0 && (expr[i - 1]->getClass() != "operation" && expr[i - 1]->getName() == ")"))
 			{
 				throw std::runtime_error("Line " + std::to_string(expr[i - 1]->getInd())
 					+ ", symbol " + std::to_string(expr[i - 1]->getPos()) + ": the operation before this operand was skipped, code 2");
@@ -821,8 +821,8 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 				std::vector<commonLexem*> tmpExp;
 				size_t tBegin = pos;
 				bool flFoo = false;
-				int cnt = 0;
-				while (pos < data.size() && data[pos]->getName() != "," && data[pos]->getName() != ")" || pos < data.size() && flFoo)
+				int cnt = 0, cnt2 = 1;
+				while (pos < data.size() && data[pos]->getName() != "," && cnt2 != 0 || pos < data.size() && flFoo)
 				{
 					if (data[pos]->getClass() == "function")
 					{
@@ -831,6 +831,12 @@ std::vector<commonLexem*> calculator::calculatingFunctions(interpretator* inter)
 					}
 					if (flFoo && data[pos]->getName() == "(") cnt++;
 					if (flFoo && data[pos]->getName() == ")") cnt--;
+					if (data[pos]->getName() == "(") cnt2++;
+					if (data[pos]->getName() == ")") cnt2--;
+					if (cnt2 == 0)
+					{
+						break;
+					}
 					if (flFoo && cnt == 0) flFoo = false;
 					tmpExp.push_back(data[pos]);
 					pos++;
